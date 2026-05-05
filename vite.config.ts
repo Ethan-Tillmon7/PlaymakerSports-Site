@@ -1,7 +1,13 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
 
-// https://vite.dev/config/
-export default defineConfig({
+export default defineConfig(({ isSsrBuild }) => ({
   plugins: [react()],
-})
+  build: {
+    outDir: isSsrBuild ? 'dist/server' : 'dist',
+  },
+  ssr: {
+    // react-helmet-async ships CJS; bundle it so Node gets the ESM-inlined version
+    noExternal: ['react-helmet-async'],
+  },
+}));
