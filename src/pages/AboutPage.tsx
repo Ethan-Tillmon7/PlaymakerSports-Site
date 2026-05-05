@@ -1,20 +1,19 @@
-import { Nav } from '../components/layout/Nav';
-import { Footer } from '../components/layout/Footer';
-import { DiamondMarkSymbol } from '../components/layout/DiamondMark';
+import { Helmet } from 'react-helmet-async';
+import { PageLayout } from '../components/layout/PageLayout';
+import { PAGE_META, SITE_URL } from '../seo/config';
 
 export function AboutPage() {
   return (
-    <>
-      <DiamondMarkSymbol />
-
-      {/* Breadcrumb strip — sits above the nav on interior pages */}
-      <div className="border-b border-pm-rule">
-        <div className="max-w-[1480px] mx-auto px-6 sm:px-10 py-3 flex items-baseline justify-between font-mono text-[10.5px] tracking-[0.1em] uppercase text-pm-muted">
-          <div><a href="/" className="hover:text-pm-ink">Home</a> &nbsp;/&nbsp; <span className="text-pm-ink">About</span></div>
-        </div>
-      </div>
-      <Nav />
-
+    <PageLayout breadcrumb="About">
+      <Helmet>
+        <title>{PAGE_META.about.title}</title>
+        <meta name="description" content={PAGE_META.about.description} />
+        <link rel="canonical" href={`${SITE_URL}${PAGE_META.about.path}`} />
+        <meta property="og:title" content={PAGE_META.about.title} />
+        <meta property="og:description" content={PAGE_META.about.description} />
+        <meta property="og:url" content={`${SITE_URL}${PAGE_META.about.path}`} />
+        <meta property="og:type" content="website" />
+      </Helmet>
       <header className="border-b border-pm-rule">
         <div className="max-w-[1480px] mx-auto px-6 sm:px-10 pt-10 pb-16 lg:pt-16 lg:pb-20">
           <span className="font-mono text-[11px] tracking-[0.16em] uppercase text-pm-yellow-deep">Built in Lafayette</span>
@@ -35,8 +34,6 @@ export function AboutPage() {
           </p>
         </div>
       </section>
-
-      <Footer />
-    </>
+    </PageLayout>
   );
 }

@@ -1,9 +1,10 @@
 import { useState } from 'react';
-import { Nav } from '../components/layout/Nav';
-import { Footer } from '../components/layout/Footer';
-import { DiamondMarkSymbol } from '../components/layout/DiamondMark';
+import { Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
+import { PageLayout } from '../components/layout/PageLayout';
+import { PAGE_META, SITE_URL } from '../seo/config';
+import { JsonLd } from '../seo/JsonLd';
 
-// TODO: Replace with real FAQ content from Jake
 const faqs = [
   {
     question: 'What happens if the tournament is cancelled due to weather?',
@@ -68,17 +69,28 @@ function FAQItem({ question, answer }: { question: string; answer: string }) {
 
 export function FAQPage() {
   return (
-    <>
-      <DiamondMarkSymbol />
-
-      {/* Breadcrumb strip — sits above the nav on interior pages */}
-      <div className="border-b border-pm-rule">
-        <div className="max-w-[1480px] mx-auto px-6 sm:px-10 py-3 flex items-baseline justify-between font-mono text-[10.5px] tracking-[0.1em] uppercase text-pm-muted">
-          <div><a href="/" className="hover:text-pm-ink">Home</a> &nbsp;/&nbsp; <span className="text-pm-ink">FAQ</span></div>
-        </div>
-      </div>
-      <Nav />
-
+    <PageLayout breadcrumb="FAQ">
+      <Helmet>
+        <title>{PAGE_META.faq.title}</title>
+        <meta name="description" content={PAGE_META.faq.description} />
+        <link rel="canonical" href={`${SITE_URL}${PAGE_META.faq.path}`} />
+        <meta property="og:title" content={PAGE_META.faq.title} />
+        <meta property="og:description" content={PAGE_META.faq.description} />
+        <meta property="og:url" content={`${SITE_URL}${PAGE_META.faq.path}`} />
+        <meta property="og:type" content="website" />
+      </Helmet>
+      <JsonLd data={{
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        mainEntity: faqs.map((faq) => ({
+          '@type': 'Question',
+          name: faq.question,
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: faq.answer,
+          },
+        })),
+      }} />
       <header className="border-b border-pm-rule">
         <div className="max-w-[1480px] mx-auto px-6 sm:px-10 pt-10 pb-12 lg:pt-16 lg:pb-16">
           <span className="font-mono text-[11px] tracking-[0.16em] uppercase text-pm-yellow-deep">Common questions</span>
@@ -102,16 +114,14 @@ export function FAQPage() {
           <p className="font-display uppercase text-[22px] leading-[1] tracking-[0.005em] mt-2 text-pm-black">
             Get in touch
           </p>
-          <a
-            href="/about"
+          <Link
+            to="/about"
             className="mt-5 font-display uppercase text-[14px] tracking-[0.04em] bg-pm-yellow text-pm-black px-5 h-9 inline-flex items-center justify-center hover:bg-pm-yellow-deep transition-colors border-b-2 border-pm-yellow-deep hover:border-pm-black rounded-xl"
           >
-            Contact us →
-          </a>
+            Contact us
+          </Link>
         </div>
       </section>
-
-      <Footer />
-    </>
+    </PageLayout>
   );
 }

@@ -1,37 +1,12 @@
 import { Link } from 'react-router-dom';
-import { Nav } from '../components/layout/Nav';
-import { Footer } from '../components/layout/Footer';
-import { DiamondMarkSymbol, Diamond } from '../components/layout/DiamondMark';
+import { Helmet } from 'react-helmet-async';
+import { PageLayout } from '../components/layout/PageLayout';
+import { Diamond } from '../components/layout/DiamondMark';
+import { tournaments } from '../data/events';
+import type { Tournament } from '../data/events';
+import { PAGE_META, SITE_URL } from '../seo/config';
 
-// TODO: Replace with real tournament data from Jake
-const tournaments = [
-  {
-    month: 'May', day: '18',
-    name: 'Bayou Classic 8U',
-    location: 'Lafayette, LA', division: 'Coach-Pitch · 8U', games: '3-game guarantee',
-    status: 'open', spotsText: 'Open',
-  },
-  {
-    month: 'Jun', day: '07',
-    name: 'Cajun Showdown 10U',
-    location: 'Broussard, LA', division: 'Kid-Pitch · 10U', games: '4-game min',
-    status: 'almost', spotsText: 'Filling fast',
-  },
-  {
-    month: 'Jun', day: '21',
-    name: 'Sugarcane Slam 12U',
-    location: 'New Iberia, LA', division: 'Kid-Pitch · 12U', games: '3-game guarantee',
-    status: 'open', spotsText: 'Open',
-  },
-  {
-    month: 'Jul', day: '12',
-    name: 'Gulf Coast Cup 14U',
-    location: 'Lake Charles, LA', division: 'Kid-Pitch · 14U', games: '5-game minimum',
-    status: 'open', spotsText: 'Open',
-  },
-];
-
-function StatusPill({ status, text }: { status: string; text: string }) {
+function StatusPill({ status, text }: { status: Tournament['status']; text: string }) {
   if (status === 'open') return (
     <span className="font-mono text-[10.5px] tracking-[0.1em] uppercase text-pm-success bg-pm-success/10 px-2.5 py-1 border border-pm-success/30 rounded-full">
       {text}
@@ -51,9 +26,16 @@ function StatusPill({ status, text }: { status: string; text: string }) {
 
 export function HomePage() {
   return (
-    <>
-      <DiamondMarkSymbol />
-      <Nav />
+    <PageLayout>
+      <Helmet>
+        <title>{PAGE_META.home.title}</title>
+        <meta name="description" content={PAGE_META.home.description} />
+        <link rel="canonical" href={SITE_URL} />
+        <meta property="og:title" content={PAGE_META.home.title} />
+        <meta property="og:description" content={PAGE_META.home.description} />
+        <meta property="og:url" content={SITE_URL} />
+        <meta property="og:type" content="website" />
+      </Helmet>
 
       {/* ── HERO ── */}
       {/* -mt-16 pulls the hero up behind the floating nav so its dark bg fills the side gaps */}
@@ -107,7 +89,7 @@ export function HomePage() {
 
           <div className="flex flex-wrap items-center justify-center gap-4 mt-10">
             <Link to="/events" className="font-display uppercase text-[18px] tracking-[0.04em] bg-pm-yellow text-pm-black px-7 h-12 inline-flex items-center justify-center hover:bg-pm-yellow-deep transition-colors duration-150 border-b-2 border-pm-yellow-deep hover:border-pm-black rounded-xl">
-              View events →
+              View events
             </Link>
             <Link to="/apparel" className="font-display uppercase text-[18px] tracking-[0.04em] bg-transparent text-white px-7 h-12 inline-flex items-center justify-center hover:bg-white/10 transition-colors duration-150 border-b-2 border-white/30 hover:border-white/60 rounded-xl">
               Shop apparel
@@ -116,7 +98,7 @@ export function HomePage() {
 
           <div className="mt-8 font-mono text-[10.5px] tracking-[0.08em] uppercase text-white/30">
             <Link to="/events" className="text-white/40 hover:text-white/70 underline underline-offset-4 decoration-white/20 transition-colors duration-150">
-              View full schedule →
+              View full schedule
             </Link>
           </div>
         </div>
@@ -129,7 +111,7 @@ export function HomePage() {
                 {['Bayou Classic', 'Cajun Showdown', 'Sugarcane Slam', 'Gulf Coast Cup', 'Acadiana Open', 'Spring Opener'].map((name) => (
                   <>
                     <span key={name} className="text-pm-black">{name}</span>
-                    <span key={`${name}-dot`} className="text-pm-black/40">◆</span>
+                    <span key={`${name}-dot`} className="text-pm-black/40">&#9670;</span>
                   </>
                 ))}
               </div>
@@ -173,7 +155,7 @@ export function HomePage() {
                 <li>• Insured &amp; sanctioned</li>
               </ul>
               <Link to="/events" className="font-display uppercase text-[15px] tracking-[0.04em] text-pm-black border-b-2 border-pm-yellow self-start mt-6 group-hover:border-pm-black transition-colors">
-                See the schedule →
+                See the schedule
               </Link>
             </div>
           </article>
@@ -198,7 +180,7 @@ export function HomePage() {
                 <li>• YS through Adult 3XL</li>
               </ul>
               <Link to="/apparel" className="font-display uppercase text-[15px] tracking-[0.04em] text-pm-black border-b-2 border-pm-yellow self-start mt-6 group-hover:border-pm-black transition-colors">
-                Start an order →
+                Start an order
               </Link>
             </div>
           </article>
@@ -213,7 +195,7 @@ export function HomePage() {
             <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4">
               <h2 className="font-display uppercase text-[clamp(32px,4.5vw,56px)] leading-[0.95] tracking-[0.005em] m-0">Upcoming Events</h2>
               <Link to="/events" className="font-mono text-[11px] tracking-[0.1em] uppercase text-pm-ink border-b-2 border-pm-yellow pb-1 hover:border-pm-black self-start">
-                Full schedule →
+                Full schedule
               </Link>
             </div>
           </div>
@@ -240,7 +222,7 @@ export function HomePage() {
                 <div className="hidden sm:flex items-center gap-4 col-start-3">
                   <StatusPill status={t.status} text={t.spotsText} />
                   <span className="font-display uppercase text-[15px] tracking-[0.04em] text-pm-black border-b-2 border-pm-yellow group-hover:border-pm-black">
-                    Details →
+                    Details
                   </span>
                 </div>
               </Link>
@@ -265,7 +247,7 @@ export function HomePage() {
             </p>
             <div className="flex flex-wrap items-center gap-4">
               <Link to="/apparel" className="font-display uppercase text-[16px] tracking-[0.04em] bg-pm-yellow text-pm-black px-6 h-11 inline-flex items-center justify-center hover:bg-white transition-colors border-b-2 border-pm-yellow-deep hover:border-pm-yellow-deep rounded-xl">
-                Browse jerseys →
+                Browse jerseys
               </Link>
               <Link to="/about" className="font-display uppercase text-[16px] tracking-[0.04em] bg-transparent text-white px-6 h-11 inline-flex items-center justify-center border-b-2 border-pm-yellow hover:bg-white/5 rounded-xl">
                 Get a quote
@@ -309,7 +291,7 @@ export function HomePage() {
           </div>
           <div className="flex flex-wrap items-center gap-4">
             <Link to="/events" className="font-display uppercase text-[17px] tracking-[0.04em] bg-pm-black text-white px-7 h-12 inline-flex items-center justify-center hover:bg-pm-ink transition-colors border-b-2 border-black/40 hover:border-white rounded-xl">
-              View events →
+              View events
             </Link>
             <Link to="/apparel" className="font-display uppercase text-[17px] tracking-[0.04em] bg-transparent text-pm-black px-7 h-12 inline-flex items-center justify-center border-b-2 border-pm-black hover:bg-pm-black hover:text-pm-yellow transition-colors rounded-xl">
               Order apparel
@@ -318,7 +300,6 @@ export function HomePage() {
         </div>
       </section>
 
-      <Footer />
-    </>
+    </PageLayout>
   );
 }

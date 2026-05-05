@@ -1,20 +1,20 @@
-import { Nav } from '../components/layout/Nav';
-import { Footer } from '../components/layout/Footer';
-import { DiamondMarkSymbol } from '../components/layout/DiamondMark';
+import { Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
+import { PageLayout } from '../components/layout/PageLayout';
+import { PAGE_META, SITE_URL } from '../seo/config';
 
 export function EventsPage() {
   return (
-    <>
-      <DiamondMarkSymbol />
-
-      {/* Breadcrumb strip — sits above the nav on interior pages */}
-      <div className="border-b border-pm-rule">
-        <div className="max-w-[1480px] mx-auto px-6 sm:px-10 py-3 flex items-baseline justify-between font-mono text-[10.5px] tracking-[0.1em] uppercase text-pm-muted">
-          <div><a href="/" className="hover:text-pm-ink">Home</a> &nbsp;/&nbsp; <span className="text-pm-ink">Events</span></div>
-        </div>
-      </div>
-      <Nav />
-
+    <PageLayout breadcrumb="Events">
+      <Helmet>
+        <title>{PAGE_META.events.title}</title>
+        <meta name="description" content={PAGE_META.events.description} />
+        <link rel="canonical" href={`${SITE_URL}${PAGE_META.events.path}`} />
+        <meta property="og:title" content={PAGE_META.events.title} />
+        <meta property="og:description" content={PAGE_META.events.description} />
+        <meta property="og:url" content={`${SITE_URL}${PAGE_META.events.path}`} />
+        <meta property="og:type" content="website" />
+      </Helmet>
       <header className="border-b border-pm-rule">
         <div className="max-w-[1480px] mx-auto px-6 sm:px-10 pt-10 pb-16 lg:pt-16 lg:pb-20">
           <span className="font-mono text-[11px] tracking-[0.16em] uppercase text-pm-yellow-deep">Tournaments · Acadiana</span>
@@ -36,16 +36,14 @@ export function EventsPage() {
           <p className="text-[15px] leading-[1.6] text-pm-ink mt-4">
             Dates, locations, divisions, and registration details for Summer 2026 are being finalized.
           </p>
-          <a
-            href="/about"
+          <Link
+            to="/about"
             className="mt-7 font-display uppercase text-[15px] tracking-[0.04em] bg-pm-yellow text-pm-black px-5 h-10 inline-flex items-center justify-center hover:bg-pm-yellow-deep transition-colors border-b-2 border-pm-yellow-deep hover:border-pm-black rounded-xl"
           >
             Contact us for info
-          </a>
+          </Link>
         </div>
       </section>
-
-      <Footer />
-    </>
+    </PageLayout>
   );
 }

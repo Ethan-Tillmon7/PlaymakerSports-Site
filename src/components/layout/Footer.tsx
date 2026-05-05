@@ -13,7 +13,7 @@ export function Footer() {
               Locally run tournaments and custom apparel. Built in Lafayette, fielded across Acadiana.
             </p>
             <p className="font-mono text-[11px] tracking-[0.08em] uppercase text-pm-yellow mt-5">
-              <a href="/about" className="hover:text-white transition-colors duration-150">Contact us →</a>
+              <Link to="/about" className="hover:text-white transition-colors duration-150">Contact us</Link>
             </p>
           </div>
 
@@ -62,8 +62,8 @@ export function Footer() {
         <div className="flex flex-wrap items-center justify-between gap-4 pt-6 font-mono text-[10.5px] tracking-[0.1em] uppercase text-white/45">
           <div>© 2026 Playmaker Sports LLC · Lafayette, LA</div>
           <div className="flex gap-6">
-            <a href="/faq" className="hover:text-white">Privacy</a>
-            <a href="/faq" className="hover:text-white">Terms</a>
+            <Link to="/faq" className="hover:text-white">Privacy</Link>
+            <Link to="/faq" className="hover:text-white">Terms</Link>
             <a href="#" className="hover:text-white">Instagram ↗</a>
           </div>
         </div>
