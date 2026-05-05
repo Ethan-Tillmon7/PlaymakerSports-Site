@@ -4,6 +4,8 @@ import { PageLayout } from '../components/layout/PageLayout';
 import { jerseyCards, processSteps, alsoAvailable } from '../data/apparel';
 import type { Swatch } from '../data/apparel';
 import { PAGE_META, SITE_URL } from '../seo/config';
+import { ApparelInquiryForm } from '../components/forms/ApparelInquiryForm';
+import { PlayerUploadForm } from '../components/forms/PlayerUploadForm';
 
 export function ApparelPage() {
   return (
@@ -36,7 +38,7 @@ export function ApparelPage() {
                 <a href="#catalog" className="font-display uppercase text-[16px] tracking-[0.04em] bg-pm-yellow text-pm-black px-6 h-11 inline-flex items-center justify-center hover:bg-pm-yellow-deep transition-colors border-b-2 border-pm-yellow-deep hover:border-pm-black rounded-xl">
                   Browse catalog
                 </a>
-                <a href="#" className="font-display uppercase text-[16px] tracking-[0.04em] text-pm-black border-b-2 border-pm-black pb-0.5 hover:text-pm-yellow-deep">
+                <a href="#order" className="font-display uppercase text-[16px] tracking-[0.04em] text-pm-black border-b-2 border-pm-black pb-0.5 hover:text-pm-yellow-deep">
                   Get a quote
                 </a>
               </div>
@@ -245,6 +247,44 @@ export function ApparelPage() {
               Contact us
             </Link>
           </div>
+        </div>
+      </section>
+
+      {/* ── ORDER FORM ── */}
+      <section id="order" className="bg-pm-paper-2 border-t border-pm-rule">
+        <div className="max-w-[1480px] mx-auto px-6 sm:px-10 py-16 lg:py-20">
+          <div className="grid grid-cols-1 lg:grid-cols-[80px_1fr] gap-6 lg:gap-8 items-baseline border-t border-pm-black pt-6 mb-10">
+            <div className="font-mono text-[12px] tracking-[0.1em] text-pm-muted pt-1.5">Request</div>
+            <div>
+              <h2 className="font-display uppercase text-[clamp(32px,4.5vw,56px)] leading-[0.95] tracking-[0.005em] m-0">
+                Get a quote
+              </h2>
+              <p className="text-[15px] leading-[1.6] text-pm-ink mt-4 max-w-[480px]">
+                Tell us your team, style, and roster count — we'll send a digital proof same-day.
+              </p>
+            </div>
+          </div>
+          <div className="max-w-[720px]">
+            <ApparelInquiryForm />
+          </div>
+        </div>
+      </section>
+
+      {/* ── ROSTER UPLOAD ── */}
+      <section id="roster" className="border-t border-pm-rule">
+        <div className="max-w-[1480px] mx-auto px-6 sm:px-10 py-16 lg:py-20">
+          <div className="grid grid-cols-1 lg:grid-cols-[80px_1fr] gap-6 lg:gap-8 items-baseline border-t border-pm-black pt-6 mb-10">
+            <div className="font-mono text-[12px] tracking-[0.1em] text-pm-muted pt-1.5">Roster</div>
+            <div>
+              <h2 className="font-display uppercase text-[clamp(32px,4.5vw,56px)] leading-[0.95] tracking-[0.005em] m-0">
+                Submit your roster
+              </h2>
+              <p className="text-[15px] leading-[1.6] text-pm-ink mt-4 max-w-[480px]">
+                Add each player's name, number, and size. Minimum 12 pieces — mix sizes freely at no extra charge.
+              </p>
+            </div>
+          </div>
+          <PlayerUploadForm />
         </div>
       </section>
 
