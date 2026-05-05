@@ -1,0 +1,16 @@
+{
+  "name": "Playmaker Sports",
+  "short_name": "Playmaker",
+  "description": "Youth baseball tournaments and custom jerseys in Acadiana, LA.",
+  "start_url": "/",
+  "display": "browser",
+  "theme_color": "#F5C842",
+  "background_color": "#111111",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
