@@ -1,0 +1,76 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html, body {
+    background: #FAFAF7;
+    color: #1A1A1A;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    font-feature-settings: 'ss01', 'cv11';
+  }
+}
+
+@layer utilities {
+  .img-stripe {
+    background-image:
+      repeating-linear-gradient(
+        135deg,
+        rgba(17,17,17,0.06) 0px,
+        rgba(17,17,17,0.06) 1px,
+        transparent 1px,
+        transparent 9px
+      ),
+      linear-gradient(180deg, #F2F1EB 0%, #E8E6DC 100%);
+  }
+
+  .img-stripe-warm {
+    background-image:
+      repeating-linear-gradient(
+        135deg,
+        rgba(229,183,46,0.18) 0px,
+        rgba(229,183,46,0.18) 1px,
+        transparent 1px,
+        transparent 9px
+      ),
+      linear-gradient(180deg, #FBE9A8 0%, #F5C842 100%);
+  }
+
+  /* Soft radial product stage backdrops (Apparel page) */
+  .stage-cream {
+    background: radial-gradient(ellipse 80% 60% at 50% 35%, #FBF7EC 0%, #F2EEDF 70%, #ECE6D2 100%);
+  }
+  .stage-paper {
+    background: radial-gradient(ellipse 80% 60% at 50% 35%, #FFFFFF 0%, #F6F4ED 70%, #ECE9DC 100%);
+  }
+  .stage-blush {
+    background: radial-gradient(ellipse 80% 60% at 50% 35%, #FAF1E8 0%, #F1E5D4 70%, #E5D5BC 100%);
+  }
+  .stage-mint {
+    background: radial-gradient(ellipse 80% 60% at 50% 35%, #F1F4EE 0%, #E6EBE0 70%, #D9E0CF 100%);
+  }
+  .stage-stone {
+    background: radial-gradient(ellipse 80% 60% at 50% 35%, #F4F2EC 0%, #E9E5D9 70%, #DCD7C5 100%);
+  }
+  .stage-sky {
+    background: radial-gradient(ellipse 80% 60% at 50% 35%, #EEF3F5 0%, #E1E8EC 70%, #CDD7DC 100%);
+  }
+}
+
+/* Marquee ticker */
+@keyframes scroll-x {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+.ticker-track {
+  animation: scroll-x 38s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ticker-track {
+    animation: none;
+  }
+}

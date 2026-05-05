@@ -1,0 +1,104 @@
+import { useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+
+const navLinks = [
+  { label: 'Events', to: '/events' },
+  { label: 'Apparel', to: '/apparel' },
+  { label: 'About', to: '/about' },
+  { label: 'FAQ', to: '/faq' },
+];
+
+export function Nav() {
+  const { pathname } = useLocation();
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  return (
+    <div className="sticky top-[10px] z-30 w-[calc(100%-20px)] max-w-[1000px] mx-auto bg-white rounded-[28px] shadow-[0_2px_8px_-2px_rgba(245,200,66,0.30)]">
+
+      {/* ── Main row ── */}
+      <nav className="h-16 flex items-center px-5 sm:px-6">
+
+        {/* Left — desktop: nav links | mobile: hamburger */}
+        <div className="flex-1 flex items-center">
+          <button
+            onClick={() => setMobileOpen(o => !o)}
+            aria-label="Toggle navigation"
+            className="lg:hidden p-2 -ml-1 rounded-lg hover:bg-pm-paper-2 transition-colors duration-150"
+          >
+            <svg className="w-5 h-5 text-pm-ink" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                d={mobileOpen ? 'M6 18L18 6M6 6l12 12' : 'M4 6h16M4 12h16M4 18h16'}
+              />
+            </svg>
+          </button>
+
+          <ul className="hidden lg:flex items-center gap-1 font-display uppercase text-[14px] tracking-[0.04em]">
+            {navLinks.map(({ label, to }) => {
+              const active = pathname === to || (to !== '/' && pathname.startsWith(to));
+              return (
+                <li key={to}>
+                  <Link
+                    to={to}
+                    className={`px-3 py-1.5 rounded-lg transition-colors duration-150 inline-block ${
+                      active
+                        ? 'text-pm-black bg-pm-paper-2'
+                        : 'text-pm-ink hover:text-pm-black hover:bg-pm-paper-2'
+                    }`}
+                  >
+                    {label}
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+
+        {/* Center — logo */}
+        <Link to="/" aria-label="Playmaker Sports home" className="shrink-0 mx-4 lg:mx-6">
+          <span className="bg-pm-yellow inline-flex items-baseline gap-1 px-2 py-1 font-display text-[20px] lg:text-[22px] leading-none uppercase tracking-[0.005em] rounded-lg">
+            <span className="text-white">PLAY</span><span className="text-pm-black">MAKER</span>
+          </span>
+        </Link>
+
+        {/* Right — contact CTA */}
+        <div className="flex-1 flex items-center justify-end">
+          <a
+            href="/about"
+            className="font-display uppercase text-[13px] lg:text-[14px] tracking-[0.04em] bg-pm-yellow text-pm-black px-4 lg:px-5 h-9 inline-flex items-center justify-center hover:bg-pm-yellow-deep transition-colors duration-150 border-b-2 border-pm-yellow-deep hover:border-pm-black rounded-xl whitespace-nowrap"
+          >
+            Contact
+          </a>
+        </div>
+
+      </nav>
+
+      {/* ── Mobile dropdown ── */}
+      {mobileOpen && (
+        <div className="lg:hidden border-t border-pm-rule">
+          <ul className="flex flex-col py-2 px-5 gap-0.5 font-display uppercase text-[14px] tracking-[0.04em]">
+            {navLinks.map(({ label, to }) => {
+              const active = pathname === to || (to !== '/' && pathname.startsWith(to));
+              return (
+                <li key={to}>
+                  <Link
+                    to={to}
+                    onClick={() => setMobileOpen(false)}
+                    className={`block px-3 py-2.5 rounded-lg transition-colors duration-150 ${
+                      active
+                        ? 'text-pm-black bg-pm-paper-2'
+                        : 'text-pm-ink hover:text-pm-black hover:bg-pm-paper-2'
+                    }`}
+                  >
+                    {label}
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      )}
+
+    </div>
+  );
+}

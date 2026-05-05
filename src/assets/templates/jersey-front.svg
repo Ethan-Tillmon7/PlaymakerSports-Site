@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 700" id="jersey-front-template">
+  <!--
+    Starter jersey-front template. NOT the final art — this is a placeholder
+    that proves the data → render loop. Final art will be traced from the
+    Laffy mockups (or sourced from a vector designer).
+
+    Naming contract (do not break):
+      id="region-{key}"  → recolored from design.colors[key]
+      id="slot-{slot}"   → text/image inserted from design.placements[slot]
+                            using the rect's x/y/width/height as bounds.
+
+    Visible <text> elements inside slot- groups are placeholder-only and
+    are removed by the renderer when content is bound.
+  -->
+
+  <!-- BASE BODY -->
+  <path
+    id="region-base"
+    d="M 150 120
+       L 220 80
+       Q 300 100 380 80
+       L 450 120
+       L 480 200
+       L 460 240
+       L 460 600
+       Q 460 640 420 640
+       L 180 640
+       Q 140 640 140 600
+       L 140 240
+       L 120 200
+       Z"
+    fill="#FFFFFF"
+    stroke="#111111"
+    stroke-width="2"
+  />
+
+  <!-- COLLAR / RINGER (accent band at neck) -->
+  <path
+    id="region-collar"
+    d="M 250 80
+       Q 300 110 350 80
+       L 360 110
+       Q 300 135 240 110
+       Z"
+    fill="#1A2B5C"
+  />
+
+  <!-- LEFT SLEEVE (uses accent in 'contrast' mode, base in 'solid' mode) -->
+  <path
+    id="region-sleeve-left"
+    d="M 150 120 L 120 200 L 140 240 L 180 220 L 180 140 Z"
+    fill="#FFFFFF"
+    stroke="#111111"
+    stroke-width="2"
+  />
+
+  <!-- RIGHT SLEEVE -->
+  <path
+    id="region-sleeve-right"
+    d="M 450 120 L 480 200 L 460 240 L 420 220 L 420 140 Z"
+    fill="#FFFFFF"
+    stroke="#111111"
+    stroke-width="2"
+  />
+
+  <!-- PINSTRIPE OVERLAY (toggled visible by bodyPattern === 'pinstripe') -->
+  <g id="overlay-pinstripe" opacity="0.6">
+    <line x1="180" y1="140" x2="180" y2="635" stroke="#1A2B5C" stroke-width="1" />
+    <line x1="210" y1="135" x2="210" y2="635" stroke="#1A2B5C" stroke-width="1" />
+    <line x1="240" y1="130" x2="240" y2="635" stroke="#1A2B5C" stroke-width="1" />
+    <line x1="270" y1="125" x2="270" y2="635" stroke="#1A2B5C" stroke-width="1" />
+    <line x1="300" y1="120" x2="300" y2="635" stroke="#1A2B5C" stroke-width="1" />
+    <line x1="330" y1="125" x2="330" y2="635" stroke="#1A2B5C" stroke-width="1" />
+    <line x1="360" y1="130" x2="360" y2="635" stroke="#1A2B5C" stroke-width="1" />
+    <line x1="390" y1="135" x2="390" y2="635" stroke="#1A2B5C" stroke-width="1" />
+    <line x1="420" y1="140" x2="420" y2="635" stroke="#1A2B5C" stroke-width="1" />
+  </g>
+
+  <!-- ─── PLACEMENT SLOTS ─────────────────────────────────────────────── -->
+  <!--
+    Each slot is an invisible <rect> that defines bounds. The renderer
+    reads x/y/width/height and centers content inside.
+  -->
+
+  <!-- Wordmark slot (large script across the chest) -->
+  <rect
+    id="slot-jersey-front-center"
+    x="180" y="260" width="240" height="80"
+    fill="none" pointer-events="none"
+  />
+
+  <!-- Lower-left chest patch slot -->
+  <rect
+    id="slot-jersey-front-lower-left"
+    x="190" y="380" width="80" height="80"
+    fill="none" pointer-events="none"
+  />
+
+  <!-- Optional large body graphic (e.g. Louisiana silhouette in the throwback) -->
+  <rect
+    id="slot-jersey-front-body-graphic"
+    x="220" y="430" width="160" height="140"
+    fill="none" pointer-events="none"
+  />
+</svg>
