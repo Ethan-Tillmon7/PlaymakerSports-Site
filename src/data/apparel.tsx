@@ -166,3 +166,9 @@ export const alsoAvailable: AlsoAvailableItem[] = [
     ),
   },
 ];
+
+export const JERSEY_STYLE_OPTIONS = jerseyCards.map((c) => c.name);
+// ['The Slugger', 'The Signal', 'The Captain', 'The Acadian']
+
+export const JERSEY_SIZES = ['YS', 'YM', 'YL', 'AS', 'AM', 'AL', 'AXL', 'A2XL', 'A3XL'] as const;
+export type JerseySize = (typeof JERSEY_SIZES)[number];
