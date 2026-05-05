@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { contact } from '../../data/contact';
 
 export function Footer() {
   return (
@@ -64,7 +65,16 @@ export function Footer() {
           <div className="flex gap-6">
             <Link to="/faq" className="hover:text-white">Privacy</Link>
             <Link to="/faq" className="hover:text-white">Terms</Link>
-            <a href="#" className="hover:text-white">Instagram ↗</a>
+            {contact.instagram && (
+              <a
+                href={`https://www.instagram.com/${contact.instagram}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-white"
+              >
+                Instagram ↗
+              </a>
+            )}
           </div>
         </div>
       </div>

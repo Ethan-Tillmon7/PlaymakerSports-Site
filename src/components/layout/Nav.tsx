@@ -63,12 +63,12 @@ export function Nav() {
 
         {/* Right — contact CTA */}
         <div className="flex-1 flex items-center justify-end">
-          <a
-            href="/about"
+          <Link
+            to="/about"
             className="font-display uppercase text-[13px] lg:text-[14px] tracking-[0.04em] bg-pm-yellow text-pm-black px-4 lg:px-5 h-9 inline-flex items-center justify-center hover:bg-pm-yellow-deep transition-colors duration-150 border-b-2 border-pm-yellow-deep hover:border-pm-black rounded-xl whitespace-nowrap"
           >
             Contact
-          </a>
+          </Link>
         </div>
 
       </nav>

@@ -5,6 +5,7 @@ import { DiamondMarkSymbol } from './DiamondMark';
 import { AnnouncementBar } from './AnnouncementBar';
 import { JsonLd } from '../../seo/JsonLd';
 import { SITE_URL } from '../../seo/config';
+import { contact } from '../../data/contact';
 
 const BREADCRUMB_PATHS: Record<string, string> = {
   Events: '/events',
@@ -25,7 +26,7 @@ const orgSchema = {
     addressRegion: 'LA',
     addressCountry: 'US',
   },
-  sameAs: ['https://www.instagram.com/PLACEHOLDER'],
+  sameAs: contact.instagram ? [`https://www.instagram.com/${contact.instagram}`] : [],
 };
 
 interface PageLayoutProps {
