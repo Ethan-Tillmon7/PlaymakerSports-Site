@@ -39,7 +39,7 @@ export const handler: Handler = async () => {
         sku: String(row[0] ?? ''),
         category: toCategory(String(row[1] ?? '')),
         teamId: row[2] ? String(row[2]) : null,
-        displayName: String(row[3] ?? ''),
+        displayName: String(row[3] ?? '').replace(/\s*jersey\s*/gi, ' ').trim(),
         description: String(row[4] ?? ''),
         basePrice: row[5] !== '' && row[5] != null ? Number(row[5]) : null,
         sizesAvailable: row[6] ? String(row[6]).split(',').map((s) => s.trim()).filter(Boolean) : [],
