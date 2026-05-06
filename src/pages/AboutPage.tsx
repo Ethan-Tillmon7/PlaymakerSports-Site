@@ -6,8 +6,6 @@ import { contact } from '../data/contact';
 import { useInView } from '../hooks/useInView';
 
 const values = [
-  { stat: '7-day', label: 'Turnaround' },
-  { stat: '12-piece', label: 'Minimum order' },
   { stat: 'Acadiana', label: 'Based & fielded' },
   { stat: '6U–14U', label: 'Divisions covered' },
 ];
@@ -31,9 +29,9 @@ export function AboutPage() {
 
       {/* ── PAGE HEADER ── */}
       <header className="border-b border-pm-rule">
-        <div className="max-w-[1480px] mx-auto px-6 sm:px-10 pt-10 pb-16 lg:pt-16 lg:pb-20 animate-fade-up">
+        <div className="max-w-[1480px] mx-auto px-6 sm:px-10 pt-6 pb-8 animate-fade-up">
           <span className="font-mono text-[11px] tracking-[0.16em] uppercase text-pm-yellow-deep">Built in Lafayette</span>
-          <h1 className="font-display uppercase text-[clamp(56px,9vw,160px)] leading-[0.86] tracking-[-0.005em] text-pm-black mt-6">
+          <h1 className="font-display uppercase text-[clamp(36px,5vw,56px)] leading-[0.86] tracking-[-0.005em] text-pm-black mt-4">
             About<br />Playmaker
           </h1>
         </div>

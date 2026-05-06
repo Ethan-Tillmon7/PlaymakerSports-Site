@@ -77,14 +77,11 @@ export function EventsPage() {
       </Helmet>
 
       <header className="border-b border-pm-rule">
-        <div className="max-w-[1480px] mx-auto px-6 sm:px-10 pt-10 pb-16 lg:pt-16 lg:pb-20 animate-fade-up">
+        <div className="max-w-[1480px] mx-auto px-6 sm:px-10 pt-6 pb-8 animate-fade-up">
           <span className="font-mono text-[11px] tracking-[0.16em] uppercase text-pm-yellow-deep">Tournaments · Acadiana</span>
-          <h1 className="font-display uppercase text-[clamp(56px,9vw,160px)] leading-[0.86] tracking-[-0.005em] text-pm-black mt-6">
+          <h1 className="font-display uppercase text-[clamp(36px,5vw,56px)] leading-[0.86] tracking-[-0.005em] text-pm-black mt-4">
             Events &amp;<br />Tournaments
           </h1>
-          <p className="text-[clamp(16px,1.4vw,18px)] leading-[1.6] text-pm-ink mt-6 max-w-[520px]">
-            Upcoming tournament schedule with dates, locations, and division info.
-          </p>
         </div>
       </header>
 
