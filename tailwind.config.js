@@ -23,6 +23,20 @@ export default {
         sans:    ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
         mono:    ['"JetBrains Mono"', 'monospace'],
       },
+      keyframes: {
+        fadeUp: {
+          '0%':   { opacity: '0', transform: 'translateY(20px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+        fadeIn: {
+          '0%':   { opacity: '0' },
+          '100%': { opacity: '1' },
+        },
+      },
+      animation: {
+        'fade-up': 'fadeUp 0.5s ease-out both',
+        'fade-in': 'fadeIn 0.4s ease-out both',
+      },
     },
   },
   plugins: [],

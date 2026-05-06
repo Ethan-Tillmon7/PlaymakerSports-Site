@@ -1,3 +1,5 @@
+import type { CSSProperties } from 'react';
+
 export function DiamondMarkSymbol() {
   return (
     <svg width="0" height="0" style={{ position: 'absolute' }} aria-hidden="true">
@@ -22,11 +24,12 @@ export function DiamondMarkSymbol() {
 
 interface DiamondProps {
   className?: string;
+  style?: CSSProperties;
 }
 
-export function Diamond({ className = 'w-7 h-7' }: DiamondProps) {
+export function Diamond({ className = 'w-7 h-7', style }: DiamondProps) {
   return (
-    <svg className={className}>
+    <svg className={className} style={style}>
       <use href="#pm-diamond" />
     </svg>
   );

@@ -5,6 +5,7 @@ import { Diamond } from '../components/layout/DiamondMark';
 import { tournaments } from '../data/events';
 import type { Tournament } from '../data/events';
 import { PAGE_META, SITE_URL } from '../seo/config';
+import { useInView } from '../hooks/useInView';
 
 function StatusPill({ status, text }: { status: Tournament['status']; text: string }) {
   if (status === 'open') return (
@@ -25,6 +26,11 @@ function StatusPill({ status, text }: { status: Tournament['status']; text: stri
 }
 
 export function HomePage() {
+  const [servicesRef, servicesInView] = useInView();
+  const [eventsRef, eventsInView] = useInView();
+  const [apparelRef, apparelInView] = useInView();
+  const [ctaRef, ctaInView] = useInView();
+
   return (
     <PageLayout>
       <Helmet>
@@ -66,9 +72,9 @@ export function HomePage() {
         {/* Centered hero content */}
         <div className="relative max-w-[1480px] mx-auto px-6 sm:px-10 pt-14 pb-20 lg:pt-16 lg:pb-28 flex flex-col items-center text-center">
 
-          <Diamond className="w-7 h-7 text-pm-yellow shrink-0 mb-8" />
+          <Diamond className="w-7 h-7 text-pm-yellow shrink-0 mb-8 animate-fade-up" style={{ animationDelay: '0ms' }} />
 
-          <h1 className="font-display uppercase leading-[0.84] tracking-[-0.005em] text-white m-0">
+          <h1 className="font-display uppercase leading-[0.84] tracking-[-0.005em] text-white m-0 animate-fade-up" style={{ animationDelay: '100ms' }}>
             <span className="block text-[clamp(76px,14.5vw,232px)]">
               <span className="inline-block bg-pm-yellow px-[0.10em] pb-[0.04em] rounded-lg">
                 <span className="text-white">PLAY</span><span className="text-pm-black">MAKER</span>
@@ -83,20 +89,20 @@ export function HomePage() {
             </span>
           </h1>
 
-          <p className="text-[clamp(17px,1.6vw,21px)] leading-[1.5] text-white/50 max-w-[560px] mt-8">
+          <p className="text-[clamp(17px,1.6vw,21px)] leading-[1.5] text-white/50 max-w-[560px] mt-8 animate-fade-up" style={{ animationDelay: '220ms' }}>
             Built for the Saturday lineup card. We host the tournaments your kids want to play in — and outfit the teams who show up to win them.
           </p>
 
-          <div className="flex flex-wrap items-center justify-center gap-4 mt-10">
-            <Link to="/events" className="font-display uppercase text-[18px] tracking-[0.04em] bg-pm-yellow text-pm-black px-7 h-12 inline-flex items-center justify-center hover:bg-pm-yellow-deep transition-colors duration-150 border-b-2 border-pm-yellow-deep hover:border-pm-black rounded-xl">
+          <div className="flex flex-wrap items-center justify-center gap-4 mt-10 animate-fade-up" style={{ animationDelay: '360ms' }}>
+            <Link to="/events" className="font-display uppercase text-[18px] tracking-[0.04em] bg-pm-yellow text-pm-black px-7 h-12 inline-flex items-center justify-center hover:bg-pm-yellow-deep transition-[colors,transform] duration-150 active:scale-[0.97] border-b-2 border-pm-yellow-deep hover:border-pm-black rounded-xl">
               View events
             </Link>
-            <Link to="/apparel" className="font-display uppercase text-[18px] tracking-[0.04em] bg-transparent text-white px-7 h-12 inline-flex items-center justify-center hover:bg-white/10 transition-colors duration-150 border-b-2 border-white/30 hover:border-white/60 rounded-xl">
+            <Link to="/apparel" className="font-display uppercase text-[18px] tracking-[0.04em] bg-transparent text-white px-7 h-12 inline-flex items-center justify-center hover:bg-white/10 transition-[colors,transform] duration-150 active:scale-[0.97] border-b-2 border-white/30 hover:border-white/60 rounded-xl">
               Shop apparel
             </Link>
           </div>
 
-          <div className="mt-8 font-mono text-[10.5px] tracking-[0.08em] uppercase text-white/30">
+          <div className="mt-8 font-mono text-[10.5px] tracking-[0.08em] uppercase text-white/30 animate-fade-up" style={{ animationDelay: '460ms' }}>
             <Link to="/events" className="text-white/40 hover:text-white/70 underline underline-offset-4 decoration-white/20 transition-colors duration-150">
               View full schedule
             </Link>
@@ -122,111 +128,116 @@ export function HomePage() {
 
       {/* ── SERVICES ── */}
       <section className="max-w-[1480px] mx-auto px-6 sm:px-10 py-16">
-        <div className="grid grid-cols-1 lg:grid-cols-[80px_1fr] gap-6 lg:gap-8 items-baseline border-t border-pm-black pt-6 mb-8">
-          <div className="font-mono text-[12px] tracking-[0.1em] text-pm-muted pt-1.5">02 / What we do</div>
-          <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4">
-            <h2 className="font-display uppercase text-[clamp(32px,4.5vw,56px)] leading-[0.95] tracking-[0.005em] m-0 max-w-[820px]">
-              Two things,<br />done for the <span className="bg-pm-yellow px-2 rounded-md">parish</span>.
-            </h2>
-            <p className="text-[15px] leading-[1.55] text-pm-muted max-w-[360px]">
-              No upsells, no spreadsheet portals. Just tournaments parents want to drive to and uniforms that show up before opening day.
-            </p>
+        <div ref={servicesRef}>
+          <div className={`grid grid-cols-1 lg:grid-cols-[80px_1fr] gap-6 lg:gap-8 items-baseline border-t border-pm-black pt-6 mb-8 ${servicesInView ? 'animate-fade-up' : 'opacity-0'}`}>
+            <div className="font-mono text-[12px] tracking-[0.1em] text-pm-muted pt-1.5">02 / What we do</div>
+            <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+              <h2 className="font-display uppercase text-[clamp(32px,4.5vw,56px)] leading-[0.95] tracking-[0.005em] m-0 max-w-[820px]">
+                Two things,<br />done for the <span className="bg-pm-yellow px-2 rounded-md">parish</span>.
+              </h2>
+              <p className="text-[15px] leading-[1.55] text-pm-muted max-w-[360px]">
+                No upsells, no spreadsheet portals. Just tournaments parents want to drive to and uniforms that show up before opening day.
+              </p>
+            </div>
           </div>
-        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <article className="group bg-white border border-pm-rule hover:border-pm-black transition-colors flex flex-col rounded-xl overflow-hidden">
-            <div className="aspect-[2/1] img-stripe relative border-b border-pm-rule group-hover:border-pm-black transition-colors flex items-end justify-between p-4">
-              <span className="font-mono text-[10px] tracking-[0.1em] uppercase text-pm-muted bg-white/80 px-2 py-1">[ image · field at golden hour ]</span>
-              <span className="font-mono text-[10px] tracking-[0.1em] uppercase bg-pm-yellow text-pm-black px-2 py-1">01</span>
-            </div>
-            <div className="p-5 flex flex-col flex-1">
-              <span className="font-mono text-[10.5px] tracking-[0.1em] uppercase text-pm-muted">Weekend tournaments</span>
-              <h3 className="font-display uppercase text-[20px] lg:text-[24px] leading-[0.95] tracking-[0.005em] mt-3 text-pm-black">
-                Tournaments that run on time.
-              </h3>
-              <p className="text-[14px] leading-[1.6] text-pm-ink mt-3 max-w-[440px]">
-                Three-game guarantees, real umpires, brackets posted on time. We handle pool play, fields, and the trophy that ends up on a kid's dresser.
-              </p>
-              <ul className="mt-4 grid grid-cols-2 gap-y-2 gap-x-6 font-mono text-[11px] tracking-[0.06em] uppercase text-pm-muted">
-                <li>• 6U through 14U</li>
-                <li>• Coach &amp; kid pitch</li>
-                <li>• Acadiana &amp; Gulf Coast</li>
-                <li>• Insured &amp; sanctioned</li>
-              </ul>
-              <Link to="/events" className="font-display uppercase text-[15px] tracking-[0.04em] text-pm-black border-b-2 border-pm-yellow self-start mt-6 group-hover:border-pm-black transition-colors">
-                See the schedule
-              </Link>
-            </div>
-          </article>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <article className={`group bg-white border border-pm-rule hover:border-pm-black transition-colors flex flex-col rounded-xl overflow-hidden ${servicesInView ? 'animate-fade-up' : 'opacity-0'}`} style={{ animationDelay: '100ms' }}>
+              <div className="aspect-[2/1] img-stripe relative border-b border-pm-rule group-hover:border-pm-black transition-colors flex items-end justify-between p-4">
+                <span className="font-mono text-[10px] tracking-[0.1em] uppercase text-pm-muted bg-white/80 px-2 py-1">[ image · field at golden hour ]</span>
+                <span className="font-mono text-[10px] tracking-[0.1em] uppercase bg-pm-yellow text-pm-black px-2 py-1">01</span>
+              </div>
+              <div className="p-5 flex flex-col flex-1">
+                <span className="font-mono text-[10.5px] tracking-[0.1em] uppercase text-pm-muted">Weekend tournaments</span>
+                <h3 className="font-display uppercase text-[20px] lg:text-[24px] leading-[0.95] tracking-[0.005em] mt-3 text-pm-black">
+                  Tournaments that run on time.
+                </h3>
+                <p className="text-[14px] leading-[1.6] text-pm-ink mt-3 max-w-[440px]">
+                  Three-game guarantees, real umpires, brackets posted on time. We handle pool play, fields, and the trophy that ends up on a kid's dresser.
+                </p>
+                <ul className="mt-4 grid grid-cols-2 gap-y-2 gap-x-6 font-mono text-[11px] tracking-[0.06em] uppercase text-pm-muted">
+                  <li>• 6U through 14U</li>
+                  <li>• Coach &amp; kid pitch</li>
+                  <li>• Acadiana &amp; Gulf Coast</li>
+                  <li>• Insured &amp; sanctioned</li>
+                </ul>
+                <Link to="/events" className="font-display uppercase text-[15px] tracking-[0.04em] text-pm-black border-b-2 border-pm-yellow self-start mt-6 group-hover:border-pm-black transition-colors">
+                  See the schedule
+                </Link>
+              </div>
+            </article>
 
-          <article className="group bg-white border border-pm-rule hover:border-pm-black transition-colors flex flex-col rounded-xl overflow-hidden">
-            <div className="aspect-[2/1] img-stripe-warm relative border-b border-pm-rule group-hover:border-pm-black transition-colors flex items-end justify-between p-4">
-              <span className="font-mono text-[10px] tracking-[0.1em] uppercase text-pm-black/70 bg-white/80 px-2 py-1">[ image · jersey flat lay ]</span>
-              <span className="font-mono text-[10px] tracking-[0.1em] uppercase bg-pm-black text-white px-2 py-1">02</span>
-            </div>
-            <div className="p-5 flex flex-col flex-1">
-              <span className="font-mono text-[10.5px] tracking-[0.1em] uppercase text-pm-muted">Custom apparel</span>
-              <h3 className="font-display uppercase text-[20px] lg:text-[24px] leading-[0.95] tracking-[0.005em] mt-3 text-pm-black">
-                Uniforms that beat opening day.
-              </h3>
-              <p className="text-[14px] leading-[1.6] text-pm-ink mt-3 max-w-[440px]">
-                Jerseys, caps, pants, and patches — designed with you, printed locally, and shipped to the dugout in seven business days.
-              </p>
-              <ul className="mt-4 grid grid-cols-2 gap-y-2 gap-x-6 font-mono text-[11px] tracking-[0.06em] uppercase text-pm-muted">
-                <li>• Sublimated &amp; tackle-twill</li>
-                <li>• Numbers &amp; names included</li>
-                <li>• 7-day turnaround</li>
-                <li>• YS through Adult 3XL</li>
-              </ul>
-              <Link to="/apparel" className="font-display uppercase text-[15px] tracking-[0.04em] text-pm-black border-b-2 border-pm-yellow self-start mt-6 group-hover:border-pm-black transition-colors">
-                Start an order
-              </Link>
-            </div>
-          </article>
+            <article className={`group bg-white border border-pm-rule hover:border-pm-black transition-colors flex flex-col rounded-xl overflow-hidden ${servicesInView ? 'animate-fade-up' : 'opacity-0'}`} style={{ animationDelay: '180ms' }}>
+              <div className="aspect-[2/1] img-stripe-warm relative border-b border-pm-rule group-hover:border-pm-black transition-colors flex items-end justify-between p-4">
+                <span className="font-mono text-[10px] tracking-[0.1em] uppercase text-pm-black/70 bg-white/80 px-2 py-1">[ image · jersey flat lay ]</span>
+                <span className="font-mono text-[10px] tracking-[0.1em] uppercase bg-pm-black text-white px-2 py-1">02</span>
+              </div>
+              <div className="p-5 flex flex-col flex-1">
+                <span className="font-mono text-[10.5px] tracking-[0.1em] uppercase text-pm-muted">Custom apparel</span>
+                <h3 className="font-display uppercase text-[20px] lg:text-[24px] leading-[0.95] tracking-[0.005em] mt-3 text-pm-black">
+                  Uniforms that beat opening day.
+                </h3>
+                <p className="text-[14px] leading-[1.6] text-pm-ink mt-3 max-w-[440px]">
+                  Jerseys, caps, pants, and patches — designed with you, printed locally, and shipped to the dugout in seven business days.
+                </p>
+                <ul className="mt-4 grid grid-cols-2 gap-y-2 gap-x-6 font-mono text-[11px] tracking-[0.06em] uppercase text-pm-muted">
+                  <li>• Sublimated &amp; tackle-twill</li>
+                  <li>• Numbers &amp; names included</li>
+                  <li>• 7-day turnaround</li>
+                  <li>• YS through Adult 3XL</li>
+                </ul>
+                <Link to="/apparel" className="font-display uppercase text-[15px] tracking-[0.04em] text-pm-black border-b-2 border-pm-yellow self-start mt-6 group-hover:border-pm-black transition-colors">
+                  Start an order
+                </Link>
+              </div>
+            </article>
+          </div>
         </div>
       </section>
 
       {/* ── UPCOMING EVENTS ── */}
       <section className="bg-pm-paper-2 border-y border-pm-rule">
         <div className="max-w-[1480px] mx-auto px-6 sm:px-10 py-16">
-          <div className="grid grid-cols-1 lg:grid-cols-[80px_1fr] gap-6 lg:gap-8 items-baseline border-t border-pm-black pt-6 mb-8">
-            <div className="font-mono text-[12px] tracking-[0.1em] text-pm-muted pt-1.5">03 / Upcoming</div>
-            <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4">
-              <h2 className="font-display uppercase text-[clamp(32px,4.5vw,56px)] leading-[0.95] tracking-[0.005em] m-0">Upcoming Events</h2>
-              <Link to="/events" className="font-mono text-[11px] tracking-[0.1em] uppercase text-pm-ink border-b-2 border-pm-yellow pb-1 hover:border-pm-black self-start">
-                Full schedule
-              </Link>
+          <div ref={eventsRef}>
+            <div className={`grid grid-cols-1 lg:grid-cols-[80px_1fr] gap-6 lg:gap-8 items-baseline border-t border-pm-black pt-6 mb-8 ${eventsInView ? 'animate-fade-up' : 'opacity-0'}`}>
+              <div className="font-mono text-[12px] tracking-[0.1em] text-pm-muted pt-1.5">03 / Upcoming</div>
+              <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+                <h2 className="font-display uppercase text-[clamp(32px,4.5vw,56px)] leading-[0.95] tracking-[0.005em] m-0">Upcoming Events</h2>
+                <Link to="/events" className="font-mono text-[11px] tracking-[0.1em] uppercase text-pm-ink border-b-2 border-pm-yellow pb-1 hover:border-pm-black self-start">
+                  Full schedule
+                </Link>
+              </div>
             </div>
-          </div>
 
-          <div className="bg-white border border-pm-black rounded-xl overflow-hidden">
-            {tournaments.map((t, i) => (
-              <Link
-                key={t.name}
-                to="/events"
-                className={`group grid grid-cols-[56px_1fr] sm:grid-cols-[72px_1fr_auto] items-center gap-4 sm:gap-6 px-4 sm:px-5 py-4 hover:bg-pm-paper-2 transition-colors ${i < tournaments.length - 1 ? 'border-b border-pm-rule' : ''}`}
-              >
-                <div className="bg-pm-yellow text-pm-black aspect-square flex flex-col items-center justify-center leading-none border-b-2 border-pm-yellow-deep group-hover:border-pm-black rounded-lg">
-                  <span className="font-mono text-[9px] tracking-[0.12em] uppercase">{t.month}</span>
-                  <span className="font-display text-[24px] sm:text-[28px] mt-0.5">{t.day}</span>
-                </div>
-                <div className="min-w-0">
-                  <h3 className="font-display uppercase text-[17px] sm:text-[20px] leading-[0.95] tracking-[0.005em] text-pm-black">{t.name}</h3>
-                  <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1.5 font-mono text-[11px] tracking-[0.06em] uppercase text-pm-muted">
-                    <span>{t.location}</span><span className="text-pm-rule">·</span>
-                    <span>{t.division}</span><span className="text-pm-rule">·</span>
-                    <span>{t.games}</span>
+            <div className="bg-white border border-pm-black rounded-xl overflow-hidden">
+              {tournaments.map((t, i) => (
+                <Link
+                  key={t.name}
+                  to="/events"
+                  className={`group grid grid-cols-[56px_1fr] sm:grid-cols-[72px_1fr_auto] items-center gap-4 sm:gap-6 px-4 sm:px-5 py-4 hover:bg-pm-paper-2 hover:-translate-y-0.5 transition-[colors,transform] ${i < tournaments.length - 1 ? 'border-b border-pm-rule' : ''} ${eventsInView ? 'animate-fade-up' : 'opacity-0'}`}
+                  style={{ animationDelay: `${(i + 1) * 80}ms` }}
+                >
+                  <div className="bg-pm-yellow text-pm-black aspect-square flex flex-col items-center justify-center leading-none border-b-2 border-pm-yellow-deep group-hover:border-pm-black rounded-lg">
+                    <span className="font-mono text-[9px] tracking-[0.12em] uppercase">{t.month}</span>
+                    <span className="font-display text-[24px] sm:text-[28px] mt-0.5">{t.day}</span>
                   </div>
-                </div>
-                <div className="hidden sm:flex items-center gap-4 col-start-3">
-                  <StatusPill status={t.status} text={t.spotsText} />
-                  <span className="font-display uppercase text-[15px] tracking-[0.04em] text-pm-black border-b-2 border-pm-yellow group-hover:border-pm-black">
-                    Details
-                  </span>
-                </div>
-              </Link>
-            ))}
+                  <div className="min-w-0">
+                    <h3 className="font-display uppercase text-[17px] sm:text-[20px] leading-[0.95] tracking-[0.005em] text-pm-black">{t.name}</h3>
+                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1.5 font-mono text-[11px] tracking-[0.06em] uppercase text-pm-muted">
+                      <span>{t.location}</span><span className="text-pm-rule">·</span>
+                      <span>{t.division}</span><span className="text-pm-rule">·</span>
+                      <span>{t.games}</span>
+                    </div>
+                  </div>
+                  <div className="hidden sm:flex items-center gap-4 col-start-3">
+                    <StatusPill status={t.status} text={t.spotsText} />
+                    <span className="font-display uppercase text-[15px] tracking-[0.04em] text-pm-black border-b-2 border-pm-yellow group-hover:border-pm-black">
+                      Details
+                    </span>
+                  </div>
+                </Link>
+              ))}
+            </div>
           </div>
         </div>
       </section>
@@ -234,47 +245,49 @@ export function HomePage() {
       {/* ── APPAREL TEASER ── */}
       <section className="bg-pm-black text-white">
         <div className="max-w-[1480px] mx-auto px-6 sm:px-10 py-16">
-          <div className="grid grid-cols-1 lg:grid-cols-[80px_1fr] gap-6 lg:gap-8 items-baseline border-t border-white/30 pt-6 mb-8">
-            <div className="font-mono text-[12px] tracking-[0.1em] text-pm-yellow pt-1.5">04 / Apparel</div>
-            <h2 className="font-display uppercase text-[clamp(36px,5.5vw,80px)] leading-[0.92] tracking-[0.005em] m-0 text-white max-w-[1000px]">
-              Custom uniforms.<br />Shipped to the dugout.
-            </h2>
-          </div>
+          <div ref={apparelRef}>
+            <div className={`grid grid-cols-1 lg:grid-cols-[80px_1fr] gap-6 lg:gap-8 items-baseline border-t border-white/30 pt-6 mb-8 ${apparelInView ? 'animate-fade-up' : 'opacity-0'}`}>
+              <div className="font-mono text-[12px] tracking-[0.1em] text-pm-yellow pt-1.5">04 / Apparel</div>
+              <h2 className="font-display uppercase text-[clamp(36px,5.5vw,80px)] leading-[0.92] tracking-[0.005em] m-0 text-white max-w-[1000px]">
+                Custom uniforms.<br />Shipped to the dugout.
+              </h2>
+            </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-10 lg:gap-16 items-end">
-            <p className="text-[clamp(15px,1.4vw,18px)] leading-[1.55] text-white/75 max-w-[600px]">
-              Pick a base, drop your wordmark, choose numbers and names. We send proofs the same day, print locally, and ship to the field in seven business days.
-            </p>
-            <div className="flex flex-wrap items-center gap-4">
-              <Link to="/apparel" className="font-display uppercase text-[16px] tracking-[0.04em] bg-pm-yellow text-pm-black px-6 h-11 inline-flex items-center justify-center hover:bg-white transition-colors border-b-2 border-pm-yellow-deep hover:border-pm-yellow-deep rounded-xl">
-                Browse jerseys
-              </Link>
-              <Link to="/about" className="font-display uppercase text-[16px] tracking-[0.04em] bg-transparent text-white px-6 h-11 inline-flex items-center justify-center border-b-2 border-pm-yellow hover:bg-white/5 rounded-xl">
-                Get a quote
-              </Link>
+            <div className={`grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-10 lg:gap-16 items-end ${apparelInView ? 'animate-fade-up' : 'opacity-0'}`} style={{ animationDelay: '100ms' }}>
+              <p className="text-[clamp(15px,1.4vw,18px)] leading-[1.55] text-white/75 max-w-[600px]">
+                Pick a base, drop your wordmark, choose numbers and names. We send proofs the same day, print locally, and ship to the field in seven business days.
+              </p>
+              <div className="flex flex-wrap items-center gap-4">
+                <Link to="/apparel" className="font-display uppercase text-[16px] tracking-[0.04em] bg-pm-yellow text-pm-black px-6 h-11 inline-flex items-center justify-center hover:bg-white transition-colors border-b-2 border-pm-yellow-deep hover:border-pm-yellow-deep rounded-xl">
+                  Browse jerseys
+                </Link>
+                <Link to="/about" className="font-display uppercase text-[16px] tracking-[0.04em] bg-transparent text-white px-6 h-11 inline-flex items-center justify-center border-b-2 border-pm-yellow hover:bg-white/5 rounded-xl">
+                  Get a quote
+                </Link>
+              </div>
             </div>
-          </div>
 
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-12">
-            <div className="aspect-[3/4] bg-white relative rounded-lg overflow-hidden">
-              <div className="absolute inset-0 img-stripe" />
-              <div className="absolute bottom-3 left-3 font-mono text-[10px] tracking-[0.1em] uppercase text-pm-muted bg-white px-2 py-1 rounded-md">[ home jersey ]</div>
-              <div className="absolute top-3 right-3 font-display text-[40px] leading-none text-pm-black/15">07</div>
-            </div>
-            <div className="aspect-[3/4] bg-pm-yellow relative rounded-lg overflow-hidden">
-              <div className="absolute inset-0 img-stripe-warm" />
-              <div className="absolute bottom-3 left-3 font-mono text-[10px] tracking-[0.1em] uppercase text-pm-black bg-white px-2 py-1 rounded-md">[ road jersey ]</div>
-              <div className="absolute top-3 right-3 font-display text-[40px] leading-none text-pm-black/30">12</div>
-            </div>
-            <div className="aspect-[3/4] bg-pm-navy relative overflow-hidden rounded-lg">
-              <div className="absolute inset-0" style={{ backgroundImage: 'repeating-linear-gradient(135deg, rgba(255,255,255,0.06) 0px, rgba(255,255,255,0.06) 1px, transparent 1px, transparent 9px)' }} />
-              <div className="absolute bottom-3 left-3 font-mono text-[10px] tracking-[0.1em] uppercase text-pm-black bg-pm-yellow px-2 py-1 rounded-md">[ alternate ]</div>
-              <div className="absolute top-3 right-3 font-display text-[40px] leading-none text-white/25">23</div>
-            </div>
-            <div className="aspect-[3/4] bg-pm-cream relative rounded-lg overflow-hidden">
-              <div className="absolute inset-0 img-stripe" />
-              <div className="absolute bottom-3 left-3 font-mono text-[10px] tracking-[0.1em] uppercase text-pm-black bg-white px-2 py-1 rounded-md">[ throwback ]</div>
-              <div className="absolute top-3 right-3 font-display text-[40px] leading-none text-pm-black/20">42</div>
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-12">
+              <div className={`aspect-[3/4] bg-white relative rounded-lg overflow-hidden ${apparelInView ? 'animate-fade-up' : 'opacity-0'}`} style={{ animationDelay: '200ms' }}>
+                <div className="absolute inset-0 img-stripe" />
+                <div className="absolute bottom-3 left-3 font-mono text-[10px] tracking-[0.1em] uppercase text-pm-muted bg-white px-2 py-1 rounded-md">[ home jersey ]</div>
+                <div className="absolute top-3 right-3 font-display text-[40px] leading-none text-pm-black/15">07</div>
+              </div>
+              <div className={`aspect-[3/4] bg-pm-yellow relative rounded-lg overflow-hidden ${apparelInView ? 'animate-fade-up' : 'opacity-0'}`} style={{ animationDelay: '280ms' }}>
+                <div className="absolute inset-0 img-stripe-warm" />
+                <div className="absolute bottom-3 left-3 font-mono text-[10px] tracking-[0.1em] uppercase text-pm-black bg-white px-2 py-1 rounded-md">[ road jersey ]</div>
+                <div className="absolute top-3 right-3 font-display text-[40px] leading-none text-pm-black/30">12</div>
+              </div>
+              <div className={`aspect-[3/4] bg-pm-navy relative overflow-hidden rounded-lg ${apparelInView ? 'animate-fade-up' : 'opacity-0'}`} style={{ animationDelay: '360ms' }}>
+                <div className="absolute inset-0" style={{ backgroundImage: 'repeating-linear-gradient(135deg, rgba(255,255,255,0.06) 0px, rgba(255,255,255,0.06) 1px, transparent 1px, transparent 9px)' }} />
+                <div className="absolute bottom-3 left-3 font-mono text-[10px] tracking-[0.1em] uppercase text-pm-black bg-pm-yellow px-2 py-1 rounded-md">[ alternate ]</div>
+                <div className="absolute top-3 right-3 font-display text-[40px] leading-none text-white/25">23</div>
+              </div>
+              <div className={`aspect-[3/4] bg-pm-cream relative rounded-lg overflow-hidden ${apparelInView ? 'animate-fade-up' : 'opacity-0'}`} style={{ animationDelay: '440ms' }}>
+                <div className="absolute inset-0 img-stripe" />
+                <div className="absolute bottom-3 left-3 font-mono text-[10px] tracking-[0.1em] uppercase text-pm-black bg-white px-2 py-1 rounded-md">[ throwback ]</div>
+                <div className="absolute top-3 right-3 font-display text-[40px] leading-none text-pm-black/20">42</div>
+              </div>
             </div>
           </div>
         </div>
@@ -282,7 +295,7 @@ export function HomePage() {
 
       {/* ── CTA BAND ── */}
       <section className="bg-pm-yellow border-y border-pm-black">
-        <div className="max-w-[1480px] mx-auto px-6 sm:px-10 py-16 lg:py-20 grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-8 items-center">
+        <div ref={ctaRef} className={`max-w-[1480px] mx-auto px-6 sm:px-10 py-16 lg:py-20 grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-8 items-center ${ctaInView ? 'animate-fade-up' : 'opacity-0'}`}>
           <div>
             <span className="font-mono text-[11px] tracking-[0.1em] uppercase text-pm-black/70">Get on the schedule</span>
             <h2 className="font-display uppercase text-[clamp(44px,6vw,96px)] leading-[0.88] tracking-[0.005em] mt-3 text-pm-black">
@@ -290,10 +303,10 @@ export function HomePage() {
             </h2>
           </div>
           <div className="flex flex-wrap items-center gap-4">
-            <Link to="/events" className="font-display uppercase text-[17px] tracking-[0.04em] bg-pm-black text-white px-7 h-12 inline-flex items-center justify-center hover:bg-pm-ink transition-colors border-b-2 border-black/40 hover:border-white rounded-xl">
+            <Link to="/events" className="font-display uppercase text-[17px] tracking-[0.04em] bg-pm-black text-white px-7 h-12 inline-flex items-center justify-center hover:bg-pm-ink transition-[colors,transform] duration-150 active:scale-[0.97] border-b-2 border-black/40 hover:border-white rounded-xl">
               View events
             </Link>
-            <Link to="/apparel" className="font-display uppercase text-[17px] tracking-[0.04em] bg-transparent text-pm-black px-7 h-12 inline-flex items-center justify-center border-b-2 border-pm-black hover:bg-pm-black hover:text-pm-yellow transition-colors rounded-xl">
+            <Link to="/apparel" className="font-display uppercase text-[17px] tracking-[0.04em] bg-transparent text-pm-black px-7 h-12 inline-flex items-center justify-center border-b-2 border-pm-black hover:bg-pm-black hover:text-pm-yellow transition-[colors,transform] duration-150 active:scale-[0.97] rounded-xl">
               Order apparel
             </Link>
           </div>

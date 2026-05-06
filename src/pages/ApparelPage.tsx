@@ -6,8 +6,14 @@ import type { Swatch } from '../data/apparel';
 import { PAGE_META, SITE_URL } from '../seo/config';
 import { ApparelInquiryForm } from '../components/forms/ApparelInquiryForm';
 import { PlayerUploadForm } from '../components/forms/PlayerUploadForm';
+import { useInView } from '../hooks/useInView';
 
 export function ApparelPage() {
+  const [catalogRef, catalogInView] = useInView();
+  const [processRef, processInView] = useInView();
+  const [orderRef, orderInView] = useInView();
+  const [rosterRef, rosterInView] = useInView();
+
   return (
     <PageLayout breadcrumb="Apparel">
       <Helmet>
@@ -22,7 +28,7 @@ export function ApparelPage() {
 
       {/* ── PAGE HEADER ── */}
       <header className="border-b border-pm-rule">
-        <div className="max-w-[1480px] mx-auto px-6 sm:px-10 pt-10 pb-16 lg:pt-16 lg:pb-20">
+        <div className="max-w-[1480px] mx-auto px-6 sm:px-10 pt-10 pb-16 lg:pt-16 lg:pb-20 animate-fade-up">
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_440px] gap-10 lg:gap-20 items-end">
             <div>
               <span className="font-mono text-[11px] tracking-[0.16em] uppercase text-pm-yellow-deep">Custom uniforms · Acadiana made</span>
@@ -35,10 +41,10 @@ export function ApparelPage() {
                 Pick a base, drop your wordmark, choose numbers and names. Sublimated or tackle-twill, sized YS through Adult 3XL. We send proofs the same day and ship to the dugout in seven business days.
               </p>
               <div className="flex flex-wrap items-center gap-4 mt-7">
-                <a href="#catalog" className="font-display uppercase text-[16px] tracking-[0.04em] bg-pm-yellow text-pm-black px-6 h-11 inline-flex items-center justify-center hover:bg-pm-yellow-deep transition-colors border-b-2 border-pm-yellow-deep hover:border-pm-black rounded-xl">
+                <a href="#catalog" className="font-display uppercase text-[16px] tracking-[0.04em] bg-pm-yellow text-pm-black px-6 h-11 inline-flex items-center justify-center hover:bg-pm-yellow-deep transition-[colors,transform] duration-150 active:scale-[0.97] border-b-2 border-pm-yellow-deep hover:border-pm-black rounded-xl">
                   Browse catalog
                 </a>
-                <a href="#order" className="font-display uppercase text-[16px] tracking-[0.04em] text-pm-black border-b-2 border-pm-black pb-0.5 hover:text-pm-yellow-deep">
+                <a href="#order" className="font-display uppercase text-[16px] tracking-[0.04em] text-pm-black border-b-2 border-pm-black pb-0.5 hover:text-pm-yellow-deep transition-[colors,transform] duration-150 active:scale-[0.97]">
                   Get a quote
                 </a>
               </div>
@@ -87,9 +93,13 @@ export function ApparelPage() {
           <span className="font-mono text-[11px] tracking-[0.1em] uppercase text-pm-muted">04 styles · base price from $48</span>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-14 lg:gap-x-8 lg:gap-y-20">
-          {jerseyCards.map((card) => (
-            <article key={card.sku} className="group flex flex-col">
+        <div ref={catalogRef} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-14 lg:gap-x-8 lg:gap-y-20">
+          {jerseyCards.map((card, i) => (
+            <article
+              key={card.sku}
+              className={`group flex flex-col hover:-translate-y-0.5 transition-transform duration-150 ${catalogInView ? 'animate-fade-up' : 'opacity-0'}`}
+              style={{ animationDelay: `${i * 80}ms` }}
+            >
               <a href="#" className={`block ${card.stage} aspect-[4/5] relative overflow-hidden rounded-xl`}>
                 <div className="absolute top-3 left-3 font-mono text-[10px] tracking-[0.1em] uppercase text-pm-black/60 bg-white/70 px-2 py-1">
                   {card.labelText}
@@ -174,13 +184,15 @@ export function ApparelPage() {
             </div>
           </div>
 
+          <div ref={processRef}>
           <ol className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
-            {processSteps.map((step) => (
+            {processSteps.map((step, i) => (
               <li
                 key={step.num}
                 className={`p-6 flex flex-col border rounded-xl ${
                   step.yellow ? 'bg-pm-yellow border-pm-yellow-deep' : 'bg-white border-pm-rule'
-                }`}
+                } ${processInView ? 'animate-fade-up' : 'opacity-0'}`}
+                style={{ animationDelay: `${i * 80}ms` }}
               >
                 <span className={`font-display text-[44px] leading-none ${step.yellow ? 'text-pm-black' : 'text-pm-yellow-deep'}`}>
                   {step.num}
@@ -195,6 +207,7 @@ export function ApparelPage() {
               </li>
             ))}
           </ol>
+          </div>
         </div>
       </section>
 
@@ -240,10 +253,10 @@ export function ApparelPage() {
             </h2>
           </div>
           <div className="flex flex-wrap items-center gap-4">
-            <a href="#catalog" className="font-display uppercase text-[17px] tracking-[0.04em] bg-pm-black text-white px-7 h-12 inline-flex items-center justify-center hover:bg-pm-ink transition-colors border-b-2 border-black/40 hover:border-white rounded-xl">
+            <a href="#catalog" className="font-display uppercase text-[17px] tracking-[0.04em] bg-pm-black text-white px-7 h-12 inline-flex items-center justify-center hover:bg-pm-ink transition-[colors,transform] duration-150 active:scale-[0.97] border-b-2 border-black/40 hover:border-white rounded-xl">
               Start an order
             </a>
-            <Link to="/about" className="font-display uppercase text-[17px] tracking-[0.04em] bg-transparent text-pm-black px-7 h-12 inline-flex items-center justify-center border-b-2 border-pm-black hover:bg-pm-black hover:text-pm-yellow transition-colors rounded-xl">
+            <Link to="/about" className="font-display uppercase text-[17px] tracking-[0.04em] bg-transparent text-pm-black px-7 h-12 inline-flex items-center justify-center border-b-2 border-pm-black hover:bg-pm-black hover:text-pm-yellow transition-[colors,transform] duration-150 active:scale-[0.97] rounded-xl">
               Contact us
             </Link>
           </div>
@@ -253,7 +266,10 @@ export function ApparelPage() {
       {/* ── ORDER FORM ── */}
       <section id="order" className="bg-pm-paper-2 border-t border-pm-rule">
         <div className="max-w-[1480px] mx-auto px-6 sm:px-10 py-16 lg:py-20">
-          <div className="grid grid-cols-1 lg:grid-cols-[80px_1fr] gap-6 lg:gap-8 items-baseline border-t border-pm-black pt-6 mb-10">
+          <div
+            ref={orderRef}
+            className={`grid grid-cols-1 lg:grid-cols-[80px_1fr] gap-6 lg:gap-8 items-baseline border-t border-pm-black pt-6 mb-10 ${orderInView ? 'animate-fade-up' : 'opacity-0'}`}
+          >
             <div className="font-mono text-[12px] tracking-[0.1em] text-pm-muted pt-1.5">Request</div>
             <div>
               <h2 className="font-display uppercase text-[clamp(32px,4.5vw,56px)] leading-[0.95] tracking-[0.005em] m-0">
@@ -273,7 +289,10 @@ export function ApparelPage() {
       {/* ── ROSTER UPLOAD ── */}
       <section id="roster" className="border-t border-pm-rule">
         <div className="max-w-[1480px] mx-auto px-6 sm:px-10 py-16 lg:py-20">
-          <div className="grid grid-cols-1 lg:grid-cols-[80px_1fr] gap-6 lg:gap-8 items-baseline border-t border-pm-black pt-6 mb-10">
+          <div
+            ref={rosterRef}
+            className={`grid grid-cols-1 lg:grid-cols-[80px_1fr] gap-6 lg:gap-8 items-baseline border-t border-pm-black pt-6 mb-10 ${rosterInView ? 'animate-fade-up' : 'opacity-0'}`}
+          >
             <div className="font-mono text-[12px] tracking-[0.1em] text-pm-muted pt-1.5">Roster</div>
             <div>
               <h2 className="font-display uppercase text-[clamp(32px,4.5vw,56px)] leading-[0.95] tracking-[0.005em] m-0">

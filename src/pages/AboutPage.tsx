@@ -3,6 +3,7 @@ import { Helmet } from 'react-helmet-async';
 import { PageLayout } from '../components/layout/PageLayout';
 import { PAGE_META, SITE_URL } from '../seo/config';
 import { contact } from '../data/contact';
+import { useInView } from '../hooks/useInView';
 
 const values = [
   { stat: '7-day', label: 'Turnaround' },
@@ -12,6 +13,10 @@ const values = [
 ];
 
 export function AboutPage() {
+  const [bioRef, bioInView] = useInView();
+  const [valuesRef, valuesInView] = useInView();
+  const [ctaRef, ctaInView] = useInView();
+
   return (
     <PageLayout breadcrumb="About">
       <Helmet>
@@ -26,7 +31,7 @@ export function AboutPage() {
 
       {/* ── PAGE HEADER ── */}
       <header className="border-b border-pm-rule">
-        <div className="max-w-[1480px] mx-auto px-6 sm:px-10 pt-10 pb-16 lg:pt-16 lg:pb-20">
+        <div className="max-w-[1480px] mx-auto px-6 sm:px-10 pt-10 pb-16 lg:pt-16 lg:pb-20 animate-fade-up">
           <span className="font-mono text-[11px] tracking-[0.16em] uppercase text-pm-yellow-deep">Built in Lafayette</span>
           <h1 className="font-display uppercase text-[clamp(56px,9vw,160px)] leading-[0.86] tracking-[-0.005em] text-pm-black mt-6">
             About<br />Playmaker
@@ -36,8 +41,8 @@ export function AboutPage() {
 
       {/* ── JAKE'S STORY ── */}
       <section className="max-w-[1480px] mx-auto px-6 sm:px-10 py-16 lg:py-20">
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_420px] gap-12 lg:gap-20 items-start">
-          <div>
+        <div ref={bioRef} className="grid grid-cols-1 lg:grid-cols-[1fr_420px] gap-12 lg:gap-20 items-start">
+          <div className={bioInView ? 'animate-fade-up' : 'opacity-0'}>
             <span className="font-mono text-[11px] tracking-[0.16em] uppercase text-pm-muted">The backstory</span>
             <h2 className="font-display uppercase text-[clamp(32px,4vw,56px)] leading-[0.95] tracking-[0.005em] mt-4 text-pm-black">
               Jake Johnson,<br />Playmaker Sports
@@ -53,7 +58,10 @@ export function AboutPage() {
           </div>
 
           {/* Photo slot — placeholder stripe until Jake sends a photo */}
-          <div className="aspect-[4/5] img-stripe rounded-xl overflow-hidden border border-pm-rule relative">
+          <div
+            className={`aspect-[4/5] img-stripe rounded-xl overflow-hidden border border-pm-rule relative ${bioInView ? 'animate-fade-up' : 'opacity-0'}`}
+            style={{ animationDelay: '120ms' }}
+          >
             <div className="absolute bottom-4 left-4 font-mono text-[10px] tracking-[0.1em] uppercase text-pm-muted bg-white/80 px-2 py-1">
               [ photo · Jake Johnson ]
             </div>
@@ -64,9 +72,13 @@ export function AboutPage() {
       {/* ── VALUES / STATS ── */}
       <section className="bg-pm-paper-2 border-y border-pm-rule">
         <div className="max-w-[1480px] mx-auto px-6 sm:px-10 py-14">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-            {values.map((v) => (
-              <div key={v.label} className="bg-white border border-pm-rule rounded-xl p-6">
+          <div ref={valuesRef} className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+            {values.map((v, i) => (
+              <div
+                key={v.label}
+                className={`bg-white border border-pm-rule rounded-xl p-6 ${valuesInView ? 'animate-fade-up' : 'opacity-0'}`}
+                style={{ animationDelay: `${i * 80}ms` }}
+              >
                 <div className="font-display uppercase text-[clamp(28px,3vw,44px)] leading-none tracking-[0.005em] text-pm-black">
                   {v.stat}
                 </div>
@@ -81,7 +93,10 @@ export function AboutPage() {
 
       {/* ── CONTACT CTA ── */}
       <section className="bg-pm-yellow border-b border-pm-black">
-        <div className="max-w-[1480px] mx-auto px-6 sm:px-10 py-16 lg:py-20">
+        <div
+          ref={ctaRef}
+          className={`max-w-[1480px] mx-auto px-6 sm:px-10 py-16 lg:py-20 ${ctaInView ? 'animate-fade-up' : 'opacity-0'}`}
+        >
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-8 items-center">
             <div>
               <span className="font-mono text-[11px] tracking-[0.1em] uppercase text-pm-black/70">Get in touch</span>
@@ -93,7 +108,7 @@ export function AboutPage() {
               {contact.email && (
                 <a
                   href={`mailto:${contact.email}`}
-                  className="font-display uppercase text-[16px] tracking-[0.04em] bg-pm-black text-white px-6 h-11 inline-flex items-center justify-center hover:bg-pm-ink transition-colors border-b-2 border-black/40 rounded-xl"
+                  className="font-display uppercase text-[16px] tracking-[0.04em] bg-pm-black text-white px-6 h-11 inline-flex items-center justify-center hover:bg-pm-ink transition-[colors,transform] duration-150 active:scale-[0.97] border-b-2 border-black/40 rounded-xl"
                 >
                   {contact.email}
                 </a>
@@ -101,7 +116,7 @@ export function AboutPage() {
               {contact.phone && (
                 <a
                   href={`tel:${contact.phone}`}
-                  className="font-display uppercase text-[16px] tracking-[0.04em] bg-transparent text-pm-black px-6 h-11 inline-flex items-center justify-center border-b-2 border-pm-black hover:bg-pm-black/10 transition-colors rounded-xl"
+                  className="font-display uppercase text-[16px] tracking-[0.04em] bg-transparent text-pm-black px-6 h-11 inline-flex items-center justify-center border-b-2 border-pm-black hover:bg-pm-black/10 transition-[colors,transform] duration-150 active:scale-[0.97] rounded-xl"
                 >
                   {contact.phone}
                 </a>
@@ -109,7 +124,7 @@ export function AboutPage() {
               {!contact.email && !contact.phone && (
                 <Link
                   to="/faq"
-                  className="font-display uppercase text-[16px] tracking-[0.04em] bg-pm-black text-white px-6 h-11 inline-flex items-center justify-center hover:bg-pm-ink transition-colors border-b-2 border-black/40 rounded-xl"
+                  className="font-display uppercase text-[16px] tracking-[0.04em] bg-pm-black text-white px-6 h-11 inline-flex items-center justify-center hover:bg-pm-ink transition-[colors,transform] duration-150 active:scale-[0.97] border-b-2 border-black/40 rounded-xl"
                 >
                   See the FAQ
                 </Link>

@@ -4,6 +4,7 @@ import { Helmet } from 'react-helmet-async';
 import { PageLayout } from '../components/layout/PageLayout';
 import { PAGE_META, SITE_URL } from '../seo/config';
 import { JsonLd } from '../seo/JsonLd';
+import { useInView } from '../hooks/useInView';
 
 const faqs = [
   {
@@ -40,34 +41,53 @@ const faqs = [
   },
 ];
 
-function FAQItem({ question, answer }: { question: string; answer: string }) {
+function FAQItem({ question, answer, index, listInView }: {
+  question: string;
+  answer: string;
+  index: number;
+  listInView: boolean;
+}) {
   const [open, setOpen] = useState(false);
 
   return (
-    <li className="border-b border-pm-rule last:border-b-0">
+    <li
+      className={`border-b border-pm-rule last:border-b-0 ${listInView ? 'animate-fade-up' : 'opacity-0'}`}
+      style={{ animationDelay: `${index * 60}ms` }}
+    >
       <button
         onClick={() => setOpen(o => !o)}
+        aria-expanded={open}
         className="w-full flex items-center justify-between gap-6 py-5 text-left group"
       >
         <span className="font-display uppercase text-[16px] lg:text-[18px] tracking-[0.02em] text-pm-black group-hover:text-pm-yellow-deep transition-colors duration-150">
           {question}
         </span>
         <span className={`shrink-0 w-6 h-6 flex items-center justify-center border-2 border-pm-rule rounded-lg transition-colors duration-150 ${open ? 'bg-pm-yellow border-pm-yellow-deep' : 'group-hover:border-pm-ink'}`}>
-          <svg className="w-3 h-3 text-pm-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d={open ? 'M5 12h14' : 'M12 5v14M5 12h14'} />
+          <svg
+            className={`w-3 h-3 text-pm-black transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
           </svg>
         </span>
       </button>
-      {open && (
-        <p className="pb-5 text-[14px] leading-[1.65] text-pm-ink max-w-[640px]">
-          {answer}
-        </p>
-      )}
+      <div className={`grid transition-[grid-template-rows] duration-200 ${open ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'}`}>
+        <div className="overflow-hidden">
+          <p className="pb-5 text-[14px] leading-[1.65] text-pm-ink max-w-[640px]">
+            {answer}
+          </p>
+        </div>
+      </div>
     </li>
   );
 }
 
 export function FAQPage() {
+  const [faqRef, faqInView] = useInView();
+
   return (
     <PageLayout breadcrumb="FAQ">
       <Helmet>
@@ -92,7 +112,7 @@ export function FAQPage() {
         })),
       }} />
       <header className="border-b border-pm-rule">
-        <div className="max-w-[1480px] mx-auto px-6 sm:px-10 pt-10 pb-12 lg:pt-16 lg:pb-16">
+        <div className="max-w-[1480px] mx-auto px-6 sm:px-10 pt-10 pb-12 lg:pt-16 lg:pb-16 animate-fade-up">
           <span className="font-mono text-[11px] tracking-[0.16em] uppercase text-pm-yellow-deep">Common questions</span>
           <h1 className="font-display uppercase text-[clamp(56px,9vw,160px)] leading-[0.86] tracking-[-0.005em] text-pm-black mt-6">
             FAQ
@@ -102,11 +122,19 @@ export function FAQPage() {
 
       <section className="max-w-[1480px] mx-auto px-6 sm:px-10 py-14 lg:py-16">
         <div className="max-w-[760px]">
-          <ul>
-            {faqs.map((faq) => (
-              <FAQItem key={faq.question} question={faq.question} answer={faq.answer} />
-            ))}
-          </ul>
+          <div ref={faqRef}>
+            <ul>
+              {faqs.map((faq, i) => (
+                <FAQItem
+                  key={faq.question}
+                  question={faq.question}
+                  answer={faq.answer}
+                  index={i}
+                  listInView={faqInView}
+                />
+              ))}
+            </ul>
+          </div>
         </div>
 
         <div className="mt-12 border border-pm-rule rounded-xl p-7 max-w-[760px]">
@@ -116,7 +144,7 @@ export function FAQPage() {
           </p>
           <Link
             to="/about"
-            className="mt-5 font-display uppercase text-[14px] tracking-[0.04em] bg-pm-yellow text-pm-black px-5 h-9 inline-flex items-center justify-center hover:bg-pm-yellow-deep transition-colors border-b-2 border-pm-yellow-deep hover:border-pm-black rounded-xl"
+            className="mt-5 font-display uppercase text-[14px] tracking-[0.04em] bg-pm-yellow text-pm-black px-5 h-9 inline-flex items-center justify-center hover:bg-pm-yellow-deep transition-[colors,transform] duration-150 active:scale-[0.97] border-b-2 border-pm-yellow-deep hover:border-pm-black rounded-xl"
           >
             Contact us
           </Link>

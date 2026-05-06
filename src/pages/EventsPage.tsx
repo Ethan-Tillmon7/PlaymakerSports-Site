@@ -4,6 +4,7 @@ import { Helmet } from 'react-helmet-async';
 import { PageLayout } from '../components/layout/PageLayout';
 import { Diamond } from '../components/layout/DiamondMark';
 import { PAGE_META, SITE_URL } from '../seo/config';
+import { useInView } from '../hooks/useInView';
 import type { Tournament } from '../data/events';
 
 function StatusPill({ status, text }: { status: Tournament['status']; text: string }) {
@@ -51,6 +52,7 @@ type FetchState =
 
 export function EventsPage() {
   const [state, setState] = useState<FetchState>({ status: 'loading' });
+  const [listRef, listInView] = useInView();
 
   useEffect(() => {
     fetch('/api/get-events')
@@ -75,7 +77,7 @@ export function EventsPage() {
       </Helmet>
 
       <header className="border-b border-pm-rule">
-        <div className="max-w-[1480px] mx-auto px-6 sm:px-10 pt-10 pb-16 lg:pt-16 lg:pb-20">
+        <div className="max-w-[1480px] mx-auto px-6 sm:px-10 pt-10 pb-16 lg:pt-16 lg:pb-20 animate-fade-up">
           <span className="font-mono text-[11px] tracking-[0.16em] uppercase text-pm-yellow-deep">Tournaments · Acadiana</span>
           <h1 className="font-display uppercase text-[clamp(56px,9vw,160px)] leading-[0.86] tracking-[-0.005em] text-pm-black mt-6">
             Events &amp;<br />Tournaments
@@ -101,7 +103,7 @@ export function EventsPage() {
             </p>
             <Link
               to="/about"
-              className="mt-7 font-display uppercase text-[15px] tracking-[0.04em] bg-pm-yellow text-pm-black px-5 h-10 inline-flex items-center justify-center hover:bg-pm-yellow-deep transition-colors border-b-2 border-pm-yellow-deep hover:border-pm-black rounded-xl"
+              className="mt-7 font-display uppercase text-[15px] tracking-[0.04em] bg-pm-yellow text-pm-black px-5 h-10 inline-flex items-center justify-center hover:bg-pm-yellow-deep transition-[colors,transform] duration-150 active:scale-[0.97] border-b-2 border-pm-yellow-deep hover:border-pm-black rounded-xl"
             >
               Contact us for info
             </Link>
@@ -109,11 +111,12 @@ export function EventsPage() {
         )}
 
         {state.status === 'success' && state.data.length > 0 && (
-          <div className="bg-white border border-pm-black rounded-xl overflow-hidden">
+          <div ref={listRef} className="bg-white border border-pm-black rounded-xl overflow-hidden">
             {state.data.map((t, i) => (
               <div
                 key={t.name}
-                className={`grid grid-cols-[56px_1fr] sm:grid-cols-[72px_1fr_auto] items-center gap-4 sm:gap-6 px-4 sm:px-5 py-4 ${i < state.data.length - 1 ? 'border-b border-pm-rule' : ''}`}
+                className={`grid grid-cols-[56px_1fr] sm:grid-cols-[72px_1fr_auto] items-center gap-4 sm:gap-6 px-4 sm:px-5 py-4 hover:-translate-y-0.5 transition-transform duration-150 ${i < state.data.length - 1 ? 'border-b border-pm-rule' : ''} ${listInView ? 'animate-fade-up' : 'opacity-0'}`}
+                style={{ animationDelay: `${i * 80}ms` }}
               >
                 <div className="bg-pm-yellow text-pm-black aspect-square flex flex-col items-center justify-center leading-none border-b-2 border-pm-yellow-deep rounded-lg">
                   <span className="font-mono text-[9px] tracking-[0.12em] uppercase">{t.month}</span>
@@ -143,7 +146,7 @@ export function EventsPage() {
             </p>
             <Link
               to="/about"
-              className="mt-7 font-display uppercase text-[15px] tracking-[0.04em] bg-pm-yellow text-pm-black px-5 h-10 inline-flex items-center justify-center hover:bg-pm-yellow-deep transition-colors border-b-2 border-pm-yellow-deep hover:border-pm-black rounded-xl"
+              className="mt-7 font-display uppercase text-[15px] tracking-[0.04em] bg-pm-yellow text-pm-black px-5 h-10 inline-flex items-center justify-center hover:bg-pm-yellow-deep transition-[colors,transform] duration-150 active:scale-[0.97] border-b-2 border-pm-yellow-deep hover:border-pm-black rounded-xl"
             >
               Contact us for the latest
             </Link>
