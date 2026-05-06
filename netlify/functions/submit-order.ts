@@ -3,16 +3,16 @@ import { z } from 'zod';
 import { getSheetsClient, SHEET_ID } from './_sheets';
 
 const SIZES = ['YS', 'YM', 'YL', 'AS', 'AM', 'AL', 'AXL', 'A2XL', 'A3XL'] as const;
-const JERSEY_STYLES = ['The Slugger', 'The Signal', 'The Captain', 'The Acadian'] as const;
 
 const inquirySchema = z.object({
   type: z.literal('inquiry'),
   team_name: z.string().min(1),
   contact_name: z.string().min(1),
-  contact_email: z.string().email(),
-  contact_phone: z.string().optional(),
-  style: z.enum(JERSEY_STYLES),
+  email: z.email(),
+  phone: z.string().optional(),
+  jersey_style_interest: z.string().optional(),
   roster_count: z.number().int().min(12),
+  sku: z.string().optional(),
   notes: z.string().optional(),
 });
 
@@ -65,21 +65,22 @@ export const handler: Handler = async (event) => {
         timestamp,
         data.team_name,
         data.contact_name,
-        data.contact_email,
-        data.contact_phone ?? '',
-        data.style,
+        data.email,
+        data.phone ?? '',
+        data.jersey_style_interest ?? '',
         String(data.roster_count),
+        data.sku ?? '',
         data.notes ?? '',
       ];
       await sheets.spreadsheets.values.append({
         spreadsheetId: SHEET_ID,
-        range: 'Orders!A:H',
+        range: 'SalesOrders!A:I',
         valueInputOption: 'RAW',
         requestBody: { values: [row] },
       });
       await sheets.spreadsheets.values.append({
         spreadsheetId: SHEET_ID,
-        range: 'Archive!A:H',
+        range: 'Archive!A:I',
         valueInputOption: 'RAW',
         requestBody: { values: [row] },
       });
@@ -93,7 +94,7 @@ export const handler: Handler = async (event) => {
       ]);
       await sheets.spreadsheets.values.append({
         spreadsheetId: SHEET_ID,
-        range: 'Roster!A:E',
+        range: 'CustomerContacts!A:E',
         valueInputOption: 'RAW',
         requestBody: { values: rows },
       });

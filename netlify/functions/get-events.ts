@@ -17,7 +17,7 @@ export const handler: Handler = async () => {
     const sheets = getSheetsClient();
     const res = await sheets.spreadsheets.values.get({
       spreadsheetId: SHEET_ID,
-      range: 'Events!A2:H',
+      range: 'EventSchedule!A2:H',
     });
 
     const rows = res.data.values ?? [];
