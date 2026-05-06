@@ -13,7 +13,7 @@ export function Nav() {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <div className="sticky top-[10px] z-30 w-[calc(100%-20px)] max-w-[1000px] mx-auto bg-white rounded-[28px] shadow-[0_2px_8px_-2px_rgba(245,200,66,0.30)]">
+    <div className="sticky top-[10px] z-30 w-[calc(100%-20px)] max-w-[800px] mx-auto bg-white rounded-[28px] shadow-[0_2px_8px_-2px_rgba(245,200,66,0.30)]">
 
       {/* ── Main row ── */}
       <nav className="h-16 flex items-center px-5 sm:px-6">
