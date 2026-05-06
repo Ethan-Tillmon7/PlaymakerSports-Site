@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm, type Resolver } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -7,20 +7,22 @@ import { JERSEY_STYLE_OPTIONS } from '../../data/apparel';
 const schema = z.object({
   team_name: z.string().min(1, 'Required'),
   contact_name: z.string().min(1, 'Required'),
-  contact_email: z.string().email('Enter a valid email'),
-  contact_phone: z.string().optional(),
-  style: z.string().min(1, 'Select a jersey style'),
+  email: z.email('Enter a valid email'),
+  phone: z.string().optional(),
+  jersey_style_interest: z.string().optional(),
   roster_count: z.coerce.number().int().min(12, 'Minimum 12 pieces'),
+  sku: z.string().optional(),
   notes: z.string().optional(),
 });
 
 type FormValues = {
   team_name: string;
   contact_name: string;
-  contact_email: string;
-  contact_phone?: string;
-  style: string;
+  email: string;
+  phone?: string;
+  jersey_style_interest?: string;
   roster_count: number;
+  sku?: string;
   notes?: string;
 };
 
@@ -49,7 +51,7 @@ function Field({
 const inputClass =
   'w-full border border-pm-rule rounded-xl px-4 h-11 text-[15px] text-pm-ink bg-white focus:outline-none focus:border-pm-black transition-colors duration-150';
 
-export function ApparelInquiryForm() {
+export function ApparelInquiryForm({ initialSku }: { initialSku?: string }) {
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
 
   const {
@@ -57,7 +59,14 @@ export function ApparelInquiryForm() {
     handleSubmit,
     formState: { errors, isSubmitting },
     reset,
+    setValue,
   } = useForm<FormValues>({ resolver: zodResolver(schema) as Resolver<FormValues> });
+
+  useEffect(() => {
+    if (initialSku) {
+      setValue('sku', initialSku);
+    }
+  }, [initialSku, setValue]);
 
   const onSubmit = async (values: FormValues) => {
     setSubmitStatus('idle');
@@ -88,6 +97,14 @@ export function ApparelInquiryForm() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+      {initialSku && (
+        <div className="font-mono text-[11px] tracking-[0.1em] uppercase text-pm-muted bg-pm-paper-2 border border-pm-rule rounded-xl px-4 py-3">
+          Inquiring about SKU: <span className="text-pm-black">{initialSku}</span>
+        </div>
+      )}
+
+      <input type="hidden" {...register('sku')} />
+
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
         <Field label="Team name" required error={errors.team_name?.message}>
           <input {...register('team_name')} className={inputClass} placeholder="Acadiana Sluggers" />
@@ -98,21 +115,22 @@ export function ApparelInquiryForm() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-        <Field label="Email" required error={errors.contact_email?.message}>
-          <input {...register('contact_email')} type="email" className={inputClass} placeholder="coach@team.com" />
+        <Field label="Email" required error={errors.email?.message}>
+          <input {...register('email')} type="email" className={inputClass} placeholder="coach@team.com" />
         </Field>
-        <Field label="Phone" error={errors.contact_phone?.message}>
-          <input {...register('contact_phone')} type="tel" className={inputClass} placeholder="(337) 555-0100" />
+        <Field label="Phone" error={errors.phone?.message}>
+          <input {...register('phone')} type="tel" className={inputClass} placeholder="(337) 555-0100" />
         </Field>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-        <Field label="Jersey style" required error={errors.style?.message}>
-          <select {...register('style')} className={inputClass}>
+        <Field label="Jersey style interest" error={errors.jersey_style_interest?.message}>
+          <select {...register('jersey_style_interest')} className={inputClass}>
             <option value="">Select a style…</option>
             {JERSEY_STYLE_OPTIONS.map((s) => (
               <option key={s} value={s}>{s}</option>
             ))}
+            <option value="Custom">Custom / Not sure yet</option>
           </select>
         </Field>
         <Field label="Roster size (min 12)" required error={errors.roster_count?.message}>

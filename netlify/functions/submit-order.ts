@@ -74,13 +74,13 @@ export const handler: Handler = async (event) => {
       ];
       await sheets.spreadsheets.values.append({
         spreadsheetId: SHEET_ID,
-        range: 'SalesOrders!A:I',
+        range: 'SalesOrders!A1',
         valueInputOption: 'RAW',
         requestBody: { values: [row] },
       });
       await sheets.spreadsheets.values.append({
         spreadsheetId: SHEET_ID,
-        range: 'Archive!A:I',
+        range: 'Archive!A1',
         valueInputOption: 'RAW',
         requestBody: { values: [row] },
       });
@@ -94,7 +94,7 @@ export const handler: Handler = async (event) => {
       ]);
       await sheets.spreadsheets.values.append({
         spreadsheetId: SHEET_ID,
-        range: 'CustomerContacts!A:E',
+        range: 'CustomerContacts!A1',
         valueInputOption: 'RAW',
         requestBody: { values: rows },
       });

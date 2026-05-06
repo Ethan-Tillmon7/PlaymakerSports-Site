@@ -30,3 +30,4 @@ playmaker-sheets-6193a76fcbf2.json
 
 # Local Netlify folder
 .netlify
+deno.lock
