@@ -49,18 +49,7 @@ export function Footer() {
           </div>
         </div>
 
-        {/* Giant wordmark band */}
-        <div className="py-10 border-b border-white/15 overflow-hidden">
-          <div className="font-display uppercase text-[clamp(72px,14vw,180px)] leading-[0.86] tracking-[-0.01em] whitespace-nowrap">
-            <span className="text-white">PLAY</span>
-            <span className="text-pm-yellow">·</span>
-            <span className="text-white">MAKER</span>
-            <span className="text-pm-yellow">·</span>
-            <span className="text-white/30">SPORTS</span>
-          </div>
-        </div>
-
-        <div className="flex flex-wrap items-center justify-between gap-4 pt-6 font-mono text-[10.5px] tracking-[0.1em] uppercase text-white/45">
+        <div className="flex flex-wrap items-center justify-between gap-4 pt-10 font-mono text-[10.5px] tracking-[0.1em] uppercase text-white/45">
           <div>© 2026 Playmaker Sports LLC · Lafayette, LA</div>
           <div className="flex gap-6">
             <Link to="/faq" className="hover:text-white">Privacy</Link>

@@ -3,7 +3,7 @@ export const SITE_URL = 'https://playmakersportsla.com'; // TODO: confirm domain
 export const PAGE_META = {
   home: {
     title: 'Playmaker Sports — Youth Tournaments & Custom Jerseys · Lafayette, LA',
-    description: 'Host of Acadiana youth baseball and softball tournaments. Custom sublimated and tackle-twill jerseys shipped to the dugout in 7 days.',
+    description: 'Host of Acadiana youth baseball and softball tournaments. Custom sublimated and tackle-twill jerseys printed locally in Lafayette, LA.',
     path: '',
   },
   events: {
@@ -13,7 +13,7 @@ export const PAGE_META = {
   },
   apparel: {
     title: 'Custom Youth Jerseys & Uniforms · Playmaker Sports',
-    description: 'Sublimated and tackle-twill jerseys, caps, and pants. 12-piece minimum, 7-day turnaround, YS–Adult 3XL.',
+    description: 'Sublimated and tackle-twill jerseys, caps, and pants. YS–Adult 3XL. Custom uniforms built in Acadiana.',
     path: '/apparel',
   },
   about: {
