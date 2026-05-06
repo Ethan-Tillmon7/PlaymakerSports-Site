@@ -21,6 +21,11 @@
   to = "/.netlify/functions/get-catalog"
   status = 200
 
+[[redirects]]
+  from = "/api/submit-purchase"
+  to = "/.netlify/functions/submit-purchase"
+  status = 200
+
 # SPA fallback — serves index.html for any unmatched path (client-side routing)
 [[redirects]]
   from = "/*"

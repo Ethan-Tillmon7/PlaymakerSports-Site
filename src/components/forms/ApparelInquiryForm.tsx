@@ -10,7 +10,7 @@ const schema = z.object({
   email: z.email('Enter a valid email'),
   phone: z.string().optional(),
   jersey_style_interest: z.string().optional(),
-  roster_count: z.coerce.number().int().min(12, 'Minimum 12 pieces'),
+  roster_count: z.coerce.number().int().min(1, 'Enter your roster size'),
   sku: z.string().optional(),
   notes: z.string().optional(),
 });
@@ -133,8 +133,8 @@ export function ApparelInquiryForm({ initialSku }: { initialSku?: string }) {
             <option value="Custom">Custom / Not sure yet</option>
           </select>
         </Field>
-        <Field label="Roster size (min 12)" required error={errors.roster_count?.message}>
-          <input {...register('roster_count')} type="number" min={12} className={inputClass} placeholder="18" />
+        <Field label="Roster size" required error={errors.roster_count?.message}>
+          <input {...register('roster_count')} type="number" min={1} className={inputClass} placeholder="18" />
         </Field>
       </div>
 
