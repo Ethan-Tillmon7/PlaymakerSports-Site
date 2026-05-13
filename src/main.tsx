@@ -7,7 +7,7 @@ import App from './App.tsx';
 
 const rootEl = document.getElementById('root')!;
 
-if (rootEl.hasChildNodes()) {
+if (rootEl.firstElementChild) {
   ReactDOM.hydrateRoot(
     rootEl,
     <StrictMode>
