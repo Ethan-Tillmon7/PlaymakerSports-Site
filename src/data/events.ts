@@ -1,37 +1,60 @@
 export interface Tournament {
-  month: string;
-  day: string;
+  id: string;
+  startDate: string;       // ISO: "2026-05-09"
+  endDate: string;         // ISO: "2026-05-11" — equals startDate for single-day events
   name: string;
+  organizer: string;
   location: string;
-  division: string;
-  games: string;
-  status: 'open' | 'almost' | 'full';
-  spotsText: string;
+  ageGroups?: string;
+  sourceUrl?: string;
+  notes?: string;
+  attending: boolean;
+  published: boolean;
 }
 
 export const tournaments: Tournament[] = [
   {
-    month: 'May', day: '18',
-    name: 'Bayou Classic 8U',
-    location: 'Lafayette, LA', division: 'Coach-Pitch · 8U', games: '3-game guarantee',
-    status: 'open', spotsText: 'Open',
+    id: '2026-05-09-vinny-castro-usssa-fl',
+    startDate: '2026-05-09',
+    endDate: '2026-05-09',
+    name: "CFL USSSA Mother's Day Bash",
+    organizer: 'Vinny Castro (USSSA FL)',
+    location: 'New Smyrna / Apopka, FL',
+    sourceUrl: 'https://flbaseball.usssa.com/event/cfl-usssa-mothers-day-bash-3/',
+    attending: true,
+    published: true,
   },
   {
-    month: 'Jun', day: '07',
-    name: 'Cajun Showdown 10U',
-    location: 'Broussard, LA', division: 'Kid-Pitch · 10U', games: '4-game min',
-    status: 'almost', spotsText: 'Filling fast',
+    id: '2026-05-23-vinny-castro-usssa-fl',
+    startDate: '2026-05-23',
+    endDate: '2026-05-23',
+    name: 'CFL USSSA Memorial Day Classic',
+    organizer: 'Vinny Castro (USSSA FL)',
+    location: 'Oviedo / Ocoee, FL',
+    sourceUrl: 'https://flbaseball.usssa.com/event/cfl-usssa-memorial-day-classic-2/',
+    attending: true,
+    published: true,
   },
   {
-    month: 'Jun', day: '21',
-    name: 'Sugarcane Slam 12U',
-    location: 'New Iberia, LA', division: 'Kid-Pitch · 12U', games: '3-game guarantee',
-    status: 'open', spotsText: 'Open',
+    id: '2026-06-21-jimmy-greer-alexandria-la',
+    startDate: '2026-06-21',
+    endDate: '2026-06-21',
+    name: 'Battle at the Red',
+    organizer: 'Jimmy Greer (LA Fastpitch)',
+    location: 'Alexandria, LA',
+    sourceUrl: 'https://lafastpitch.usssa.com/event/battle-at-the-red-free-if-reg-by-2-1-26/',
+    notes: 'Fastpitch',
+    attending: true,
+    published: true,
   },
   {
-    month: 'Jul', day: '12',
-    name: 'Gulf Coast Cup 14U',
-    location: 'Lake Charles, LA', division: 'Kid-Pitch · 14U', games: '5-game minimum',
-    status: 'open', spotsText: 'Open',
+    id: '2026-07-17-lafayette-little-league',
+    startDate: '2026-07-17',
+    endDate: '2026-07-17',
+    name: 'Lafayette Little League Baseball',
+    organizer: 'Lafayette Little League (Peter)',
+    location: 'Lafayette, LA',
+    attending: true,
+    published: true,
   },
 ];

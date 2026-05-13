@@ -2,14 +2,17 @@ import type { Handler } from '@netlify/functions';
 import { getSheetsClient, SHEET_ID } from './_sheets';
 
 interface Tournament {
-  month: string;
-  day: string;
+  id: string;
+  startDate: string;
+  endDate: string;
   name: string;
+  organizer: string;
   location: string;
-  division: string;
-  games: string;
-  status: 'open' | 'almost' | 'full';
-  spotsText: string;
+  ageGroups?: string;
+  sourceUrl?: string;
+  notes?: string;
+  attending: boolean;
+  published: boolean;
 }
 
 export const handler: Handler = async () => {
@@ -17,24 +20,26 @@ export const handler: Handler = async () => {
     const sheets = getSheetsClient();
     const res = await sheets.spreadsheets.values.get({
       spreadsheetId: SHEET_ID,
-      range: 'EventSchedule!A2:H',
+      range: 'Events!A6:K',
     });
 
     const rows = res.data.values ?? [];
     const tournaments: Tournament[] = rows
-      .filter((row) => row[0])
+      .filter((row) => row[1] && row[10] === 'TRUE')
       .map((row) => ({
-        month: String(row[0] ?? ''),
-        day: String(row[1] ?? ''),
-        name: String(row[2] ?? ''),
-        location: String(row[3] ?? ''),
-        division: String(row[4] ?? ''),
-        games: String(row[5] ?? ''),
-        status: (['open', 'almost', 'full'].includes(row[6])
-          ? row[6]
-          : 'open') as Tournament['status'],
-        spotsText: String(row[7] ?? ''),
-      }));
+        id: String(row[0] ?? ''),
+        startDate: String(row[1] ?? ''),
+        endDate: String(row[2] ?? ''),
+        name: String(row[3] ?? ''),
+        organizer: String(row[4] ?? ''),
+        location: String(row[5] ?? ''),
+        ageGroups: row[6] ? String(row[6]) : undefined,
+        sourceUrl: row[7] ? String(row[7]) : undefined,
+        notes: row[8] ? String(row[8]) : undefined,
+        attending: row[9] === 'TRUE',
+        published: true,
+      }))
+      .sort((a, b) => a.startDate.localeCompare(b.startDate));
 
     return {
       statusCode: 200,
