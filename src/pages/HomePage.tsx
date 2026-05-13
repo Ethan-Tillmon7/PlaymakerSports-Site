@@ -3,6 +3,7 @@ import { Helmet } from 'react-helmet-async';
 import { PageLayout } from '../components/layout/PageLayout';
 import { Diamond } from '../components/layout/DiamondMark';
 import { tournaments } from '../data/events';
+import { formatDateRange } from '../lib/dates';
 import { PAGE_META, SITE_URL } from '../seo/config';
 
 export function HomePage() {
@@ -71,11 +72,15 @@ export function HomePage() {
             </span>
           </h1>
 
-          <p className="text-[clamp(17px,1.6vw,21px)] leading-[1.5] text-white/50 max-w-[560px] mt-8 animate-fade-up" style={{ animationDelay: '220ms' }}>
+          <p className="font-mono text-[11px] tracking-[0.16em] uppercase text-white/35 mt-6 animate-fade-up" style={{ animationDelay: '190ms' }}>
+            Made for the Moment
+          </p>
+
+          <p className="text-[clamp(17px,1.6vw,21px)] leading-[1.5] text-white/50 max-w-[560px] mt-7 animate-fade-up" style={{ animationDelay: '280ms' }}>
             Built for the Saturday lineup card. We host the tournaments your kids want to play in — and outfit the teams who show up to win them.
           </p>
 
-          <div className="flex flex-wrap items-center justify-center gap-4 mt-10 animate-fade-up" style={{ animationDelay: '360ms' }}>
+          <div className="flex flex-wrap items-center justify-center gap-4 mt-10 animate-fade-up" style={{ animationDelay: '420ms' }}>
             <Link to="/events" className="font-display uppercase text-[18px] tracking-[0.04em] bg-pm-yellow text-pm-black px-7 h-12 inline-flex items-center justify-center hover:bg-pm-yellow-deep transition-[colors,transform] duration-150 active:scale-[0.97] border-b-2 border-pm-yellow-deep hover:border-pm-black rounded-xl">
               View events
             </Link>
@@ -92,17 +97,21 @@ export function HomePage() {
               <div className="shrink-0 flex items-center px-6 sm:px-10 py-5 border-r border-white/[0.07]">
                 <span className="font-mono text-[9.5px] tracking-[0.16em] uppercase text-white/25">Upcoming</span>
               </div>
-              {tournaments.map((t, i) => (
-                <Link
-                  key={t.name}
-                  to="/events"
-                  className={`group shrink-0 flex flex-col justify-center gap-0.5 px-6 sm:px-8 py-5 hover:bg-white/[0.04] transition-colors duration-150 ${i < tournaments.length - 1 ? 'border-r border-white/[0.07]' : ''}`}
-                >
-                  <span className="font-mono text-[9px] tracking-[0.12em] uppercase text-white/25">{t.month} {t.day}</span>
-                  <span className="font-display uppercase text-[17px] leading-none tracking-[0.005em] text-pm-yellow group-hover:text-pm-yellow-deep transition-colors duration-150">{t.name}</span>
-                  <span className="font-mono text-[9.5px] tracking-[0.05em] uppercase text-white/35 mt-0.5">{t.location}</span>
-                </Link>
-              ))}
+              {tournaments.map((t, i) => {
+                const { lines } = formatDateRange(t.startDate, t.endDate);
+                const dateDisplay = lines.join(' ');
+                return (
+                  <Link
+                    key={t.id}
+                    to="/events"
+                    className={`group shrink-0 flex flex-col justify-center gap-0.5 px-6 sm:px-8 py-5 hover:bg-white/[0.04] transition-colors duration-150 ${i < tournaments.length - 1 ? 'border-r border-white/[0.07]' : ''}`}
+                  >
+                    <span className="font-mono text-[9px] tracking-[0.12em] uppercase text-white/25">{dateDisplay}</span>
+                    <span className="font-display uppercase text-[17px] leading-none tracking-[0.005em] text-pm-yellow group-hover:text-pm-yellow-deep transition-colors duration-150">{t.name}</span>
+                    <span className="font-mono text-[9.5px] tracking-[0.05em] uppercase text-white/35 mt-0.5">{t.location}</span>
+                  </Link>
+                );
+              })}
               <Link
                 to="/events"
                 className="shrink-0 flex items-center px-6 sm:px-10 py-5 ml-auto border-l border-white/[0.07] hover:bg-white/[0.04] transition-colors duration-150"
