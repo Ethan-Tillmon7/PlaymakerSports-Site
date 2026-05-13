@@ -6,8 +6,9 @@ import { contact } from '../data/contact';
 import { useInView } from '../hooks/useInView';
 
 const values = [
-  { stat: 'Acadiana', label: 'Based & fielded' },
-  { stat: '6U–14U', label: 'Divisions covered' },
+  { stat: '2025', label: 'Year founded' },
+  { stat: 'Lafayette', label: 'Home base' },
+  { stat: '6U–14U', label: 'Divisions served' },
 ];
 
 export function AboutPage() {
@@ -43,14 +44,17 @@ export function AboutPage() {
           <div className={bioInView ? 'animate-fade-up' : 'opacity-0'}>
             <span className="font-mono text-[11px] tracking-[0.16em] uppercase text-pm-muted">The backstory</span>
             <h2 className="font-display uppercase text-[clamp(32px,4vw,56px)] leading-[0.95] tracking-[0.005em] mt-4 text-pm-black">
-              Jake Johnson,<br />Playmaker Sports
+              Built in<br />Lafayette
             </h2>
             <div className="mt-6 space-y-4 text-[16px] leading-[1.65] text-pm-ink max-w-[560px]">
               <p>
-                Playmaker Sports is a Lafayette-based youth sports operation run by Jake Johnson. Jake has been organizing youth baseball and softball tournaments across Acadiana for years, building a reputation for well-run events that start on time and finish right.
+                Playmaker Sports was founded in 2025 with a straightforward mission: bring high-quality merchandise and a better buying experience to tournaments across the South.
               </p>
               <p>
-                Alongside the tournament business, Playmaker handles custom uniform orders for teams across the region — sublimated and tackle-twill jerseys, caps, and pants, sized for every player from 6U to high school.
+                We show up to events throughout the region — stocking jerseys, accessories, batting gear, hats, player cards, and custom apparel for athletes from 6U to high school. From Acadiana to wherever the schedule takes us, Playmaker is on the sideline.
+              </p>
+              <p>
+                What separates us from the big vendors is simple: when you reach out to Playmaker, you're talking to a real person who genuinely cares. We build relationships with tournament directors, coaches, and families because that's how good business works — and because every athlete deserves to look and feel the part.
               </p>
             </div>
           </div>

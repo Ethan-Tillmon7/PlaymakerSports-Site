@@ -8,23 +8,19 @@ import { useInView } from '../hooks/useInView';
 
 const faqGroups = [
   {
-    topic: 'Tournaments',
+    topic: 'Events',
     faqs: [
       {
-        question: 'What happens if the tournament is cancelled due to weather?',
-        answer: 'We monitor weather closely and will notify all registered teams as early as possible. Rain-out games are rescheduled when possible. Contact us for details on our cancellation policy.',
+        question: 'What happens if there is severe weather at a tournament?',
+        answer: 'If there is severe weather or heavy rain during the tournament weekend, there is a possibility we may not be able to attend. Outside of weather-related circumstances, we fully plan on being at every event we commit to.',
       },
       {
         question: 'What is your refund policy?',
-        answer: 'Refund and credit policies vary by event. Contact us directly for specifics on a particular tournament.',
+        answer: 'Card purchases are refunded directly through the Square app. Cash purchases can be refunded in cash, Venmo, Zelle, or Cash App.',
       },
       {
-        question: 'What age divisions do your tournaments include?',
-        answer: 'Divisions vary by event. Check the Events page or contact us for the breakdown of each tournament.',
-      },
-      {
-        question: 'Where are tournaments held?',
-        answer: 'All tournaments are held at fields across Acadiana — primarily in the Lafayette Parish area. Exact locations are listed on the Events page for each tournament.',
+        question: 'What payment methods do you accept?',
+        answer: 'Square is our preferred option. We also accept cash, Cash App, Venmo, and Zelle.',
       },
     ],
   },
@@ -32,16 +28,20 @@ const faqGroups = [
     topic: 'Apparel',
     faqs: [
       {
+        question: 'What does Playmaker Sports sell?',
+        answer: 'We carry jerseys, sliding mitts, arm sleeves, sunglasses, chains and necklaces, eye black, cooling towels, hats, batting gloves, player cards, and other sports accessories. Hats and player cards are our newest additions.',
+      },
+      {
+        question: 'Can you make custom jerseys for my team?',
+        answer: "Yes — we're already capable of fulfilling custom jersey orders. Send us your inspiration photos or mockups and we'll work with you from there. Our long-term goal is to expand this into full custom team travel ball uniforms.",
+      },
+      {
         question: 'How do I place an apparel order?',
         answer: 'Browse the catalog on our Apparel page and reach out through the contact form. We send a digital proof same-day.',
       },
       {
         question: 'Can I upload my own logo or artwork?',
-        answer: "Absolutely. We accept AI, EPS, PDF, or high-res PNG files. If you only have a phone photo, we'll vector it for free.",
-      },
-      {
-        question: 'Do you offer rush orders on apparel?',
-        answer: 'Yes, for an additional fee. Contact us to discuss timeline and availability.',
+        answer: "Absolutely. We accept AI, EPS, PDF, or high-res PNG files. If you only have a phone photo, we'll work with it.",
       },
     ],
   },

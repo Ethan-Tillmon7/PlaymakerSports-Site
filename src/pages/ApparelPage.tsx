@@ -543,26 +543,6 @@ export function ApparelPage() {
         </section>
       )}
 
-      {/* ── CTA BAND ── */}
-      <section className="bg-pm-yellow border-y border-pm-black">
-        <div className="max-w-[1480px] mx-auto px-6 sm:px-10 py-16 lg:py-20 grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-8 items-center">
-          <div>
-            <span className="font-mono text-[11px] tracking-[0.1em] uppercase text-pm-black/70">Ready when you are</span>
-            <h2 className="font-display uppercase text-[clamp(40px,6vw,88px)] leading-[0.88] tracking-[0.005em] mt-3 text-pm-black">
-              Wear it<br />on opening day.
-            </h2>
-          </div>
-          <div className="flex flex-wrap items-center gap-4">
-            <a href="#catalog" className="font-display uppercase text-[17px] tracking-[0.04em] bg-pm-black text-white px-7 h-12 inline-flex items-center justify-center hover:bg-pm-ink transition-[colors,transform] duration-150 active:scale-[0.97] border-b-2 border-black/40 hover:border-white rounded-xl">
-              Start an order
-            </a>
-            <Link to="/about" className="font-display uppercase text-[17px] tracking-[0.04em] bg-transparent text-pm-black px-7 h-12 inline-flex items-center justify-center border-b-2 border-pm-black hover:bg-pm-black hover:text-pm-yellow transition-[colors,transform] duration-150 active:scale-[0.97] rounded-xl">
-              Contact us
-            </Link>
-          </div>
-        </div>
-      </section>
-
       {/* ── ORDER + ROSTER ── */}
       <section id="order" className="bg-pm-paper-2 border-t border-pm-rule">
         <div className="max-w-[1480px] mx-auto px-6 sm:px-10 py-16 lg:py-20">
