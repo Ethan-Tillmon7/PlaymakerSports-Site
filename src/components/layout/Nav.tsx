@@ -2,9 +2,9 @@ import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
 const navLinks = [
-  { label: 'Events', to: '/events' },
-  { label: 'Apparel', to: '/apparel' },
   { label: 'About', to: '/about' },
+  { label: 'Apparel', to: '/apparel' },
+  { label: 'Events', to: '/events' },
   { label: 'FAQ', to: '/faq' },
 ];
 
