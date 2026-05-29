@@ -57,11 +57,18 @@ export function PageLayout({ children, breadcrumb, announcement }: PageLayoutPro
       {breadcrumbSchema && <JsonLd data={breadcrumbSchema} />}
       {announcement && <AnnouncementBar message={announcement} />}
       {breadcrumb && (
-        <div className="border-b border-pm-rule">
-          <div className="max-w-[1480px] mx-auto px-6 sm:px-10 py-3 flex items-baseline font-mono text-[10.5px] tracking-[0.1em] uppercase text-pm-muted">
-            <Link to="/" className="hover:text-pm-ink">Home</Link>
-            &nbsp;/&nbsp;
-            <span className="text-pm-ink">{breadcrumb}</span>
+        <div className="hidden lg:block relative h-0 overflow-visible z-20 pointer-events-none">
+          <div
+            className="absolute left-0 right-0 h-16 flex items-center max-w-[1480px] mx-auto px-6 sm:px-10"
+            style={{ top: '10px' }}
+          >
+            <div className="flex-1 flex items-center gap-1 font-mono text-[10.5px] tracking-[0.1em] uppercase text-pm-muted pointer-events-auto">
+              <Link to="/" className="hover:text-pm-ink transition-colors duration-150">Home</Link>
+              <span className="mx-1">/</span>
+              <span className="text-pm-ink">{breadcrumb}</span>
+            </div>
+            <div className="w-[calc(100%-20px)] max-w-[800px] shrink-0" />
+            <div className="flex-1" />
           </div>
         </div>
       )}
