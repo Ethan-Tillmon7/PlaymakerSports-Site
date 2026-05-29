@@ -8,6 +8,7 @@ import { PlayerUploadForm } from '../components/forms/PlayerUploadForm';
 import { useInView } from '../hooks/useInView';
 import type { Product, ProductCategory } from '../types/product';
 import { ProductDetailModal } from '../components/modals/ProductDetailModal';
+import { useLoadingBarStore } from '../store/loadingBarStore';
 
 type FilterCategory = 'All' | ProductCategory;
 type ActiveView = FilterCategory | 'get-a-quote' | 'submit-roster';
@@ -60,13 +61,13 @@ function CatalogSkeleton() {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-14 lg:gap-x-8 lg:gap-y-20">
       {[0, 1, 2, 3].map((i) => (
-        <div key={i} className="flex flex-col animate-pulse">
-          <div className="aspect-[4/5] bg-pm-rule rounded-xl" />
+        <div key={i} className="flex flex-col">
+          <div className="aspect-[4/5] bg-shimmer animate-shimmer rounded-xl" />
           <div className="pt-5 space-y-3">
-            <div className="h-3 bg-pm-rule rounded w-20" />
-            <div className="h-5 bg-pm-rule rounded w-32" />
-            <div className="h-3 bg-pm-rule rounded w-full" />
-            <div className="h-3 bg-pm-rule rounded w-3/4" />
+            <div className="h-3 bg-shimmer animate-shimmer rounded w-20" />
+            <div className="h-5 bg-shimmer animate-shimmer rounded w-32" />
+            <div className="h-3 bg-shimmer animate-shimmer rounded w-full" />
+            <div className="h-3 bg-shimmer animate-shimmer rounded w-3/4" />
           </div>
         </div>
       ))}
@@ -145,14 +146,12 @@ function ProductPlaceholder({ category }: { category: ProductCategory }) {
 interface ProductCardProps {
   product: Product;
   onClick: (product: Product) => void;
-  animationDelay?: number;
 }
 
-function ProductCard({ product, onClick, animationDelay = 0 }: ProductCardProps) {
+function ProductCard({ product, onClick }: ProductCardProps) {
   return (
     <article
       className="group flex flex-col hover:-translate-y-0.5 transition-transform duration-150 cursor-pointer"
-      style={{ animationDelay: `${animationDelay}ms` }}
       onClick={() => onClick(product)}
       role="button"
       tabIndex={0}
@@ -225,6 +224,7 @@ function CarouselCategorySection({ category, products, onProductClick, onSeeAll 
   const dragStartX = useRef(0);
   const scrollStartLeft = useRef(0);
   const [dragging, setDragging] = useState(false);
+  const [sectionRef, sectionInView] = useInView();
 
   function handleMouseDown(e: React.MouseEvent) {
     isDown.current = true;
@@ -245,7 +245,7 @@ function CarouselCategorySection({ category, products, onProductClick, onSeeAll 
   }
 
   return (
-    <div className="mb-8">
+    <div ref={sectionRef} className="mb-8">
       <div className="flex items-center justify-between mb-3">
         <h2 className="font-display uppercase text-[28px] leading-none tracking-[0.005em] m-0">
           {CATEGORY_HEADING[category]}
@@ -269,11 +269,14 @@ function CarouselCategorySection({ category, products, onProductClick, onSeeAll 
         onMouseLeave={handleMouseUp}
       >
         {products.map((product, i) => (
-          <div key={product.sku} className="flex-none w-[200px]">
+          <div
+            key={product.sku}
+            className={`flex-none w-[200px] ${sectionInView ? 'animate-fade-up' : 'opacity-0'}`}
+            style={{ animationDelay: `${i * 60}ms` }}
+          >
             <ProductCard
               product={product}
               onClick={onProductClick}
-              animationDelay={i * 60}
             />
           </div>
         ))}
@@ -291,6 +294,8 @@ export function ApparelPage() {
 
   const [catalogRef, catalogInView] = useInView();
 
+  const loadingBar = useLoadingBarStore();
+
   const isFormView = activeView === 'get-a-quote' || activeView === 'submit-roster';
   const activeCategory: FilterCategory = isFormView ? 'All' : (activeView as FilterCategory);
 
@@ -302,14 +307,21 @@ export function ApparelPage() {
       : [];
 
   useEffect(() => {
+    loadingBar.start();
     fetch('/api/get-catalog')
       .then((res) => {
         if (!res.ok) throw new Error();
         return res.json() as Promise<Product[]>;
       })
-      .then((data) => setCatalogState({ status: 'success', data }))
-      .catch(() => setCatalogState({ status: 'error' }));
-  }, []);
+      .then((data) => {
+        loadingBar.done();
+        setCatalogState({ status: 'success', data });
+      })
+      .catch(() => {
+        loadingBar.done();
+        setCatalogState({ status: 'error' });
+      });
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <PageLayout breadcrumb="Apparel">
@@ -409,7 +421,7 @@ export function ApparelPage() {
 
             {/* ── FORM VIEW ── */}
             {isFormView && (
-              <div>
+              <div key="form" className="animate-fade-in-fast">
                 {/* ── FULL-WIDTH TAB BAR ── */}
                 <div className="border-b border-pm-rule flex items-end gap-0 w-full">
                   <button
@@ -462,7 +474,7 @@ export function ApparelPage() {
 
             {/* ── CATALOG VIEW ── */}
             {!isFormView && (
-              <section id="catalog" ref={catalogRef}>
+              <section key="catalog" id="catalog" ref={catalogRef} className="animate-fade-in-fast">
 
                 {catalogState.status === 'loading' && <CatalogSkeleton />}
 
@@ -554,17 +566,21 @@ export function ApparelPage() {
                         </p>
                       </div>
                     ) : (
-                      <div className={`grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-10 ${catalogInView ? 'animate-fade-up' : ''}`}>
+                      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-10">
                         {displayedProducts.map((product, i) => (
-                          <ProductCard
+                          <div
                             key={product.sku}
-                            product={product}
-                            onClick={(p) => {
-                              setSelectedProduct(p);
-                              setModalProducts(displayedProducts);
-                            }}
-                            animationDelay={i * 80}
-                          />
+                            className={catalogInView ? 'animate-fade-up' : 'opacity-0'}
+                            style={{ animationDelay: `${i * 80}ms` }}
+                          >
+                            <ProductCard
+                              product={product}
+                              onClick={(p) => {
+                                setSelectedProduct(p);
+                                setModalProducts(displayedProducts);
+                              }}
+                            />
+                          </div>
                         ))}
                       </div>
                     )}
