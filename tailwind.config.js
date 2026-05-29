@@ -32,10 +32,15 @@ export default {
           '0%':   { opacity: '0' },
           '100%': { opacity: '1' },
         },
+        ticker: {
+          '0%':   { transform: 'translateX(0)' },
+          '100%': { transform: 'translateX(-50%)' },
+        },
       },
       animation: {
         'fade-up': 'fadeUp 0.5s ease-out both',
         'fade-in': 'fadeIn 0.4s ease-out both',
+        'ticker':  'ticker 24s linear infinite',
       },
     },
   },
