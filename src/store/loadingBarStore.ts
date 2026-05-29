@@ -24,6 +24,7 @@ export const useLoadingBarStore = create<LoadingBarStore>((set) => ({
 
   done() {
     set({ progress: 1 });
-    setTimeout(() => set({ active: false, progress: 0 }), 350);
+    setTimeout(() => set({ active: false }), 200);
+    setTimeout(() => set({ progress: 0 }), 700);
   },
 }));

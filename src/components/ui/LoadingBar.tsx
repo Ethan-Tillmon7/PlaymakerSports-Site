@@ -11,8 +11,8 @@ export function LoadingBar() {
         width: `${progress * 100}%`,
         opacity: active ? 1 : 0,
         transition: active
-          ? 'width 800ms ease-out, opacity 150ms'
-          : 'width 150ms ease-out, opacity 350ms 150ms',
+          ? 'width 800ms ease-out'
+          : 'opacity 350ms ease-out',
       }}
     />
   );
