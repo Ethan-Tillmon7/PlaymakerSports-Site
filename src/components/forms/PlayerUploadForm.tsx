@@ -21,7 +21,7 @@ type FormValues = {
 };
 
 const inputClass =
-  'w-full border border-pm-rule rounded-xl px-4 h-10 text-[14px] text-pm-ink bg-white focus:outline-none focus:border-pm-black transition-colors duration-150';
+  'w-full border border-pm-rule rounded-xl px-4 h-11 text-[15px] text-pm-ink bg-white focus:outline-none focus:border-pm-black transition-colors duration-150';
 
 export function PlayerUploadForm() {
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
@@ -131,7 +131,7 @@ export function PlayerUploadForm() {
                 type="button"
                 onClick={() => remove(index)}
                 disabled={fields.length === 1}
-                className="h-10 w-9 flex items-center justify-center border border-pm-rule rounded-xl text-pm-muted hover:border-pm-ink hover:text-pm-black transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                className="h-11 w-9 flex items-center justify-center border border-pm-rule rounded-xl text-pm-muted hover:border-pm-ink hover:text-pm-black transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
                 aria-label="Remove player"
               >
                 ×
