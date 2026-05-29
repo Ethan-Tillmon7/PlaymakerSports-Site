@@ -11,18 +11,29 @@ import type { Product, ProductCategory } from '../types/product';
 import { ProductDetailModal } from '../components/modals/ProductDetailModal';
 
 type FilterCategory = 'All' | ProductCategory;
+type ActiveView = FilterCategory | 'get-a-quote' | 'submit-roster';
 
 type CatalogState =
   | { status: 'loading' }
   | { status: 'success'; data: Product[] }
   | { status: 'error' };
 
-const FILTER_TABS: { label: string; value: FilterCategory }[] = [
+const SIDEBAR_FILTER_TABS: { label: string; value: FilterCategory }[] = [
   { label: 'All Apparel', value: 'All' },
   { label: 'Jerseys', value: 'Jersey' },
-  { label: 'Caps', value: 'Cap' },
   { label: 'Trinkets', value: 'Trinket' },
 ];
+
+const SIDEBAR_FORM_TABS: { label: string; value: 'get-a-quote' | 'submit-roster' }[] = [
+  { label: 'Get a Quote', value: 'get-a-quote' },
+  { label: 'Submit Roster', value: 'submit-roster' },
+];
+
+// Combined for mobile tab strip
+const MOBILE_TABS = [
+  ...SIDEBAR_FILTER_TABS,
+  ...SIDEBAR_FORM_TABS,
+] as { label: string; value: ActiveView }[];
 
 const CATEGORY_HEADING: Record<FilterCategory, string> = {
   All: 'All Apparel',
@@ -43,7 +54,8 @@ const categoryStage: Record<ProductCategory, string> = {
   Trinket: 'stage-paper',
 };
 
-const CAROUSEL_CATEGORIES: ProductCategory[] = ['Jersey', 'Cap', 'Pants', 'Practice', 'Patch', 'Trinket'];
+// Cap excluded
+const CATALOG_CATEGORIES: ProductCategory[] = ['Jersey', 'Pants', 'Practice', 'Patch', 'Trinket'];
 
 
 const CARD_W = 190;
@@ -287,13 +299,21 @@ function CategoryCarousel({ category, products, onViewAll, onProductClick }: Cat
 
 export function ApparelPage() {
   const [catalogState, setCatalogState] = useState<CatalogState>({ status: 'loading' });
-  const [activeCategory, setActiveCategory] = useState<FilterCategory>('All');
+  const [activeView, setActiveView] = useState<ActiveView>('All');
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [modalProducts, setModalProducts] = useState<Product[]>([]);
 
   const [catalogRef, catalogInView] = useInView();
-  const [orderRef, orderInView] = useInView();
-  const [rosterRef, rosterInView] = useInView();
+
+  const isFormView = activeView === 'get-a-quote' || activeView === 'submit-roster';
+  const activeCategory: FilterCategory = isFormView ? 'All' : (activeView as FilterCategory);
+
+  const displayedProducts =
+    catalogState.status === 'success' && !isFormView
+      ? activeCategory === 'All'
+        ? catalogState.data
+        : catalogState.data.filter((p) => p.category === activeCategory)
+      : [];
 
   useEffect(() => {
     fetch('/api/get-catalog')
@@ -304,13 +324,6 @@ export function ApparelPage() {
       .then((data) => setCatalogState({ status: 'success', data }))
       .catch(() => setCatalogState({ status: 'error' }));
   }, []);
-
-  const displayedProducts =
-    catalogState.status === 'success'
-      ? activeCategory === 'All'
-        ? catalogState.data
-        : catalogState.data.filter((p) => p.category === activeCategory)
-      : [];
 
   return (
     <PageLayout breadcrumb="Apparel">
@@ -335,34 +348,6 @@ export function ApparelPage() {
           </h1>
         </div>
       </header>
-
-      {/* ── CATEGORY FILTER ── */}
-      <section className="border-b border-pm-rule bg-white sticky top-16 z-20">
-        <div className="max-w-[1480px] mx-auto px-6 sm:px-10 h-14 flex items-center justify-between gap-4 overflow-x-auto">
-          <ul className="flex items-center gap-1 font-display uppercase text-[14px] tracking-[0.04em] whitespace-nowrap">
-            {FILTER_TABS.map(({ label, value }) => (
-              <li key={value}>
-                <button
-                  type="button"
-                  onClick={() => setActiveCategory(value)}
-                  className={`px-4 h-9 inline-flex items-center transition-colors duration-150 rounded-lg ${
-                    activeCategory === value
-                      ? 'bg-pm-black text-white'
-                      : 'text-pm-ink hover:bg-pm-paper-2'
-                  }`}
-                >
-                  {label}
-                </button>
-              </li>
-            ))}
-          </ul>
-          <div className="hidden lg:flex items-center gap-3 font-mono text-[11px] tracking-[0.08em] uppercase text-pm-muted shrink-0">
-            {catalogState.status === 'success' && (
-              <span>{displayedProducts.length} {displayedProducts.length === 1 ? 'item' : 'items'}</span>
-            )}
-          </div>
-        </div>
-      </section>
 
       {/* ── CATALOG ── */}
       <section id="catalog" ref={catalogRef} className="max-w-[1480px] mx-auto px-6 sm:px-10 pt-14 pb-16">
@@ -550,8 +535,7 @@ export function ApparelPage() {
             {/* Left — Get a quote */}
             <div>
               <div
-                ref={orderRef}
-                className={`grid grid-cols-1 lg:grid-cols-[80px_1fr] gap-6 lg:gap-8 items-baseline border-t border-pm-black pt-6 mb-10 ${orderInView ? 'animate-fade-up' : 'opacity-0'}`}
+                className="grid grid-cols-1 lg:grid-cols-[80px_1fr] gap-6 lg:gap-8 items-baseline border-t border-pm-black pt-6 mb-10"
               >
                 <div className="font-mono text-[12px] tracking-[0.1em] text-pm-muted pt-1.5">Request</div>
                 <div>
@@ -569,8 +553,7 @@ export function ApparelPage() {
             {/* Right — Submit your roster */}
             <div>
               <div
-                ref={rosterRef}
-                className={`grid grid-cols-1 lg:grid-cols-[80px_1fr] gap-6 lg:gap-8 items-baseline border-t border-pm-black pt-6 mb-10 ${rosterInView ? 'animate-fade-up' : 'opacity-0'}`}
+                className="grid grid-cols-1 lg:grid-cols-[80px_1fr] gap-6 lg:gap-8 items-baseline border-t border-pm-black pt-6 mb-10"
               >
                 <div className="font-mono text-[12px] tracking-[0.1em] text-pm-muted pt-1.5">Roster</div>
                 <div>
