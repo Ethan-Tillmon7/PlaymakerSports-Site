@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { PageLayout } from '../components/layout/PageLayout';
 import { Diamond } from '../components/layout/DiamondMark';
@@ -29,8 +29,8 @@ const SIDEBAR_FORM_TABS: { label: string; value: 'get-a-quote' | 'submit-roster'
   { label: 'Submit Roster', value: 'submit-roster' },
 ];
 
-// Combined for mobile tab strip
-const MOBILE_TABS = [
+// Combined for mobile tab strip (consumed by the mobile sidebar in Task 7)
+export const MOBILE_TABS = [
   ...SIDEBAR_FILTER_TABS,
   ...SIDEBAR_FORM_TABS,
 ] as { label: string; value: ActiveView }[];
@@ -57,9 +57,6 @@ const categoryStage: Record<ProductCategory, string> = {
 // Cap excluded
 const CATALOG_CATEGORIES: ProductCategory[] = ['Jersey', 'Pants', 'Practice', 'Patch', 'Trinket'];
 
-
-const CARD_W = 190;
-const CARD_GAP = 16;
 
 function CatalogSkeleton() {
   return (
@@ -147,150 +144,95 @@ function ProductPlaceholder({ category }: { category: ProductCategory }) {
   );
 }
 
-interface CategoryCarouselProps {
+interface ProductCardProps {
+  product: Product;
+  onClick: (product: Product) => void;
+  animationDelay?: number;
+}
+
+function ProductCard({ product, onClick, animationDelay = 0 }: ProductCardProps) {
+  return (
+    <article
+      className="group flex flex-col hover:-translate-y-0.5 transition-transform duration-150 cursor-pointer"
+      style={{ animationDelay: `${animationDelay}ms` }}
+      onClick={() => onClick(product)}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          onClick(product);
+        }
+      }}
+    >
+      <div className={`${categoryStage[product.category]} aspect-[4/5] relative overflow-hidden rounded-xl`}>
+        <div className="absolute top-3 left-3 font-mono text-[10px] tracking-[0.1em] uppercase text-pm-black/60 bg-white/70 px-2 py-1">
+          {product.category}
+        </div>
+        {product.imageUrl ? (
+          <img
+            src={product.imageUrl}
+            alt={product.displayName}
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+        ) : (
+          <div className="absolute inset-0 flex items-center justify-center">
+            <ProductPlaceholder category={product.category} />
+          </div>
+        )}
+        <div className="absolute bottom-3 left-3 right-3 font-mono text-[10px] tracking-[0.1em] uppercase text-pm-muted">
+          SKU · {product.sku}
+        </div>
+      </div>
+      <div className="pt-5 flex flex-col flex-1">
+        <span className="font-mono text-[10.5px] tracking-[0.1em] uppercase text-pm-muted">{product.category}</span>
+        <h3 className="font-display uppercase text-[22px] leading-[0.95] tracking-[0.005em] mt-2 text-pm-black">
+          {product.displayName}
+        </h3>
+        <p className="text-[13px] leading-[1.5] text-pm-ink mt-2">{product.description}</p>
+        {product.sizesAvailable.length > 0 && (
+          <div className="font-mono text-[10px] tracking-[0.06em] uppercase text-pm-muted mt-3">
+            {product.sizesAvailable.join(' · ')}
+          </div>
+        )}
+        <div className="mt-4 pt-3 border-t border-pm-rule font-display text-[18px] leading-none text-pm-black">
+          {product.basePrice != null ? (
+            <>
+              ${product.basePrice}
+              <span className="text-pm-muted text-[13px]">/team</span>
+            </>
+          ) : (
+            <span className="text-[14px] text-pm-muted">Inquire for pricing</span>
+          )}
+        </div>
+      </div>
+    </article>
+  );
+}
+
+interface CategorySectionProps {
   category: ProductCategory;
   products: Product[];
-  onViewAll: (category: ProductCategory) => void;
   onProductClick: (product: Product) => void;
 }
 
-function CategoryCarousel({ category, products, onViewAll, onProductClick }: CategoryCarouselProps) {
-  const [startIndex, setStartIndex] = useState(0);
-  const [visibleCount, setVisibleCount] = useState(4);
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const update = () => {
-      if (!containerRef.current) return;
-      setVisibleCount(
-        Math.max(1, Math.floor((containerRef.current.offsetWidth + CARD_GAP) / (CARD_W + CARD_GAP)))
-      );
-    };
-    update();
-    window.addEventListener('resize', update);
-    return () => window.removeEventListener('resize', update);
-  }, []);
-
-  const canPrev = startIndex > 0;
-  const canNext = startIndex + visibleCount < products.length;
-
-  const advance = () =>
-    setStartIndex((i) => Math.min(i + visibleCount, Math.max(0, products.length - visibleCount)));
-  const retreat = () =>
-    setStartIndex((i) => Math.max(0, i - visibleCount));
-
-  const categoryLabel = CATEGORY_HEADING[category];
-
+function CategorySection({ category, products, onProductClick }: CategorySectionProps) {
   return (
-    <div className="mb-10">
-      {/* Section header */}
-      <div className="flex items-baseline justify-between border-t border-pm-black pt-4 mb-5">
+    <div className="mb-14">
+      <div className="flex items-baseline justify-between border-t border-pm-black pt-4 mb-6">
         <h2 className="font-display uppercase text-[28px] leading-none tracking-[0.005em] m-0">
-          {categoryLabel}
+          {CATEGORY_HEADING[category]}
         </h2>
-        <button
-          type="button"
-          onClick={() => onViewAll(category)}
-          className="font-display uppercase text-[13px] tracking-[0.04em] text-pm-black border-b-2 border-pm-yellow pb-0.5 hover:border-pm-black transition-colors duration-150"
-        >
-          See all {categoryLabel.toLowerCase()} →
-        </button>
       </div>
-
-      {/* Outer: relative for button positioning, px-5 gives buttons room */}
-      <div className="relative px-5">
-        {/* Inner: clips the track, measured for visibleCount */}
-        <div className="relative overflow-hidden" ref={containerRef}>
-          <div
-            className="flex gap-4 transition-transform duration-200"
-            style={{ transform: `translateX(-${startIndex * (CARD_W + CARD_GAP)}px)` }}
-          >
-            {products.map((product) => (
-              <article
-                key={product.sku}
-                className="w-[190px] flex-shrink-0 flex flex-col hover:-translate-y-0.5 transition-transform duration-150 cursor-pointer group"
-                onClick={() => onProductClick(product)}
-                role="button"
-                tabIndex={0}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    onProductClick(product);
-                  }
-                }}
-              >
-                <div className={`${categoryStage[product.category]} aspect-[4/5] relative overflow-hidden rounded-xl`}>
-                  <div className="absolute top-3 left-3 font-mono text-[10px] tracking-[0.1em] uppercase text-pm-black/60 bg-white/70 px-2 py-1">
-                    {product.category}
-                  </div>
-                  {product.imageUrl ? (
-                    <img
-                      src={product.imageUrl}
-                      alt={product.displayName}
-                      className="absolute inset-0 w-full h-full object-cover"
-                    />
-                  ) : (
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <ProductPlaceholder category={product.category} />
-                    </div>
-                  )}
-                  <div className="absolute bottom-3 left-3 right-3 font-mono text-[10px] tracking-[0.1em] uppercase text-pm-muted">
-                    SKU · {product.sku}
-                  </div>
-                </div>
-                <div className="pt-4 flex flex-col flex-1">
-                  <span className="font-mono text-[10.5px] tracking-[0.1em] uppercase text-pm-muted">{product.category}</span>
-                  <h3 className="font-display uppercase text-[22px] leading-[0.95] tracking-[0.005em] mt-2 text-pm-black">
-                    {product.displayName}
-                  </h3>
-                  <p className="text-[13px] leading-[1.5] text-pm-ink mt-2">{product.description}</p>
-                  {product.sizesAvailable.length > 0 && (
-                    <div className="font-mono text-[10px] tracking-[0.06em] uppercase text-pm-muted mt-3">
-                      {product.sizesAvailable.join(' · ')}
-                    </div>
-                  )}
-                  <div className="mt-4 pt-3 border-t border-pm-rule font-display text-[18px] leading-none text-pm-black">
-                    {product.basePrice != null ? (
-                      <>
-                        ${product.basePrice}
-                        <span className="text-pm-muted text-[13px]">/team</span>
-                      </>
-                    ) : (
-                      <span className="text-[14px] text-pm-muted">Inquire for pricing</span>
-                    )}
-                  </div>
-                </div>
-              </article>
-            ))}
-          </div>
-
-          {/* Right fade — inside overflow-hidden so it clips to track edge */}
-          {canNext && (
-            <div className="absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-r from-transparent to-pm-paper pointer-events-none" />
-          )}
-        </div>
-
-        {/* Buttons — outside overflow-hidden so they are not clipped */}
-        {canPrev && (
-          <button
-            type="button"
-            onClick={retreat}
-            aria-label={`Previous ${categoryLabel}`}
-            className="absolute left-0 top-1/2 -translate-y-1/2 w-9 h-9 bg-pm-yellow border-b-2 border-pm-yellow-deep hover:border-pm-black rounded-lg flex items-center justify-center text-pm-black font-bold text-lg z-10 transition-colors duration-150"
-          >
-            ‹
-          </button>
-        )}
-        {canNext && (
-          <button
-            type="button"
-            onClick={advance}
-            aria-label={`Next ${categoryLabel}`}
-            className="absolute right-0 top-1/2 -translate-y-1/2 w-9 h-9 bg-pm-yellow border-b-2 border-pm-yellow-deep hover:border-pm-black rounded-lg flex items-center justify-center text-pm-black font-bold text-lg z-10 transition-colors duration-150"
-          >
-            ›
-          </button>
-        )}
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-10">
+        {products.map((product, i) => (
+          <ProductCard
+            key={product.sku}
+            product={product}
+            onClick={(p) => onProductClick(p)}
+            animationDelay={i * 60}
+          />
+        ))}
       </div>
     </div>
   );
@@ -375,18 +317,17 @@ export function ApparelPage() {
           </div>
         )}
 
-        {/* ALL view — stacked carousels per category */}
-        {catalogState.status === 'success' && catalogState.data.length > 0 && activeCategory === 'All' && (
+        {/* ALL view — stacked sections per category */}
+        {catalogState.status === 'success' && catalogState.data.length > 0 && activeCategory === 'All' && !isFormView && (
           <>
-            {CAROUSEL_CATEGORIES
+            {CATALOG_CATEGORIES
               .map((cat) => ({ cat, items: catalogState.data.filter((p) => p.category === cat) }))
               .filter(({ items }) => items.length > 0)
               .map(({ cat, items }) => (
-                <CategoryCarousel
+                <CategorySection
                   key={cat}
                   category={cat}
                   products={items}
-                  onViewAll={(c) => setActiveCategory(c)}
                   onProductClick={(product) => {
                     setSelectedProduct(product);
                     setModalProducts(items);
@@ -415,7 +356,7 @@ export function ApparelPage() {
                   No {CATEGORY_HEADING[activeCategory].toLowerCase()} in the catalog yet.{' '}
                   <button
                     type="button"
-                    onClick={() => setActiveCategory('All')}
+                    onClick={() => setActiveView('All')}
                     className="underline hover:text-pm-yellow-deep"
                   >
                     View all apparel
@@ -424,67 +365,17 @@ export function ApparelPage() {
                 </p>
               </div>
             ) : (
-              <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-14 lg:gap-x-8 lg:gap-y-20 ${catalogInView ? 'animate-fade-up' : 'opacity-0'}`}>
+              <div className={`grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-10 ${catalogInView ? 'animate-fade-up' : 'opacity-0'}`}>
                 {displayedProducts.map((product, i) => (
-                  <article
+                  <ProductCard
                     key={product.sku}
-                    className="group flex flex-col hover:-translate-y-0.5 transition-transform duration-150 cursor-pointer"
-                    style={{ animationDelay: `${i * 80}ms` }}
-                    onClick={() => {
-                      setSelectedProduct(product);
+                    product={product}
+                    onClick={(p) => {
+                      setSelectedProduct(p);
                       setModalProducts(displayedProducts);
                     }}
-                    role="button"
-                    tabIndex={0}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        setSelectedProduct(product);
-                        setModalProducts(displayedProducts);
-                      }
-                    }}
-                  >
-                    <div className={`${categoryStage[product.category]} aspect-[4/5] relative overflow-hidden rounded-xl`}>
-                      <div className="absolute top-3 left-3 font-mono text-[10px] tracking-[0.1em] uppercase text-pm-black/60 bg-white/70 px-2 py-1">
-                        {product.category}
-                      </div>
-                      {product.imageUrl ? (
-                        <img
-                          src={product.imageUrl}
-                          alt={product.displayName}
-                          className="absolute inset-0 w-full h-full object-cover"
-                        />
-                      ) : (
-                        <div className="absolute inset-0 flex items-center justify-center">
-                          <ProductPlaceholder category={product.category} />
-                        </div>
-                      )}
-                      <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between font-mono text-[10px] tracking-[0.1em] uppercase text-pm-muted">
-                        <span>SKU · {product.sku}</span>
-                      </div>
-                    </div>
-                    <div className="pt-5 flex flex-col flex-1">
-                      <span className="font-mono text-[10.5px] tracking-[0.1em] uppercase text-pm-muted">{product.category}</span>
-                      <h3 className="font-display uppercase text-[26px] leading-[0.95] tracking-[0.005em] mt-2 text-pm-black">{product.displayName}</h3>
-                      <p className="text-[14px] leading-[1.55] text-pm-ink mt-2">{product.description}</p>
-                      {product.sizesAvailable.length > 0 && (
-                        <div className="font-mono text-[10px] tracking-[0.06em] uppercase text-pm-muted mt-3">
-                          {product.sizesAvailable.join(' · ')}
-                        </div>
-                      )}
-                      <div className="flex items-end justify-between mt-5 pt-4 border-t border-pm-rule">
-                        <div className="font-display text-[22px] leading-none text-pm-black">
-                          {product.basePrice != null
-                            ? `$${product.basePrice}`
-                            : <span className="text-[16px] text-pm-muted">Inquire for pricing</span>
-                          }
-                          {product.basePrice != null && (
-                            <span className="text-pm-muted text-[14px]">/team</span>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  </article>
+                    animationDelay={i * 80}
+                  />
                 ))}
               </div>
             )}
