@@ -79,7 +79,7 @@ export function Nav() {
           mobileOpen ? 'max-h-64 opacity-100' : 'max-h-0 opacity-0 pointer-events-none'
         }`}
       >
-        <ul className={`flex flex-col py-2 px-5 gap-0.5 font-display uppercase text-[14px] tracking-[0.04em] ${mobileOpen ? 'animate-slide-down' : ''}`}>
+        <ul className="flex flex-col py-2 px-5 gap-0.5 font-display uppercase text-[14px] tracking-[0.04em]">
           {navLinks.map(({ label, to }) => {
             const active = pathname === to || (to !== '/' && pathname.startsWith(to));
             return (

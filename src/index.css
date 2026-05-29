@@ -11,6 +11,11 @@
     text-rendering: optimizeLegibility;
     font-feature-settings: 'ss01', 'cv11';
   }
+
+  @keyframes breathe {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.45; }
+  }
 }
 
 @layer utilities {
