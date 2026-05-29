@@ -74,30 +74,32 @@ export function Nav() {
       </nav>
 
       {/* ── Mobile dropdown ── */}
-      {mobileOpen && (
-        <div className="lg:hidden border-t border-pm-rule">
-          <ul className="flex flex-col py-2 px-5 gap-0.5 font-display uppercase text-[14px] tracking-[0.04em]">
-            {navLinks.map(({ label, to }) => {
-              const active = pathname === to || (to !== '/' && pathname.startsWith(to));
-              return (
-                <li key={to}>
-                  <Link
-                    to={to}
-                    onClick={() => setMobileOpen(false)}
-                    className={`block px-3 py-2.5 rounded-lg transition-[colors,background-color] duration-200 ${
-                      active
-                        ? 'text-pm-black bg-pm-paper-2'
-                        : 'text-pm-ink hover:text-pm-black hover:bg-pm-paper-2'
-                    }`}
-                  >
-                    {label}
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
-        </div>
-      )}
+      <div
+        className={`lg:hidden border-t border-pm-rule overflow-hidden transition-[max-height,opacity] duration-200 ease-out ${
+          mobileOpen ? 'max-h-64 opacity-100' : 'max-h-0 opacity-0 pointer-events-none'
+        }`}
+      >
+        <ul className={`flex flex-col py-2 px-5 gap-0.5 font-display uppercase text-[14px] tracking-[0.04em] ${mobileOpen ? 'animate-slide-down' : ''}`}>
+          {navLinks.map(({ label, to }) => {
+            const active = pathname === to || (to !== '/' && pathname.startsWith(to));
+            return (
+              <li key={to}>
+                <Link
+                  to={to}
+                  onClick={() => setMobileOpen(false)}
+                  className={`block px-3 py-2.5 rounded-lg transition-[colors,background-color] duration-200 ${
+                    active
+                      ? 'text-pm-black bg-pm-paper-2'
+                      : 'text-pm-ink hover:text-pm-black hover:bg-pm-paper-2'
+                  }`}
+                >
+                  {label}
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
 
     </div>
   );
