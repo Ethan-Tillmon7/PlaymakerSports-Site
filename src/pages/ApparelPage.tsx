@@ -344,7 +344,7 @@ export function ApparelPage() {
               type="button"
               onClick={() => setActiveView(value)}
               className={`shrink-0 px-4 h-9 inline-flex items-center font-display uppercase text-[13px] tracking-[0.04em] transition-colors duration-150 rounded-lg ${
-                activeView === value
+                activeView === value || (isFormView && value === 'get-a-quote')
                   ? 'bg-pm-black text-white'
                   : 'text-pm-ink hover:bg-pm-paper-2'
               }`}
