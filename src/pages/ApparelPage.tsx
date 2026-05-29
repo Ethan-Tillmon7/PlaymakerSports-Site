@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { PageLayout } from '../components/layout/PageLayout';
 import { Diamond } from '../components/layout/DiamondMark';
-import { alsoAvailable } from '../data/apparel';
 import { PAGE_META, SITE_URL } from '../seo/config';
 import { ApparelInquiryForm } from '../components/forms/ApparelInquiryForm';
 import { PlayerUploadForm } from '../components/forms/PlayerUploadForm';
@@ -291,177 +290,255 @@ export function ApparelPage() {
         </div>
       </header>
 
-      {/* ── CATALOG ── */}
-      <section id="catalog" ref={catalogRef} className="max-w-[1480px] mx-auto px-6 sm:px-10 pt-14 pb-16">
-
-        {catalogState.status === 'loading' && <CatalogSkeleton />}
-
-        {catalogState.status === 'error' && (
-          <div className="border border-pm-rule rounded-xl p-10 text-center max-w-[640px]">
-            <span className="font-mono text-[11px] tracking-[0.16em] uppercase text-pm-muted">Catalog unavailable</span>
-            <p className="text-[15px] leading-[1.6] text-pm-ink mt-3">
-              Catalog temporarily unavailable. Reach out via the form below.
-            </p>
-            <a href="#order" className="mt-6 font-display uppercase text-[15px] tracking-[0.04em] bg-pm-yellow text-pm-black px-5 h-10 inline-flex items-center justify-center hover:bg-pm-yellow-deep transition-colors border-b-2 border-pm-yellow-deep hover:border-pm-black rounded-xl">
-              Get a quote anyway
-            </a>
-          </div>
-        )}
-
-        {catalogState.status === 'success' && catalogState.data.length === 0 && (
-          <div className="border border-pm-rule rounded-xl p-10 text-center max-w-[640px]">
-            <span className="font-mono text-[11px] tracking-[0.16em] uppercase text-pm-muted">Coming soon</span>
-            <p className="text-[15px] leading-[1.6] text-pm-ink mt-3">
-              Catalog coming soon — <a href="#order" className="underline hover:text-pm-yellow-deep">get a quote anyway.</a>
-            </p>
-          </div>
-        )}
-
-        {/* ALL view — stacked sections per category */}
-        {catalogState.status === 'success' && catalogState.data.length > 0 && activeCategory === 'All' && !isFormView && (
-          <>
-            {CATALOG_CATEGORIES
-              .map((cat) => ({ cat, items: catalogState.data.filter((p) => p.category === cat) }))
-              .filter(({ items }) => items.length > 0)
-              .map(({ cat, items }) => (
-                <CategorySection
-                  key={cat}
-                  category={cat}
-                  products={items}
-                  onProductClick={(product) => {
-                    setSelectedProduct(product);
-                    setModalProducts(items);
-                  }}
-                />
-              ))}
-          </>
-        )}
-
-        {/* SINGLE-CATEGORY view — existing grid */}
-        {catalogState.status === 'success' && catalogState.data.length > 0 && activeCategory !== 'All' && (
-          <>
-            <div className="flex items-baseline justify-between mb-10">
-              <h2 className="font-display uppercase text-[clamp(24px,2.5vw,36px)] leading-none tracking-[0.005em] m-0">
-                {CATEGORY_HEADING[activeCategory]}
-              </h2>
-              <span className="font-mono text-[11px] tracking-[0.1em] uppercase text-pm-muted">
-                {displayedProducts.length} {displayedProducts.length === 1 ? 'style' : 'styles'}
-              </span>
-            </div>
-
-            {displayedProducts.length === 0 ? (
-              <div className="border border-pm-rule rounded-xl p-10 text-center max-w-[640px]">
-                <span className="font-mono text-[11px] tracking-[0.16em] uppercase text-pm-muted">Nothing here yet</span>
-                <p className="text-[15px] leading-[1.6] text-pm-ink mt-3">
-                  No {CATEGORY_HEADING[activeCategory].toLowerCase()} in the catalog yet.{' '}
-                  <button
-                    type="button"
-                    onClick={() => setActiveView('All')}
-                    className="underline hover:text-pm-yellow-deep"
-                  >
-                    View all apparel
-                  </button>{' '}
-                  or <a href="#order" className="underline hover:text-pm-yellow-deep">get a quote.</a>
-                </p>
-              </div>
-            ) : (
-              <div className={`grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-10 ${catalogInView ? 'animate-fade-up' : 'opacity-0'}`}>
-                {displayedProducts.map((product, i) => (
-                  <ProductCard
-                    key={product.sku}
-                    product={product}
-                    onClick={(p) => {
-                      setSelectedProduct(p);
-                      setModalProducts(displayedProducts);
-                    }}
-                    animationDelay={i * 80}
-                  />
-                ))}
-              </div>
-            )}
-          </>
-        )}
-
+      {/* ── MOBILE TAB STRIP (< lg) ── */}
+      <section className="lg:hidden border-b border-pm-rule bg-white sticky top-20 z-20">
+        <div className="max-w-[1480px] mx-auto px-6 h-14 flex items-center gap-1 overflow-x-auto [&::-webkit-scrollbar]:hidden [scrollbar-width:none]">
+          {MOBILE_TABS.map(({ label, value }) => (
+            <button
+              key={value}
+              type="button"
+              onClick={() => setActiveView(value)}
+              className={`shrink-0 px-4 h-9 inline-flex items-center font-display uppercase text-[13px] tracking-[0.04em] transition-colors duration-150 rounded-lg ${
+                activeView === value
+                  ? 'bg-pm-black text-white'
+                  : 'text-pm-ink hover:bg-pm-paper-2'
+              }`}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
       </section>
 
-      {/* ── ALSO AVAILABLE ── */}
-      {false && (
-        <section className="max-w-[1480px] mx-auto px-6 sm:px-10 py-16">
-          <div className="flex items-baseline justify-between mb-8">
-            <h2 className="font-display uppercase text-[clamp(24px,2.5vw,36px)] leading-none tracking-[0.005em] m-0">Also available</h2>
-            <a href="#" className="font-mono text-[11px] tracking-[0.1em] uppercase text-pm-ink border-b-2 border-pm-yellow pb-1 hover:border-pm-black">
-              Full catalog
-            </a>
-          </div>
+      {/* ── SIDEBAR + MAIN CONTENT ── */}
+      <div className="max-w-[1480px] mx-auto px-6 sm:px-10">
+        <div className="flex items-start gap-0 lg:gap-8">
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 lg:gap-8">
-            {alsoAvailable.map((item) => (
-              <a key={item.title} href="#" className="group flex flex-col">
-                <div className={`${item.stage} aspect-[4/5] relative rounded-xl overflow-hidden`}>
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    {item.render()}
-                  </div>
-                  <span className="absolute bottom-3 left-3 font-mono text-[10px] tracking-[0.1em] uppercase text-pm-muted bg-white px-2 py-1">
-                    {item.label}
+          {/* Sidebar — desktop only */}
+          <aside className="hidden lg:flex flex-col w-[220px] shrink-0 sticky top-20 self-start border-r border-pm-rule py-6 pr-4 min-h-[calc(100vh-80px)]">
+
+            {/* Filter tabs */}
+            <ul className="flex flex-col gap-0.5">
+              {SIDEBAR_FILTER_TABS.map(({ label, value }) => (
+                <li key={value}>
+                  <button
+                    type="button"
+                    onClick={() => setActiveView(value)}
+                    className={`w-full text-left px-3 py-2 font-display uppercase text-[14px] tracking-[0.04em] rounded-lg transition-colors duration-150 ${
+                      activeView === value
+                        ? 'bg-pm-black text-white'
+                        : 'text-pm-ink hover:bg-pm-paper-2'
+                    }`}
+                  >
+                    {label}
+                  </button>
+                </li>
+              ))}
+            </ul>
+
+            <div className="border-t border-pm-rule my-4" />
+
+            {/* Form tabs */}
+            <ul className="flex flex-col gap-0.5">
+              {SIDEBAR_FORM_TABS.map(({ label, value }) => (
+                <li key={value}>
+                  <button
+                    type="button"
+                    onClick={() => setActiveView(value)}
+                    className={`w-full text-left px-3 py-2 font-display uppercase text-[13px] tracking-[0.04em] rounded-lg transition-colors duration-150 border-l-2 ${
+                      activeView === value
+                        ? 'border-pm-yellow bg-pm-paper-2 text-pm-black'
+                        : 'border-transparent text-pm-ink hover:bg-pm-paper-2'
+                    }`}
+                  >
+                    {label}
+                  </button>
+                </li>
+              ))}
+            </ul>
+
+          </aside>
+
+          {/* Main content */}
+          <div className="flex-1 min-w-0 py-10 lg:py-14">
+
+            {/* ── FORM VIEW ── */}
+            {isFormView && (
+              <div>
+                <button
+                  type="button"
+                  onClick={() => setActiveView('All')}
+                  className="font-mono text-[11px] tracking-[0.1em] uppercase text-pm-muted hover:text-pm-ink transition-colors duration-150 mb-8 inline-flex items-center gap-1"
+                >
+                  ← Back to catalog
+                </button>
+                <div className="border-t border-pm-black pt-6 mb-10">
+                  <span className="font-mono text-[12px] tracking-[0.1em] text-pm-muted">
+                    {activeView === 'get-a-quote' ? 'Request' : 'Roster'}
                   </span>
+                  <h2 className="font-display uppercase text-[clamp(32px,4.5vw,56px)] leading-[0.95] tracking-[0.005em] m-0 mt-2">
+                    {activeView === 'get-a-quote' ? 'Get a quote' : 'Submit your roster'}
+                  </h2>
+                  <p className="text-[15px] leading-[1.6] text-pm-ink mt-4 max-w-[480px]">
+                    {activeView === 'get-a-quote'
+                      ? "Tell us your team, style, and roster count — we'll send a digital proof same-day."
+                      : "Add each player's name, number, and size. Mix sizes freely at no extra charge."}
+                  </p>
                 </div>
-                <div className="pt-4">
-                  <h3 className="font-display uppercase text-[20px] leading-[1] tracking-[0.005em] text-pm-black">{item.title}</h3>
-                  <div className="flex items-center justify-between mt-1.5 font-mono text-[11px] tracking-[0.06em] uppercase text-pm-muted">
-                    <span>{item.price}</span>
-                    <span className="group-hover:text-pm-ink">Browse</span>
+                {activeView === 'get-a-quote' ? <ApparelInquiryForm /> : <PlayerUploadForm />}
+              </div>
+            )}
+
+            {/* ── CATALOG VIEW ── */}
+            {!isFormView && (
+              <section id="catalog" ref={catalogRef}>
+
+                {catalogState.status === 'loading' && <CatalogSkeleton />}
+
+                {catalogState.status === 'error' && (
+                  <div className="border border-pm-rule rounded-xl p-10 text-center max-w-[640px]">
+                    <span className="font-mono text-[11px] tracking-[0.16em] uppercase text-pm-muted">Catalog unavailable</span>
+                    <p className="text-[15px] leading-[1.6] text-pm-ink mt-3">
+                      Catalog temporarily unavailable. Reach out via the form below.
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => setActiveView('get-a-quote')}
+                      className="mt-6 font-display uppercase text-[15px] tracking-[0.04em] bg-pm-yellow text-pm-black px-5 h-10 inline-flex items-center justify-center hover:bg-pm-yellow-deep transition-colors border-b-2 border-pm-yellow-deep hover:border-pm-black rounded-xl"
+                    >
+                      Get a quote anyway
+                    </button>
                   </div>
-                </div>
-              </a>
-            ))}
+                )}
+
+                {catalogState.status === 'success' && catalogState.data.length === 0 && (
+                  <div className="border border-pm-rule rounded-xl p-10 text-center max-w-[640px]">
+                    <span className="font-mono text-[11px] tracking-[0.16em] uppercase text-pm-muted">Coming soon</span>
+                    <p className="text-[15px] leading-[1.6] text-pm-ink mt-3">
+                      Catalog coming soon —{' '}
+                      <button
+                        type="button"
+                        onClick={() => setActiveView('get-a-quote')}
+                        className="underline hover:text-pm-yellow-deep"
+                      >
+                        get a quote anyway.
+                      </button>
+                    </p>
+                  </div>
+                )}
+
+                {/* ALL view */}
+                {catalogState.status === 'success' && catalogState.data.length > 0 && activeCategory === 'All' && (
+                  <>
+                    {CATALOG_CATEGORIES
+                      .map((cat) => ({ cat, items: catalogState.data.filter((p) => p.category === cat) }))
+                      .filter(({ items }) => items.length > 0)
+                      .map(({ cat, items }) => (
+                        <CategorySection
+                          key={cat}
+                          category={cat}
+                          products={items}
+                          onProductClick={(product) => {
+                            setSelectedProduct(product);
+                            setModalProducts(items);
+                          }}
+                        />
+                      ))}
+                  </>
+                )}
+
+                {/* SINGLE-CATEGORY view */}
+                {catalogState.status === 'success' && catalogState.data.length > 0 && activeCategory !== 'All' && (
+                  <>
+                    <div className="flex items-baseline justify-between mb-10">
+                      <h2 className="font-display uppercase text-[clamp(24px,2.5vw,36px)] leading-none tracking-[0.005em] m-0">
+                        {CATEGORY_HEADING[activeCategory]}
+                      </h2>
+                      <span className="font-mono text-[11px] tracking-[0.1em] uppercase text-pm-muted">
+                        {displayedProducts.length} {displayedProducts.length === 1 ? 'style' : 'styles'}
+                      </span>
+                    </div>
+
+                    {displayedProducts.length === 0 ? (
+                      <div className="border border-pm-rule rounded-xl p-10 text-center max-w-[640px]">
+                        <span className="font-mono text-[11px] tracking-[0.16em] uppercase text-pm-muted">Nothing here yet</span>
+                        <p className="text-[15px] leading-[1.6] text-pm-ink mt-3">
+                          No {CATEGORY_HEADING[activeCategory].toLowerCase()} in the catalog yet.{' '}
+                          <button
+                            type="button"
+                            onClick={() => setActiveView('All')}
+                            className="underline hover:text-pm-yellow-deep"
+                          >
+                            View all apparel
+                          </button>{' '}
+                          or{' '}
+                          <button
+                            type="button"
+                            onClick={() => setActiveView('get-a-quote')}
+                            className="underline hover:text-pm-yellow-deep"
+                          >
+                            get a quote.
+                          </button>
+                        </p>
+                      </div>
+                    ) : (
+                      <div className={`grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-10 ${catalogInView ? 'animate-fade-up' : 'opacity-0'}`}>
+                        {displayedProducts.map((product, i) => (
+                          <ProductCard
+                            key={product.sku}
+                            product={product}
+                            onClick={(p) => {
+                              setSelectedProduct(p);
+                              setModalProducts(displayedProducts);
+                            }}
+                            animationDelay={i * 80}
+                          />
+                        ))}
+                      </div>
+                    )}
+                  </>
+                )}
+
+              </section>
+            )}
+
           </div>
-        </section>
-      )}
+        </div>
+      </div>
 
-      {/* ── ORDER + ROSTER ── */}
-      <section id="order" className="bg-pm-paper-2 border-t border-pm-rule">
-        <div className="max-w-[1480px] mx-auto px-6 sm:px-10 py-16 lg:py-20">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start">
-
-            {/* Left — Get a quote */}
-            <div>
-              <div
-                className="grid grid-cols-1 lg:grid-cols-[80px_1fr] gap-6 lg:gap-8 items-baseline border-t border-pm-black pt-6 mb-10"
-              >
-                <div className="font-mono text-[12px] tracking-[0.1em] text-pm-muted pt-1.5">Request</div>
-                <div>
-                  <h2 className="font-display uppercase text-[clamp(32px,4.5vw,56px)] leading-[0.95] tracking-[0.005em] m-0">
+      {/* ── ORDER + ROSTER — only shown when browsing catalog, not form views ── */}
+      {!isFormView && (
+        <section id="order" className="bg-pm-paper-2 border-t border-pm-rule">
+          <div className="max-w-[1480px] mx-auto px-6 sm:px-10 py-16 lg:py-20">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start">
+              <div>
+                <div className="border-t border-pm-black pt-6 mb-10">
+                  <div className="font-mono text-[12px] tracking-[0.1em] text-pm-muted pt-1.5">Request</div>
+                  <h2 className="font-display uppercase text-[clamp(32px,4.5vw,56px)] leading-[0.95] tracking-[0.005em] m-0 mt-2">
                     Get a quote
                   </h2>
                   <p className="text-[15px] leading-[1.6] text-pm-ink mt-4 max-w-[480px]">
                     Tell us your team, style, and roster count — we'll send a digital proof same-day.
                   </p>
                 </div>
+                <ApparelInquiryForm />
               </div>
-              <ApparelInquiryForm />
-            </div>
-
-            {/* Right — Submit your roster */}
-            <div>
-              <div
-                className="grid grid-cols-1 lg:grid-cols-[80px_1fr] gap-6 lg:gap-8 items-baseline border-t border-pm-black pt-6 mb-10"
-              >
-                <div className="font-mono text-[12px] tracking-[0.1em] text-pm-muted pt-1.5">Roster</div>
-                <div>
-                  <h2 className="font-display uppercase text-[clamp(32px,4.5vw,56px)] leading-[0.95] tracking-[0.005em] m-0">
+              <div>
+                <div className="border-t border-pm-black pt-6 mb-10">
+                  <div className="font-mono text-[12px] tracking-[0.1em] text-pm-muted pt-1.5">Roster</div>
+                  <h2 className="font-display uppercase text-[clamp(32px,4.5vw,56px)] leading-[0.95] tracking-[0.005em] m-0 mt-2">
                     Submit your roster
                   </h2>
                   <p className="text-[15px] leading-[1.6] text-pm-ink mt-4 max-w-[480px]">
                     Add each player's name, number, and size. Mix sizes freely at no extra charge.
                   </p>
                 </div>
+                <PlayerUploadForm />
               </div>
-              <PlayerUploadForm />
             </div>
-
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {selectedProduct && (
         <ProductDetailModal
