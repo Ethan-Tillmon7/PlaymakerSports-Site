@@ -155,14 +155,18 @@ export function FAQPage() {
           })}
         </div>
 
-        <div className="mt-14 border border-pm-rule rounded-xl p-7 max-w-[480px] mx-auto text-center">
-          <span className="font-mono text-[11px] tracking-[0.1em] uppercase text-pm-muted">Still have questions?</span>
-          <p className="font-display uppercase text-[22px] leading-[1] tracking-[0.005em] mt-2 text-pm-black">
-            Get in touch
-          </p>
+        <div className="mt-12 bg-pm-black rounded-xl px-8 py-6 flex items-center justify-between gap-6">
+          <div>
+            <span className="font-mono text-[10px] tracking-[0.12em] uppercase text-white/40">
+              Still have questions?
+            </span>
+            <p className="font-display uppercase text-[22px] leading-[1] tracking-[0.005em] mt-1 text-white">
+              Get in touch
+            </p>
+          </div>
           <Link
             to="/about"
-            className="mt-5 font-display uppercase text-[14px] tracking-[0.04em] bg-pm-yellow text-pm-black px-5 h-9 inline-flex items-center justify-center hover:bg-pm-yellow-deep transition-[colors,transform] duration-150 active:scale-[0.97] border-b-2 border-pm-yellow-deep hover:border-pm-black rounded-xl"
+            className="shrink-0 font-display uppercase text-[14px] tracking-[0.04em] bg-pm-yellow text-pm-black px-5 h-9 inline-flex items-center justify-center hover:bg-pm-yellow-deep transition-[colors,transform] duration-150 active:scale-[0.97] border-b-2 border-pm-yellow-deep hover:border-pm-black rounded-xl"
           >
             Contact us
           </Link>
