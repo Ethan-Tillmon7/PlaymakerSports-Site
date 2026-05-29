@@ -155,7 +155,7 @@ export function EventsPage() {
             Tournaments · Acadiana
           </span>
           <h1 className="font-display uppercase text-[clamp(36px,5vw,56px)] leading-[0.86] tracking-[-0.005em] text-pm-black mt-4">
-            Events &amp;<br />Tournaments
+            Events &amp; Tournaments
           </h1>
         </div>
       </header>

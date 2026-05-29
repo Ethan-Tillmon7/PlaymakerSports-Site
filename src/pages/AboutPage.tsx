@@ -1,20 +1,26 @@
+import homeplateImg from '../assets/images/homeplate.jpg';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { PageLayout } from '../components/layout/PageLayout';
 import { PAGE_META, SITE_URL } from '../seo/config';
 import { contact } from '../data/contact';
-import { useInView } from '../hooks/useInView';
+import { useScrollOut } from '../hooks/useScrollOut';
 
 const values = [
-  { stat: '2025', label: 'Year founded' },
-  { stat: 'Lafayette', label: 'Home base' },
-  { stat: '6U–14U', label: 'Divisions served' },
+  { stat: '2025',      label: 'Year founded'      },
+  { stat: 'Lafayette', label: 'Home base'          },
+  { stat: '6U–14U',   label: 'Divisions served'   },
 ];
 
+const prefersReducedMotion =
+  typeof window !== 'undefined' &&
+  window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
 export function AboutPage() {
-  const [bioRef, bioInView] = useInView();
-  const [valuesRef, valuesInView] = useInView();
-  const [ctaRef, ctaInView] = useInView();
+  const [heroRef, heroProgress] = useScrollOut();
+
+  const bgScale = prefersReducedMotion ? 1 : 1 + heroProgress * 0.1;
+  const bgBlur  = prefersReducedMotion ? 0 : heroProgress * 7;
 
   return (
     <PageLayout breadcrumb="About">
@@ -28,89 +34,80 @@ export function AboutPage() {
         <meta property="og:type" content="website" />
       </Helmet>
 
-      {/* ── PAGE HEADER ── */}
-      <header className="border-b border-pm-rule">
-        <div className="max-w-[1480px] mx-auto px-6 sm:px-10 pt-6 pb-8 animate-fade-up">
-          <span className="font-mono text-[11px] tracking-[0.16em] uppercase text-pm-yellow-deep">Built in Lafayette</span>
-          <h1 className="font-display uppercase text-[clamp(36px,5vw,56px)] leading-[0.86] tracking-[-0.005em] text-pm-black mt-4">
-            About<br />Playmaker
+      {/* ── SINGLE FULL SECTION ── */}
+      <section
+        ref={heroRef}
+        className="relative min-h-screen overflow-hidden flex flex-col items-center justify-center"
+      >
+        {/* Photo background — zooms in and blurs as you scroll past */}
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage: `url(${homeplateImg})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            transform: `scale(${bgScale})`,
+            filter: `blur(${bgBlur}px)`,
+            willChange: 'transform, filter',
+          }}
+        />
+        {/* Dark overlay */}
+        <div className="absolute inset-0 bg-black/60 pointer-events-none" />
+
+        {/* All content — stays sharp */}
+        <div className="relative z-[2] max-w-[1100px] mx-auto px-6 sm:px-10 py-24 w-full text-center animate-fade-up">
+
+          {/* ── Heading ── */}
+          <span className="font-mono text-[11px] tracking-[0.16em] uppercase text-pm-yellow">
+            The backstory
+          </span>
+          <h1 className="font-display uppercase text-[clamp(52px,8vw,96px)] leading-[0.85] tracking-[-0.01em] text-white mt-4">
+            About Playmaker
           </h1>
-        </div>
-      </header>
+          <h2 className="font-display uppercase text-[clamp(16px,2.2vw,26px)] leading-[1.1] tracking-[0.01em] text-white/65 mt-4">
+            Built for the game, rooted in Lafayette
+          </h2>
 
-      {/* ── JAKE'S STORY ── */}
-      <section className="max-w-[1480px] mx-auto px-6 sm:px-10 py-16 lg:py-20">
-        <div ref={bioRef} className="grid grid-cols-1 lg:grid-cols-[1fr_420px] gap-12 lg:gap-20 items-start">
-          <div className={bioInView ? 'animate-fade-up' : 'opacity-0'}>
-            <span className="font-mono text-[11px] tracking-[0.16em] uppercase text-pm-muted">The backstory</span>
-            <h2 className="font-display uppercase text-[clamp(32px,4vw,56px)] leading-[0.95] tracking-[0.005em] mt-4 text-pm-black">
-              Built in<br />Lafayette
-            </h2>
-            <div className="mt-6 space-y-4 text-[16px] leading-[1.65] text-pm-ink max-w-[560px]">
-              <p>
-                Playmaker Sports was founded in 2025 with a straightforward mission: bring high-quality merchandise and a better buying experience to tournaments across the South.
-              </p>
-              <p>
-                We show up to events throughout the region — stocking jerseys, accessories, batting gear, hats, player cards, and custom apparel for athletes from 6U to high school. From Acadiana to wherever the schedule takes us, Playmaker is on the sideline.
-              </p>
-              <p>
-                What separates us from the big vendors is simple: when you reach out to Playmaker, you're talking to a real person who genuinely cares. We build relationships with tournament directors, coaches, and families because that's how good business works — and because every athlete deserves to look and feel the part.
-              </p>
-            </div>
+          {/* ── Story ── */}
+          <div className="mt-10 pt-10 border-t border-white/20 max-w-[640px] mx-auto space-y-5">
+            <p className="text-[15px] leading-[1.7] text-white/80">
+              Playmaker Sports was founded in 2025 with a straightforward mission: bring high-quality merchandise and a better buying experience to tournaments across the South.
+            </p>
+            <p className="text-[15px] leading-[1.7] text-white/80">
+              We show up to events throughout the region — stocking jerseys, accessories, batting gear, hats, player cards, and custom apparel for athletes from 6U to high school. From Acadiana to wherever the schedule takes us, Playmaker is on the sideline.
+            </p>
+            <p className="text-[15px] leading-[1.7] text-white/80">
+              What separates us from the big vendors is simple: when you reach out to Playmaker, you're talking to a real person who genuinely cares. We build relationships with tournament directors, coaches, and families because every athlete deserves to look and feel the part.
+            </p>
           </div>
 
-          {/* Photo slot — placeholder stripe until Jake sends a photo */}
-          <div
-            className={`aspect-[4/5] img-stripe rounded-xl overflow-hidden border border-pm-rule relative ${bioInView ? 'animate-fade-up' : 'opacity-0'}`}
-            style={{ animationDelay: '120ms' }}
-          >
-            <div className="absolute bottom-4 left-4 font-mono text-[10px] tracking-[0.1em] uppercase text-pm-muted bg-white/80 px-2 py-1">
-              [ photo · Jake Johnson ]
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── VALUES / STATS ── */}
-      <section className="bg-pm-paper-2 border-y border-pm-rule">
-        <div className="max-w-[1480px] mx-auto px-6 sm:px-10 py-14">
-          <div ref={valuesRef} className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-            {values.map((v, i) => (
-              <div
-                key={v.label}
-                className={`bg-white border border-pm-rule rounded-xl p-6 ${valuesInView ? 'animate-fade-up' : 'opacity-0'}`}
-                style={{ animationDelay: `${i * 80}ms` }}
-              >
-                <div className="font-display uppercase text-[clamp(28px,3vw,44px)] leading-none tracking-[0.005em] text-pm-black">
+          {/* ── Stats ── */}
+          <div className="mt-12 pt-12 border-t border-white/20 grid grid-cols-3 gap-6">
+            {values.map((v) => (
+              <div key={v.label}>
+                <div className="font-display uppercase text-[clamp(32px,4vw,56px)] leading-none tracking-[0.005em] text-white">
                   {v.stat}
                 </div>
-                <div className="font-mono text-[11px] tracking-[0.1em] uppercase text-pm-muted mt-2">
+                <div className="font-mono text-[11px] tracking-[0.1em] uppercase text-pm-yellow mt-2">
                   {v.label}
                 </div>
               </div>
             ))}
           </div>
-        </div>
-      </section>
 
-      {/* ── CONTACT CTA ── */}
-      <section className="bg-pm-yellow border-b border-pm-black">
-        <div
-          ref={ctaRef}
-          className={`max-w-[1480px] mx-auto px-6 sm:px-10 py-16 lg:py-20 ${ctaInView ? 'animate-fade-up' : 'opacity-0'}`}
-        >
-          <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-8 items-center">
-            <div>
-              <span className="font-mono text-[11px] tracking-[0.1em] uppercase text-pm-black/70">Get in touch</span>
-              <h2 className="font-display uppercase text-[clamp(40px,5.5vw,80px)] leading-[0.90] tracking-[0.005em] mt-3 text-pm-black">
-                Ready to<br />work together?
-              </h2>
-            </div>
-            <div className="flex flex-col gap-3">
+          {/* ── CTA ── */}
+          <div className="mt-12 pt-12 border-t border-white/20">
+            <span className="font-mono text-[11px] tracking-[0.1em] uppercase text-white/50">
+              Get in touch
+            </span>
+            <h2 className="font-display uppercase text-[clamp(36px,5vw,72px)] leading-[0.90] tracking-[0.005em] text-white mt-3">
+              Ready to work together?
+            </h2>
+            <div className="mt-6 flex flex-col sm:flex-row gap-3 justify-center">
               {contact.email && (
                 <a
                   href={`mailto:${contact.email}`}
-                  className="font-display uppercase text-[16px] tracking-[0.04em] bg-pm-black text-white px-6 h-11 inline-flex items-center justify-center hover:bg-pm-ink transition-[colors,transform] duration-150 active:scale-[0.97] border-b-2 border-black/40 rounded-xl"
+                  className="font-display uppercase text-[16px] tracking-[0.04em] bg-pm-yellow text-pm-black px-6 h-11 inline-flex items-center justify-center hover:bg-pm-yellow-deep transition-[colors,transform] duration-150 active:scale-[0.97] border-b-2 border-pm-yellow-deep rounded-xl"
                 >
                   {contact.email}
                 </a>
@@ -118,7 +115,7 @@ export function AboutPage() {
               {contact.phone && (
                 <a
                   href={`tel:${contact.phone}`}
-                  className="font-display uppercase text-[16px] tracking-[0.04em] bg-transparent text-pm-black px-6 h-11 inline-flex items-center justify-center border-b-2 border-pm-black hover:bg-pm-black/10 transition-[colors,transform] duration-150 active:scale-[0.97] rounded-xl"
+                  className="font-display uppercase text-[16px] tracking-[0.04em] bg-white/10 text-white px-6 h-11 inline-flex items-center justify-center border border-white/25 hover:bg-white/20 transition-[colors,transform] duration-150 active:scale-[0.97] rounded-xl"
                 >
                   {contact.phone}
                 </a>
@@ -126,13 +123,14 @@ export function AboutPage() {
               {!contact.email && !contact.phone && (
                 <Link
                   to="/faq"
-                  className="font-display uppercase text-[16px] tracking-[0.04em] bg-pm-black text-white px-6 h-11 inline-flex items-center justify-center hover:bg-pm-ink transition-[colors,transform] duration-150 active:scale-[0.97] border-b-2 border-black/40 rounded-xl"
+                  className="font-display uppercase text-[16px] tracking-[0.04em] bg-pm-yellow text-pm-black px-6 h-11 inline-flex items-center justify-center hover:bg-pm-yellow-deep transition-[colors,transform] duration-150 active:scale-[0.97] border-b-2 border-pm-yellow-deep rounded-xl"
                 >
                   See the FAQ
                 </Link>
               )}
             </div>
           </div>
+
         </div>
       </section>
 
