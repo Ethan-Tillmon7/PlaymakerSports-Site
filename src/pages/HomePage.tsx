@@ -1,3 +1,4 @@
+import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { PageLayout } from '../components/layout/PageLayout';
@@ -7,6 +8,26 @@ import { formatDateRange } from '../lib/dates';
 import { PAGE_META, SITE_URL } from '../seo/config';
 
 export function HomePage() {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+  const [showArrows, setShowArrows] = useState(false);
+  const tileRef = useRef<HTMLAnchorElement>(null);
+  const [tileWidth, setTileWidth] = useState(224);
+
+  useEffect(() => {
+    if (tileRef.current) {
+      setTileWidth(tileRef.current.offsetWidth);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (isPaused || tournaments.length <= 1) return;
+    const id = setInterval(() => {
+      setActiveIndex((i) => (i + 1) % tournaments.length);
+    }, 4000);
+    return () => clearInterval(id);
+  }, [isPaused]);
+
   return (
     <PageLayout>
       <Helmet>
@@ -90,38 +111,94 @@ export function HomePage() {
           </div>
         </div>
 
-        {/* ── UPCOMING EVENTS STRIP — gold text overlaid on hero bg ── */}
-        <div className="relative border-t border-white/[0.07]">
-          <div className="max-w-[1480px] mx-auto">
-            <div className="flex overflow-x-auto [&::-webkit-scrollbar]:hidden [scrollbar-width:none]">
-              <div className="shrink-0 flex items-center px-6 sm:px-10 py-5 border-r border-white/[0.07]">
-                <span className="font-mono text-[9.5px] tracking-[0.16em] uppercase text-white/25">Upcoming</span>
-              </div>
-              {tournaments.map((t, i) => {
-                const { lines } = formatDateRange(t.startDate, t.endDate);
-                const dateDisplay = lines.join(' ');
-                return (
-                  <Link
-                    key={t.id}
-                    to="/events"
-                    className={`group shrink-0 flex flex-col justify-center gap-0.5 px-6 sm:px-8 py-5 hover:bg-white/[0.04] transition-colors duration-150 ${i < tournaments.length - 1 ? 'border-r border-white/[0.07]' : ''}`}
-                  >
-                    <span className="font-mono text-[9px] tracking-[0.12em] uppercase text-white/25">{dateDisplay}</span>
-                    <span className="font-display uppercase text-[17px] leading-none tracking-[0.005em] text-pm-yellow group-hover:text-pm-yellow-deep transition-colors duration-150">{t.name}</span>
-                    <span className="font-mono text-[9.5px] tracking-[0.05em] uppercase text-white/35 mt-0.5">{t.location}</span>
-                  </Link>
-                );
-              })}
-              <Link
-                to="/events"
-                className="shrink-0 flex items-center px-6 sm:px-10 py-5 ml-auto border-l border-white/[0.07] hover:bg-white/[0.04] transition-colors duration-150"
-              >
-                <span className="font-mono text-[9.5px] tracking-[0.12em] uppercase text-white/35 hover:text-pm-yellow transition-colors duration-150">
-                  Full schedule →
-                </span>
-              </Link>
+        {/* ── UPCOMING EVENTS STRIP — auto-advance carousel ── */}
+        <div
+          className="relative border-t border-white/[0.07]"
+          onMouseEnter={() => { setIsPaused(true); setShowArrows(true); }}
+          onMouseLeave={() => { setIsPaused(false); setShowArrows(false); }}
+        >
+          <div className="max-w-[1480px] mx-auto flex">
+            {/* "Upcoming" label */}
+            <div className="shrink-0 flex items-center px-6 sm:px-10 py-5 border-r border-white/[0.07]">
+              <span className="font-mono text-[9.5px] tracking-[0.16em] uppercase text-white/25">Upcoming</span>
             </div>
+
+            {/* Carousel track */}
+            <div className="flex-1 relative overflow-hidden">
+              <div
+                className="flex transition-transform duration-300"
+                style={{ transform: `translateX(-${activeIndex * tileWidth}px)` }}
+              >
+                {tournaments.map((t, i) => {
+                  const { lines } = formatDateRange(t.startDate, t.endDate);
+                  const dateDisplay = lines.join(' ');
+                  return (
+                    <Link
+                      key={t.id}
+                      ref={i === 0 ? tileRef : undefined}
+                      to="/events"
+                      className="group shrink-0 w-56 flex flex-col justify-center gap-0.5 px-6 sm:px-8 py-5 hover:bg-white/[0.04] transition-colors duration-150"
+                    >
+                      <span className="font-mono text-[9px] tracking-[0.12em] uppercase text-white/25">{dateDisplay}</span>
+                      <span className="font-display uppercase text-[17px] leading-none tracking-[0.005em] text-pm-yellow group-hover:text-pm-yellow-deep transition-colors duration-150">{t.name}</span>
+                      <span className="font-mono text-[9.5px] tracking-[0.05em] uppercase text-white/35 mt-0.5">{t.location}</span>
+                    </Link>
+                  );
+                })}
+              </div>
+
+              {/* Prev arrow */}
+              {showArrows && activeIndex > 0 && (
+                <button
+                  type="button"
+                  onClick={() => setActiveIndex((i) => i - 1)}
+                  aria-label="Previous event"
+                  className="absolute left-1 top-1/2 -translate-y-1/2 w-8 h-8 bg-pm-yellow border-b-2 border-pm-yellow-deep hover:border-pm-black rounded-lg flex items-center justify-center text-pm-black font-bold z-10 transition-colors duration-150"
+                >
+                  ‹
+                </button>
+              )}
+
+              {/* Next arrow */}
+              {showArrows && activeIndex < tournaments.length - 1 && (
+                <button
+                  type="button"
+                  onClick={() => setActiveIndex((i) => i + 1)}
+                  aria-label="Next event"
+                  className="absolute right-1 top-1/2 -translate-y-1/2 w-8 h-8 bg-pm-yellow border-b-2 border-pm-yellow-deep hover:border-pm-black rounded-lg flex items-center justify-center text-pm-black font-bold z-10 transition-colors duration-150"
+                >
+                  ›
+                </button>
+              )}
+            </div>
+
+            {/* Full schedule link */}
+            <Link
+              to="/events"
+              className="shrink-0 flex items-center px-6 sm:px-10 py-5 border-l border-white/[0.07] hover:bg-white/[0.04] transition-colors duration-150"
+            >
+              <span className="font-mono text-[9.5px] tracking-[0.12em] uppercase text-white/35 hover:text-pm-yellow transition-colors duration-150">
+                Full schedule →
+              </span>
+            </Link>
           </div>
+
+          {/* Dot indicators */}
+          {tournaments.length > 1 && (
+            <div className="flex justify-center gap-2 py-2">
+              {tournaments.map((_, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  onClick={() => setActiveIndex(i)}
+                  aria-label={`Go to event ${i + 1}`}
+                  className={`w-1.5 h-1.5 rounded-full transition-colors duration-150 ${
+                    i === activeIndex ? 'bg-pm-yellow' : 'bg-white/25 hover:bg-white/50'
+                  }`}
+                />
+              ))}
+            </div>
+          )}
         </div>
       </header>
 
