@@ -1,10 +1,12 @@
 import { Link } from 'react-router-dom';
 import { contact } from '../../data/contact';
+import { FadeIn } from '../ui/FadeIn';
 
 export function Footer() {
   return (
     <footer className="bg-pm-black text-white px-6 sm:px-10 pt-8 pb-0">
-      <div className="max-w-[1480px] mx-auto">
+      <FadeIn>
+        <div className="max-w-[1480px] mx-auto">
 
         {/* Row 1 — Brand + Nav */}
         <div className="flex flex-col lg:flex-row items-start justify-between gap-8 pb-6 border-b border-white/15">
@@ -66,7 +68,8 @@ export function Footer() {
           </div>
         </div>
 
-      </div>
+        </div>
+      </FadeIn>
     </footer>
   );
 }
