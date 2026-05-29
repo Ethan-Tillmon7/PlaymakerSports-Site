@@ -405,32 +405,40 @@ export function ApparelPage() {
           </aside>
 
           {/* Main content */}
-          <div className="flex-1 min-w-0 py-6 lg:py-10">
+          <div className={`flex-1 min-w-0 pb-6 lg:pb-10 ${isFormView ? 'pt-0' : 'pt-6 lg:pt-10'}`}>
 
             {/* ── FORM VIEW ── */}
             {isFormView && (
               <div>
-                <button
-                  type="button"
-                  onClick={() => setActiveView('All')}
-                  className="font-mono text-[11px] tracking-[0.1em] uppercase text-pm-muted hover:text-pm-ink transition-colors duration-150 mb-8 inline-flex items-center gap-1"
-                >
-                  ← Back to catalog
-                </button>
-                <div className="border-t border-pm-black pt-6 mb-10">
-                  <span className="font-mono text-[12px] tracking-[0.1em] text-pm-muted">
-                    {activeView === 'get-a-quote' ? 'Request' : 'Roster'}
-                  </span>
-                  <h2 className="font-display uppercase text-[clamp(32px,4.5vw,56px)] leading-[0.95] tracking-[0.005em] m-0 mt-2">
-                    {activeView === 'get-a-quote' ? 'Get a quote' : 'Submit your roster'}
-                  </h2>
-                  <p className="text-[15px] leading-[1.6] text-pm-ink mt-4 max-w-[480px]">
-                    {activeView === 'get-a-quote'
-                      ? "Tell us your team, style, and roster count — we'll send a digital proof same-day."
-                      : "Add each player's name, number, and size. Mix sizes freely at no extra charge."}
-                  </p>
+                {/* ── FULL-WIDTH TAB BAR ── */}
+                <div className="border-b border-pm-rule flex items-end gap-0 w-full">
+                  <button
+                    type="button"
+                    onClick={() => setActiveView('All')}
+                    className="font-mono text-[11px] tracking-[0.1em] uppercase text-pm-muted hover:text-pm-ink transition-colors duration-150 pr-5 pb-3 pt-4 border-r border-pm-rule mr-5 inline-flex items-center gap-1 shrink-0"
+                  >
+                    ← Catalog
+                  </button>
+                  {(['get-a-quote', 'submit-roster'] as const).map((tab) => (
+                    <button
+                      key={tab}
+                      type="button"
+                      onClick={() => setActiveView(tab)}
+                      className={`font-display uppercase text-[14px] tracking-[0.04em] px-4 pb-3 pt-4 border-b-2 -mb-px transition-colors duration-150 ${
+                        activeView === tab
+                          ? 'border-pm-yellow text-pm-black'
+                          : 'border-transparent text-pm-muted hover:text-pm-ink'
+                      }`}
+                    >
+                      {tab === 'get-a-quote' ? 'Get a Quote' : 'Submit Roster'}
+                    </button>
+                  ))}
                 </div>
-                {activeView === 'get-a-quote' ? <ApparelInquiryForm /> : <PlayerUploadForm />}
+
+                {/* ── FORM CONTENT (intro + form) — added in Task 3 ── */}
+                <div className="pt-10 pb-16">
+                  {activeView === 'get-a-quote' ? <ApparelInquiryForm /> : <PlayerUploadForm />}
+                </div>
               </div>
             )}
 
