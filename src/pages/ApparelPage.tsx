@@ -421,7 +421,7 @@ export function ApparelPage() {
 
             {/* ── FORM VIEW ── */}
             {isFormView && (
-              <div key="form" className="animate-fade-in-fast">
+              <div className="animate-fade-in-fast">
                 {/* ── FULL-WIDTH TAB BAR ── */}
                 <div className="border-b border-pm-rule flex items-end gap-0 w-full">
                   <button
@@ -474,7 +474,7 @@ export function ApparelPage() {
 
             {/* ── CATALOG VIEW ── */}
             {!isFormView && (
-              <section key="catalog" id="catalog" ref={catalogRef} className="animate-fade-in-fast">
+              <section id="catalog" ref={catalogRef} className="animate-fade-in-fast">
 
                 {catalogState.status === 'loading' && <CatalogSkeleton />}
 
