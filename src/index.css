@@ -57,6 +57,11 @@
   .stage-sky {
     background: radial-gradient(ellipse 80% 60% at 50% 35%, #EEF3F5 0%, #E1E8EC 70%, #CDD7DC 100%);
   }
+
+  .bg-shimmer {
+    background: linear-gradient(90deg, #E2E0D6 25%, #FAFAF7 50%, #E2E0D6 75%);
+    background-size: 200% 100%;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

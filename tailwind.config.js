@@ -32,15 +32,35 @@ export default {
           '0%':   { opacity: '0' },
           '100%': { opacity: '1' },
         },
+        fadeInFast: {
+          '0%':   { opacity: '0' },
+          '100%': { opacity: '1' },
+        },
         ticker: {
           '0%':   { transform: 'translateX(0)' },
           '100%': { transform: 'translateX(-50%)' },
         },
+        breathe: {
+          '0%, 100%': { opacity: '1' },
+          '50%':      { opacity: '0.45' },
+        },
+        shimmer: {
+          '0%':   { backgroundPosition: '-200% 0' },
+          '100%': { backgroundPosition: '200% 0' },
+        },
+        slideDown: {
+          '0%':   { opacity: '0', transform: 'translateY(-8px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
       },
       animation: {
-        'fade-up': 'fadeUp 0.5s ease-out both',
-        'fade-in': 'fadeIn 0.4s ease-out both',
-        'ticker':  'ticker 24s linear infinite',
+        'fade-up':      'fadeUp 0.5s ease-out both',
+        'fade-in':      'fadeIn 0.4s ease-out both',
+        'fade-in-fast': 'fadeInFast 0.2s ease-out both',
+        'ticker':       'ticker 24s linear infinite',
+        'breathe':      'breathe 3.5s ease-in-out infinite',
+        'shimmer':      'shimmer 1.6s ease-in-out infinite',
+        'slide-down':   'slideDown 0.2s ease-out both',
       },
     },
   },
