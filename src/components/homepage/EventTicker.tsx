@@ -13,7 +13,7 @@ export function EventTicker() {
     <Link
       to="/events"
       aria-label="Upcoming events ticker"
-      className="block border-t border-white/[0.07] overflow-hidden cursor-pointer"
+      className="block border-t border-white/[0.07] overflow-hidden"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >
@@ -28,7 +28,7 @@ export function EventTicker() {
         {/* Scrolling track — items rendered twice for seamless loop */}
         <div className="flex-1 overflow-hidden flex items-center">
           <div
-            className="flex animate-ticker"
+            className="flex animate-ticker motion-reduce:animate-none"
             style={{ animationPlayState: paused ? 'paused' : 'running' }}
           >
             {[...items, ...items].map((t, i) => {
