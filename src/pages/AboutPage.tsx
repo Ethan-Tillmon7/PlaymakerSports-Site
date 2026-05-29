@@ -41,7 +41,7 @@ export function AboutPage() {
       {/* ── SINGLE FULL SECTION ── */}
       <section
         ref={heroRef}
-        className="relative min-h-screen overflow-hidden flex flex-col items-center justify-center"
+        className="relative -mt-16 min-h-screen overflow-hidden flex flex-col items-center justify-center"
       >
         {/* Photo background — zooms in and blurs as you scroll past */}
         <div
