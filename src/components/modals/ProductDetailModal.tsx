@@ -541,20 +541,26 @@ export function ProductDetailModal({ initialProduct, allProducts, onClose }: Pro
 
         {/* Body — swapped by step */}
         {step === 'detail' && (
-          <DetailView
-            product={currentProduct}
-            onPurchase={() => setStep('form')}
-          />
+          <div key="detail" className="animate-fade-in flex flex-col flex-1 overflow-hidden min-h-0">
+            <DetailView
+              product={currentProduct}
+              onPurchase={() => setStep('form')}
+            />
+          </div>
         )}
         {step === 'form' && (
-          <PurchaseForm product={currentProduct} onSuccess={() => setStep('success')} />
+          <div key="form" className="animate-fade-in flex-1 overflow-hidden min-h-0">
+            <PurchaseForm product={currentProduct} onSuccess={() => setStep('success')} />
+          </div>
         )}
         {step === 'success' && (
-          <SuccessView
-            product={currentProduct}
-            onClose={handleClose}
-            onBrowseMore={() => setStep('detail')}
-          />
+          <div key="success" className="animate-fade-in flex-1">
+            <SuccessView
+              product={currentProduct}
+              onClose={handleClose}
+              onBrowseMore={() => setStep('detail')}
+            />
+          </div>
         )}
       </div>
     </div>,
