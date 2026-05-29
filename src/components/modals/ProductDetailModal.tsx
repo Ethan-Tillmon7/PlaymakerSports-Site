@@ -549,12 +549,12 @@ export function ProductDetailModal({ initialProduct, allProducts, onClose }: Pro
           </div>
         )}
         {step === 'form' && (
-          <div key="form" className="animate-fade-in flex-1 overflow-hidden min-h-0">
+          <div key="form" className="animate-fade-in flex flex-col flex-1 overflow-hidden min-h-0">
             <PurchaseForm product={currentProduct} onSuccess={() => setStep('success')} />
           </div>
         )}
         {step === 'success' && (
-          <div key="success" className="animate-fade-in flex-1">
+          <div key="success" className="animate-fade-in flex flex-col flex-1 overflow-hidden min-h-0">
             <SuccessView
               product={currentProduct}
               onClose={handleClose}
