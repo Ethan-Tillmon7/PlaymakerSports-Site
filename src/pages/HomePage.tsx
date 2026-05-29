@@ -41,7 +41,12 @@ export function HomePage() {
         {/* Centered hero content */}
         <div className="relative max-w-[1480px] mx-auto px-6 sm:px-10 pt-14 pb-20 lg:pt-16 lg:pb-28 flex flex-col items-center text-center">
 
-          <Diamond className="w-7 h-7 text-pm-yellow shrink-0 mb-8 animate-fade-up" style={{ animationDelay: '0ms' }} />
+          <Diamond
+            className="w-7 h-7 text-pm-yellow shrink-0 mb-8"
+            style={{
+              animation: 'fadeUp 0.5s ease-out both 0ms, breathe 3.5s ease-in-out 0.5s infinite',
+            }}
+          />
 
           <h1 className="font-display uppercase leading-[0.84] tracking-[-0.005em] text-white m-0 animate-fade-up" style={{ animationDelay: '100ms' }}>
             <span className="block text-[clamp(76px,14.5vw,232px)]">
