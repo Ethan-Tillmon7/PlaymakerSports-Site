@@ -482,7 +482,7 @@ export function ApparelPage() {
                         </p>
                       </div>
                     ) : (
-                      <div className={`grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-10 ${catalogInView ? 'animate-fade-up' : 'opacity-0'}`}>
+                      <div className={`grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-10 ${catalogInView ? 'animate-fade-up' : ''}`}>
                         {displayedProducts.map((product, i) => (
                           <ProductCard
                             key={product.sku}
