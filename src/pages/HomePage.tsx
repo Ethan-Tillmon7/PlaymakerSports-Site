@@ -26,7 +26,7 @@ export function HomePage() {
       setActiveIndex((i) => (i + 1) % tournaments.length);
     }, 4000);
     return () => clearInterval(id);
-  }, [isPaused]);
+  }, [isPaused, tournaments.length]);
 
   return (
     <PageLayout>
@@ -186,9 +186,9 @@ export function HomePage() {
           {/* Dot indicators */}
           {tournaments.length > 1 && (
             <div className="flex justify-center gap-2 py-2">
-              {tournaments.map((_, i) => (
+              {tournaments.map((t, i) => (
                 <button
-                  key={i}
+                  key={t.id}
                   type="button"
                   onClick={() => setActiveIndex(i)}
                   aria-label={`Go to event ${i + 1}`}
