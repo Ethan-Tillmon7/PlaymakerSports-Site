@@ -442,10 +442,10 @@ export function ApparelPage() {
                     <span className="font-mono text-[11px] tracking-[0.1em] uppercase text-pm-muted">
                       {activeView === 'get-a-quote' ? 'Request' : 'Roster'}
                     </span>
-                    <h2 className="font-display uppercase text-[clamp(32px,4vw,48px)] leading-[0.95] tracking-[0.005em] mt-2 mb-0">
+                    <h2 className="font-display uppercase text-[clamp(32px,4vw,48px)] leading-[0.95] tracking-[0.005em] mt-2 mb-0 text-pm-black">
                       {activeView === 'get-a-quote' ? 'Get a Quote' : 'Submit Your Roster'}
                     </h2>
-                    <p className="text-[15px] leading-[1.65] text-pm-ink mt-4 max-w-[420px]">
+                    <p className="text-[15px] leading-[1.6] text-pm-ink mt-4 max-w-[420px]">
                       {activeView === 'get-a-quote'
                         ? "Tell us your team, style, and roster count — we'll send a digital proof same-day."
                         : "Add each player's name, number, and size. Mix sizes freely at no extra charge."}
