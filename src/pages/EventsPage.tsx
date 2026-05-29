@@ -6,6 +6,7 @@ import { Diamond } from '../components/layout/DiamondMark';
 import { PAGE_META, SITE_URL } from '../seo/config';
 import { useInView } from '../hooks/useInView';
 import { formatDateRange } from '../lib/dates';
+import { useLoadingBarStore } from '../store/loadingBarStore';
 import type { Tournament } from '../data/events';
 
 function DateTile({ startDate, endDate }: { startDate: string; endDate: string }) {
@@ -98,14 +99,14 @@ function TournamentSkeleton() {
       {[0, 1, 2, 3].map((i) => (
         <div
           key={i}
-          className={`grid grid-cols-[56px_1fr] items-center gap-4 sm:gap-6 px-4 sm:px-5 py-4 animate-pulse ${
+          className={`grid grid-cols-[56px_1fr] items-center gap-4 sm:gap-6 px-4 sm:px-5 py-4 ${
             i < 3 ? 'border-b border-pm-rule' : ''
           }`}
         >
-          <div className="aspect-square bg-pm-rule rounded-lg" />
+          <div className="aspect-square bg-shimmer animate-shimmer rounded-lg" />
           <div className="space-y-2">
-            <div className="h-4 bg-pm-rule rounded w-40" />
-            <div className="h-3 bg-pm-rule rounded w-64" />
+            <div className="h-4 bg-shimmer animate-shimmer rounded w-40" />
+            <div className="h-3 bg-shimmer animate-shimmer rounded w-64" />
           </div>
         </div>
       ))}
@@ -121,16 +122,24 @@ type FetchState =
 export function EventsPage() {
   const [state, setState] = useState<FetchState>({ status: 'loading' });
   const [listRef, listInView] = useInView();
+  const loadingBar = useLoadingBarStore();
 
   useEffect(() => {
+    loadingBar.start();
     fetch('/api/get-events')
       .then((res) => {
         if (!res.ok) throw new Error();
         return res.json() as Promise<Tournament[]>;
       })
-      .then((data) => setState({ status: 'success', data }))
-      .catch(() => setState({ status: 'error' }));
-  }, []);
+      .then((data) => {
+        loadingBar.done();
+        setState({ status: 'success', data });
+      })
+      .catch(() => {
+        loadingBar.done();
+        setState({ status: 'error' });
+      });
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const today = new Date().toISOString().split('T')[0];
   const allEvents = state.status === 'success' ? state.data : [];
