@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import homeplateImg from '../assets/images/homeplate.jpg';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
@@ -5,6 +6,7 @@ import { PageLayout } from '../components/layout/PageLayout';
 import { PAGE_META, SITE_URL } from '../seo/config';
 import { contact } from '../data/contact';
 import { useScrollOut } from '../hooks/useScrollOut';
+import { useCountUp } from '../hooks/useCountUp';
 
 const values = [
   { stat: '2025',      label: 'Year founded'      },
@@ -18,9 +20,15 @@ const prefersReducedMotion =
 
 export function AboutPage() {
   const [heroRef, heroProgress] = useScrollOut();
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const bgScale = prefersReducedMotion ? 1 : 1 + heroProgress * 0.1;
   const bgBlur  = prefersReducedMotion ? 0 : heroProgress * 7;
+  const countedYear = useCountUp(2025, 1200, isMounted);
 
   return (
     <PageLayout breadcrumb="About">
@@ -83,10 +91,10 @@ export function AboutPage() {
 
           {/* ── Stats ── */}
           <div className="mt-12 pt-12 border-t border-white/20 grid grid-cols-3 gap-6">
-            {values.map((v) => (
+            {values.map((v, i) => (
               <div key={v.label}>
                 <div className="font-display uppercase text-[clamp(32px,4vw,56px)] leading-none tracking-[0.005em] text-white">
-                  {v.stat}
+                  {i === 0 ? countedYear : v.stat}
                 </div>
                 <div className="font-mono text-[11px] tracking-[0.1em] uppercase text-pm-yellow mt-2">
                   {v.label}
