@@ -17,13 +17,11 @@ function ScrollToTop() {
 }
 
 export default function App() {
-  const { pathname } = useLocation();
-
   return (
     <>
       <LoadingBar />
       <ScrollToTop />
-      <RouteTransition key={pathname}>
+      <RouteTransition>
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/events" element={<EventsPage />} />
