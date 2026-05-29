@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { PageLayout } from '../components/layout/PageLayout';
 import { Diamond } from '../components/layout/DiamondMark';
@@ -24,8 +24,7 @@ const SIDEBAR_FILTER_TABS: { label: string; value: FilterCategory }[] = [
 ];
 
 const SIDEBAR_FORM_TABS: { label: string; value: 'get-a-quote' | 'submit-roster' }[] = [
-  { label: 'Get a Quote', value: 'get-a-quote' },
-  { label: 'Submit Roster', value: 'submit-roster' },
+  { label: 'Custom Order', value: 'get-a-quote' },
 ];
 
 // Combined for mobile tab strip (consumed by the mobile sidebar in Task 7)
@@ -183,25 +182,26 @@ function ProductCard({ product, onClick, animationDelay = 0 }: ProductCardProps)
           SKU · {product.sku}
         </div>
       </div>
-      <div className="pt-5 flex flex-col flex-1">
-        <span className="font-mono text-[10.5px] tracking-[0.1em] uppercase text-pm-muted">{product.category}</span>
-        <h3 className="font-display uppercase text-[22px] leading-[0.95] tracking-[0.005em] mt-2 text-pm-black">
+      <div className="pt-3 flex flex-col flex-1">
+        <span className="font-mono text-[10px] tracking-[0.1em] uppercase text-pm-muted">{product.category}</span>
+        <h3 className="font-display uppercase text-[19px] leading-[0.95] tracking-[0.005em] mt-1.5 text-pm-black">
           {product.displayName}
         </h3>
-        <p className="text-[13px] leading-[1.5] text-pm-ink mt-2">{product.description}</p>
+        <p className="text-[12.5px] leading-[1.5] text-pm-ink mt-1.5">{product.description}</p>
         {product.sizesAvailable.length > 0 && (
-          <div className="font-mono text-[10px] tracking-[0.06em] uppercase text-pm-muted mt-3">
+          <div className="font-mono text-[10px] tracking-[0.06em] uppercase text-pm-muted mt-2">
             {product.sizesAvailable.join(' · ')}
           </div>
         )}
-        <div className="mt-4 pt-3 border-t border-pm-rule font-display text-[18px] leading-none text-pm-black">
+        <div className="flex-1 min-h-[12px]" />
+        <div className="pt-2.5 border-t border-pm-rule font-display text-[16px] leading-none text-pm-black">
           {product.basePrice != null ? (
             <>
               ${product.basePrice}
-              <span className="text-pm-muted text-[13px]">/team</span>
+              <span className="text-pm-muted text-[12px]">/team</span>
             </>
           ) : (
-            <span className="text-[14px] text-pm-muted">Inquire for pricing</span>
+            <span className="text-[13px] text-pm-muted">Inquire for pricing</span>
           )}
         </div>
       </div>
@@ -215,22 +215,67 @@ interface CategorySectionProps {
   onProductClick: (product: Product) => void;
 }
 
-function CategorySection({ category, products, onProductClick }: CategorySectionProps) {
+interface CarouselCategorySectionProps extends CategorySectionProps {
+  onSeeAll: () => void;
+}
+
+function CarouselCategorySection({ category, products, onProductClick, onSeeAll }: CarouselCategorySectionProps) {
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const isDown = useRef(false);
+  const dragStartX = useRef(0);
+  const scrollStartLeft = useRef(0);
+  const [dragging, setDragging] = useState(false);
+
+  function handleMouseDown(e: React.MouseEvent) {
+    isDown.current = true;
+    dragStartX.current = e.clientX;
+    scrollStartLeft.current = scrollRef.current?.scrollLeft ?? 0;
+  }
+
+  function handleMouseMove(e: React.MouseEvent) {
+    if (!isDown.current || !scrollRef.current) return;
+    const dx = e.clientX - dragStartX.current;
+    if (Math.abs(dx) > 4) setDragging(true);
+    scrollRef.current.scrollLeft = scrollStartLeft.current - dx;
+  }
+
+  function handleMouseUp() {
+    isDown.current = false;
+    setDragging(false);
+  }
+
   return (
-    <div className="mb-14">
-      <div className="flex items-baseline justify-between border-t border-pm-black pt-4 mb-6">
+    <div className="mb-8">
+      <div className="flex items-center justify-between mb-3">
         <h2 className="font-display uppercase text-[28px] leading-none tracking-[0.005em] m-0">
           {CATEGORY_HEADING[category]}
         </h2>
+        <button
+          type="button"
+          onClick={onSeeAll}
+          className="font-mono text-[10px] tracking-[0.12em] uppercase text-pm-muted hover:text-pm-ink transition-colors duration-150 shrink-0 ml-4"
+        >
+          See all →
+        </button>
       </div>
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-10">
+      <div
+        ref={scrollRef}
+        className={`flex gap-4 overflow-x-auto [&::-webkit-scrollbar]:hidden [scrollbar-width:none] select-none ${
+          dragging ? 'cursor-grabbing [&>*]:pointer-events-none' : 'cursor-grab'
+        }`}
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
+        onMouseLeave={handleMouseUp}
+      >
         {products.map((product, i) => (
-          <ProductCard
-            key={product.sku}
-            product={product}
-            onClick={(p) => onProductClick(p)}
-            animationDelay={i * 60}
-          />
+          <div key={product.sku} className="flex-none w-[200px]">
+            <ProductCard
+              product={product}
+              onClick={onProductClick}
+              animationDelay={i * 60}
+            />
+          </div>
         ))}
       </div>
     </div>
@@ -285,7 +330,7 @@ export function ApparelPage() {
             Custom uniforms · Acadiana made
           </span>
           <h1 className="font-display uppercase text-[clamp(36px,5vw,56px)] leading-[0.86] tracking-[-0.005em] text-pm-black mt-4">
-            Jerseys<br />built for<br />the <span className="bg-pm-yellow px-[0.08em] rounded-md">play.</span>
+            Jerseys built for the <span className="bg-pm-yellow px-[0.08em] rounded-md">play.</span>
           </h1>
         </div>
       </header>
@@ -346,7 +391,7 @@ export function ApparelPage() {
                     type="button"
                     onClick={() => setActiveView(value)}
                     className={`w-full text-left px-3 py-2 font-display uppercase text-[13px] tracking-[0.04em] rounded-lg transition-colors duration-150 border-l-2 ${
-                      activeView === value
+                      isFormView
                         ? 'border-pm-yellow bg-pm-paper-2 text-pm-black'
                         : 'border-transparent text-pm-ink hover:bg-pm-paper-2'
                     }`}
@@ -360,7 +405,7 @@ export function ApparelPage() {
           </aside>
 
           {/* Main content */}
-          <div className="flex-1 min-w-0 py-10 lg:py-14">
+          <div className="flex-1 min-w-0 py-6 lg:py-10">
 
             {/* ── FORM VIEW ── */}
             {isFormView && (
@@ -434,7 +479,7 @@ export function ApparelPage() {
                       .map((cat) => ({ cat, items: catalogState.data.filter((p) => p.category === cat) }))
                       .filter(({ items }) => items.length > 0)
                       .map(({ cat, items }) => (
-                        <CategorySection
+                        <CarouselCategorySection
                           key={cat}
                           category={cat}
                           products={items}
@@ -442,6 +487,7 @@ export function ApparelPage() {
                             setSelectedProduct(product);
                             setModalProducts(items);
                           }}
+                          onSeeAll={() => setActiveView(cat)}
                         />
                       ))}
                   </>
@@ -450,7 +496,7 @@ export function ApparelPage() {
                 {/* SINGLE-CATEGORY view */}
                 {catalogState.status === 'success' && catalogState.data.length > 0 && activeCategory !== 'All' && (
                   <>
-                    <div className="flex items-baseline justify-between mb-10">
+                    <div className="flex items-baseline justify-between mb-4">
                       <h2 className="font-display uppercase text-[clamp(24px,2.5vw,36px)] leading-none tracking-[0.005em] m-0">
                         {CATEGORY_HEADING[activeCategory]}
                       </h2>
@@ -505,40 +551,6 @@ export function ApparelPage() {
           </div>
         </div>
       </div>
-
-      {/* ── ORDER + ROSTER — only shown when browsing catalog, not form views ── */}
-      {!isFormView && (
-        <section id="order" className="bg-pm-paper-2 border-t border-pm-rule">
-          <div className="max-w-[1480px] mx-auto px-6 sm:px-10 py-16 lg:py-20">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start">
-              <div>
-                <div className="border-t border-pm-black pt-6 mb-10">
-                  <div className="font-mono text-[12px] tracking-[0.1em] text-pm-muted pt-1.5">Request</div>
-                  <h2 className="font-display uppercase text-[clamp(32px,4.5vw,56px)] leading-[0.95] tracking-[0.005em] m-0 mt-2">
-                    Get a quote
-                  </h2>
-                  <p className="text-[15px] leading-[1.6] text-pm-ink mt-4 max-w-[480px]">
-                    Tell us your team, style, and roster count — we'll send a digital proof same-day.
-                  </p>
-                </div>
-                <ApparelInquiryForm />
-              </div>
-              <div>
-                <div className="border-t border-pm-black pt-6 mb-10">
-                  <div className="font-mono text-[12px] tracking-[0.1em] text-pm-muted pt-1.5">Roster</div>
-                  <h2 className="font-display uppercase text-[clamp(32px,4.5vw,56px)] leading-[0.95] tracking-[0.005em] m-0 mt-2">
-                    Submit your roster
-                  </h2>
-                  <p className="text-[15px] leading-[1.6] text-pm-ink mt-4 max-w-[480px]">
-                    Add each player's name, number, and size. Mix sizes freely at no extra charge.
-                  </p>
-                </div>
-                <PlayerUploadForm />
-              </div>
-            </div>
-          </div>
-        </section>
-      )}
 
       {selectedProduct && (
         <ProductDetailModal
