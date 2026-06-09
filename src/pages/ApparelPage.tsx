@@ -296,6 +296,31 @@ export function ApparelPage() {
 
   const [catalogRef, catalogInView] = useInView();
 
+  // Accessories carousel drag-to-scroll
+  const accessoriesScrollRef = useRef<HTMLDivElement>(null);
+  const accIsDown = useRef(false);
+  const accDragStartX = useRef(0);
+  const accScrollStartLeft = useRef(0);
+  const [accessoriesDragging, setAccessoriesDragging] = useState(false);
+
+  function handleAccessoriesMouseDown(e: React.MouseEvent) {
+    accIsDown.current = true;
+    accDragStartX.current = e.clientX;
+    accScrollStartLeft.current = accessoriesScrollRef.current?.scrollLeft ?? 0;
+  }
+
+  function handleAccessoriesMouseMove(e: React.MouseEvent) {
+    if (!accIsDown.current || !accessoriesScrollRef.current) return;
+    const dx = e.clientX - accDragStartX.current;
+    if (Math.abs(dx) > 4) setAccessoriesDragging(true);
+    accessoriesScrollRef.current.scrollLeft = accScrollStartLeft.current - dx;
+  }
+
+  function handleAccessoriesMouseUp() {
+    accIsDown.current = false;
+    setAccessoriesDragging(false);
+  }
+
   const loadingBar = useLoadingBarStore();
 
   const isFormView = activeView === 'get-a-quote' || activeView === 'submit-roster';
@@ -532,30 +557,41 @@ export function ApparelPage() {
                           onSeeAll={() => setActiveView(cat)}
                         />
                       ))}
-
-                    {/* Accessories section in All view */}
-                    <div className="mt-8">
-                      <div className="flex items-center justify-between mb-3">
-                        <h2 className="font-display uppercase text-[28px] leading-none tracking-[0.005em] m-0">
-                          Accessories
-                        </h2>
-                        <button
-                          type="button"
-                          onClick={() => setActiveView('Accessories')}
-                          className="font-mono text-[10px] tracking-[0.12em] uppercase text-pm-muted hover:text-pm-ink transition-colors duration-150 shrink-0 ml-4"
-                        >
-                          See all →
-                        </button>
-                      </div>
-                      <div className="flex gap-4 overflow-x-auto [&::-webkit-scrollbar]:hidden [scrollbar-width:none]">
-                        {accessories.map((item) => (
-                          <div key={item.id} className="flex-none w-[200px]">
-                            <AccessoryCard item={item} onInquire={() => setActiveView('get-a-quote')} />
-                          </div>
-                        ))}
-                      </div>
-                    </div>
                   </>
+                )}
+
+                {/* Accessories teaser — always visible in All view, independent of catalog state */}
+                {activeCategory === 'All' && (
+                  <div className="mt-8">
+                    <div className="flex items-center justify-between mb-3">
+                      <h2 className="font-display uppercase text-[28px] leading-none tracking-[0.005em] m-0">
+                        Accessories
+                      </h2>
+                      <button
+                        type="button"
+                        onClick={() => setActiveView('Accessories')}
+                        className="font-mono text-[10px] tracking-[0.12em] uppercase text-pm-muted hover:text-pm-ink transition-colors duration-150 shrink-0 ml-4"
+                      >
+                        See all →
+                      </button>
+                    </div>
+                    <div
+                      ref={accessoriesScrollRef}
+                      className={`flex gap-4 overflow-x-auto [&::-webkit-scrollbar]:hidden [scrollbar-width:none] select-none ${
+                        accessoriesDragging ? 'cursor-grabbing [&>*]:pointer-events-none' : 'cursor-grab'
+                      }`}
+                      onMouseDown={handleAccessoriesMouseDown}
+                      onMouseMove={handleAccessoriesMouseMove}
+                      onMouseUp={handleAccessoriesMouseUp}
+                      onMouseLeave={handleAccessoriesMouseUp}
+                    >
+                      {accessories.map((item) => (
+                        <div key={item.id} className="flex-none w-[200px]">
+                          <AccessoryCard item={item} onInquire={() => setActiveView('get-a-quote')} />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 )}
 
                 {/* SINGLE-CATEGORY view */}
