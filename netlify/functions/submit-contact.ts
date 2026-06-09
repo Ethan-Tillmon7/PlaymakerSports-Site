@@ -67,7 +67,7 @@ export const handler: Handler = async (event) => {
   }
 
   try {
-    const resend = new Resend(process.env.RESEND_API_KEY);
+    const resend = new Resend(process.env.RESEND_API_KEY!);
     await resend.emails.send({
       from: 'Playmaker Sports <onboarding@resend.dev>',
       to: process.env.CONTACT_EMAIL!,
