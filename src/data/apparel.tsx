@@ -1,5 +1,4 @@
-import type { CSSProperties, ReactElement } from 'react';
-import { Diamond } from '../components/layout/DiamondMark';
+import type { CSSProperties } from 'react';
 
 export interface Swatch {
   bg: string;
@@ -36,12 +35,12 @@ export interface ProcessStep {
   yellow: boolean;
 }
 
-export interface AlsoAvailableItem {
-  stage: string;
-  label: string;
-  title: string;
+export interface AccessoryItem {
+  id: string;
+  name: string;
+  desc: string;
   price: string;
-  render: () => ReactElement;
+  comingSoon: boolean;
 }
 
 export const jerseyCards: JerseyCard[] = [
@@ -132,38 +131,62 @@ export const processSteps: ProcessStep[] = [
   { num: '04', title: 'Ship to field', desc: 'Direct to the dugout. Local Lafayette delivery available.', day: 'Day 7', yellow: true },
 ];
 
-export const alsoAvailable: AlsoAvailableItem[] = [
+export const accessories: AccessoryItem[] = [
   {
-    stage: 'stage-stone', label: '[ cap · 6-panel ]', title: 'Caps', price: 'From $24',
-    render: () => (
-      <div className="w-[60%] aspect-square rounded-full bg-white shadow-[0_18px_30px_rgba(17,17,17,0.10)] border border-pm-rule flex items-center justify-center">
-        <Diamond className="w-12 h-12 text-pm-yellow-deep" />
-      </div>
-    ),
+    id: 'sliding-mitts',
+    name: 'Sliding Mitts',
+    desc: 'Protective sliding mitts in multiple colors.',
+    price: 'From $18',
+    comingSoon: false,
   },
   {
-    stage: 'stage-sky', label: '[ pants · belted ]', title: 'Pants', price: 'From $32',
-    render: () => (
-      <div className="w-[36%] h-[72%] bg-white border border-pm-rule shadow-[0_18px_30px_rgba(17,17,17,0.10)] relative">
-        <div className="absolute top-3 left-1/2 -translate-x-1/2 w-2 h-2 bg-pm-yellow" />
-      </div>
-    ),
+    id: 'chains',
+    name: 'Chains',
+    desc: 'Gold and silver rope chains for the diamond.',
+    price: 'From $14',
+    comingSoon: false,
   },
   {
-    stage: 'stage-mint', label: '[ practice tee ]', title: 'Practice gear', price: 'From $18',
-    render: () => (
-      <div className="w-[58%] h-[40%] bg-pm-black shadow-[0_18px_30px_rgba(17,17,17,0.18)] flex items-center justify-center">
-        <span className="font-display uppercase text-[24px] tracking-[0.04em] text-pm-yellow">Practice</span>
-      </div>
-    ),
+    id: 'arm-sleeves',
+    name: 'Arm Sleeves',
+    desc: 'Compression arm sleeves, multiple colors.',
+    price: 'From $12',
+    comingSoon: false,
   },
   {
-    stage: 'stage-cream', label: '[ patch · 3" sewn ]', title: 'Patches', price: 'From $6',
-    render: () => (
-      <div className="w-[44%] aspect-square bg-pm-yellow border-[3px] border-pm-black flex items-center justify-center shadow-[0_18px_30px_rgba(17,17,17,0.12)]">
-        <Diamond className="w-2/3 h-2/3 text-pm-black" />
-      </div>
-    ),
+    id: 'sunglasses',
+    name: 'Sunglasses',
+    desc: 'UV-protection sport frames.',
+    price: 'From $22',
+    comingSoon: false,
+  },
+  {
+    id: 'eye-black',
+    name: 'Eye Black',
+    desc: 'Anti-glare eye black strips.',
+    price: 'From $4',
+    comingSoon: false,
+  },
+  {
+    id: 'cooling-towels',
+    name: 'Cooling Towels',
+    desc: 'Stay-cool towels for the sideline and dugout.',
+    price: 'From $10',
+    comingSoon: false,
+  },
+  {
+    id: 'hats',
+    name: 'Hats',
+    desc: 'Playmaker Sports custom hat designs — arriving soon.',
+    price: 'Coming Soon',
+    comingSoon: true,
+  },
+  {
+    id: 'batting-gloves',
+    name: 'Batting Gloves',
+    desc: 'Playmaker Sports custom batting gloves — arriving soon.',
+    price: 'Coming Soon',
+    comingSoon: true,
   },
 ];
 
