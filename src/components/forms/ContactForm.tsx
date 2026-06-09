@@ -4,7 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 
 const schema = z.object({
-  role: z.enum(['Player', 'Parent', 'Coach']),
+  role: z.enum(['Player', 'Parent', 'Coach'], { message: 'Please select a role' }),
   name: z.string().min(1, 'Required'),
   email: z.email('Enter a valid email'),
   phone: z.string().optional(),
@@ -26,15 +26,20 @@ function Field({
   required,
   error,
   children,
+  htmlFor,
 }: {
   label: string;
   required?: boolean;
   error?: string;
   children: React.ReactNode;
+  htmlFor?: string;
 }) {
   return (
     <div>
-      <label className="block font-mono text-[11px] tracking-[0.1em] uppercase text-pm-muted mb-1.5">
+      <label
+        htmlFor={htmlFor}
+        className="block font-mono text-[11px] tracking-[0.1em] uppercase text-pm-muted mb-1.5"
+      >
         {label}
         {required && <span className="text-pm-error ml-1">*</span>}
       </label>
@@ -88,8 +93,8 @@ export function ContactForm() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-      <Field label="I am a" required error={errors.role?.message}>
-        <select {...register('role')} className={inputClass} defaultValue="">
+      <Field label="I am a" required error={errors.role?.message} htmlFor="cf-role">
+        <select {...register('role')} id="cf-role" className={inputClass}>
           <option value="" disabled>
             Select…
           </option>
@@ -100,12 +105,13 @@ export function ContactForm() {
       </Field>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-        <Field label="Name" required error={errors.name?.message}>
-          <input {...register('name')} className={inputClass} placeholder="Full name" />
+        <Field label="Name" required error={errors.name?.message} htmlFor="cf-name">
+          <input {...register('name')} id="cf-name" className={inputClass} placeholder="Full name" />
         </Field>
-        <Field label="Email" required error={errors.email?.message}>
+        <Field label="Email" required error={errors.email?.message} htmlFor="cf-email">
           <input
             {...register('email')}
+            id="cf-email"
             type="email"
             className={inputClass}
             placeholder="you@email.com"
@@ -114,26 +120,29 @@ export function ContactForm() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-        <Field label="Phone" error={errors.phone?.message}>
+        <Field label="Phone" error={errors.phone?.message} htmlFor="cf-phone">
           <input
             {...register('phone')}
+            id="cf-phone"
             type="tel"
             className={inputClass}
             placeholder="(337) 555-0100"
           />
         </Field>
-        <Field label="Tournament or event" error={errors.event_name?.message}>
+        <Field label="Tournament or event" error={errors.event_name?.message} htmlFor="cf-event">
           <input
             {...register('event_name')}
+            id="cf-event"
             className={inputClass}
             placeholder="Optional"
           />
         </Field>
       </div>
 
-      <Field label="Message" required error={errors.message?.message}>
+      <Field label="Message" required error={errors.message?.message} htmlFor="cf-message">
         <textarea
           {...register('message')}
+          id="cf-message"
           rows={5}
           className="w-full border border-pm-rule rounded-xl px-4 py-3 text-[15px] text-pm-ink bg-white focus:outline-none focus:border-pm-black transition-colors duration-150 resize-none"
           placeholder="What can we help you with?"
