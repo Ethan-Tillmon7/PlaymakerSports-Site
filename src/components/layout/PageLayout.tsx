@@ -12,6 +12,7 @@ const BREADCRUMB_PATHS: Record<string, string> = {
   Apparel: '/apparel',
   About: '/about',
   FAQ: '/faq',
+  Contact: '/contact',
 };
 
 const orgSchema = {

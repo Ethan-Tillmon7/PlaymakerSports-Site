@@ -5,6 +5,7 @@ import { ApparelPage } from './pages/ApparelPage';
 import { EventsPage } from './pages/EventsPage';
 import { AboutPage } from './pages/AboutPage';
 import { FAQPage } from './pages/FAQPage';
+import { ContactPage } from './pages/ContactPage';
 import { CustomizerPage } from './pages/CustomizerPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 import { LoadingBar } from './components/ui/LoadingBar';
@@ -28,6 +29,7 @@ export default function App() {
           <Route path="/apparel" element={<ApparelPage />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/faq" element={<FAQPage />} />
+          <Route path="/contact" element={<ContactPage />} />
           <Route path="/customizer" element={<CustomizerPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>

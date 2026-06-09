@@ -6,6 +6,7 @@ const navLinks = [
   { label: 'Apparel', to: '/apparel' },
   { label: 'Events', to: '/events' },
   { label: 'FAQ', to: '/faq' },
+  { label: 'Contact', to: '/contact' },
 ];
 
 export function Nav() {
@@ -64,7 +65,7 @@ export function Nav() {
         {/* Right — contact CTA */}
         <div className="flex-1 flex items-center justify-end">
           <Link
-            to="/about"
+            to="/contact"
             className="font-display uppercase text-[13px] lg:text-[14px] tracking-[0.04em] bg-pm-yellow text-pm-black px-4 lg:px-5 h-9 inline-flex items-center justify-center hover:bg-pm-yellow-deep transition-[colors,transform] duration-150 active:scale-[0.97] border-b-2 border-pm-yellow-deep hover:border-pm-black rounded-xl whitespace-nowrap"
           >
             Contact
