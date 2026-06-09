@@ -3,6 +3,11 @@ import { z } from 'zod';
 import { Resend } from 'resend';
 import { getSheetsClient, SHEET_ID } from './_sheets';
 
+const esc = (s: string) =>
+  s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+
+const safecell = (s: string) => (/^[=+\-@\t\r]/.test(s) ? "'" + s : s);
+
 const schema = z.object({
   role: z.enum(['Player', 'Parent', 'Coach']),
   name: z.string().min(1),
@@ -45,11 +50,11 @@ export const handler: Handler = async (event) => {
     const row = [
       timestamp,
       data.role,
-      data.name,
-      data.email,
-      data.phone ?? '',
-      data.message,
-      data.event_name ?? '',
+      safecell(data.name),
+      safecell(data.email),
+      safecell(data.phone ?? ''),
+      safecell(data.message),
+      safecell(data.event_name ?? ''),
     ];
     await sheets.spreadsheets.values.append({
       spreadsheetId: SHEET_ID,
@@ -73,12 +78,12 @@ export const handler: Handler = async (event) => {
       to: process.env.CONTACT_EMAIL!,
       subject: `New Contact: ${data.role} — ${data.name}`,
       html: `
-        <p><strong>Role:</strong> ${data.role}</p>
-        <p><strong>Name:</strong> ${data.name}</p>
-        <p><strong>Email:</strong> ${data.email}</p>
-        <p><strong>Phone:</strong> ${data.phone ?? '—'}</p>
-        <p><strong>Message:</strong> ${data.message}</p>
-        <p><strong>Event:</strong> ${data.event_name ?? '—'}</p>
+        <p><strong>Role:</strong> ${esc(data.role)}</p>
+        <p><strong>Name:</strong> ${esc(data.name)}</p>
+        <p><strong>Email:</strong> ${esc(data.email)}</p>
+        <p><strong>Phone:</strong> ${esc(data.phone ?? '—')}</p>
+        <p><strong>Message:</strong> ${esc(data.message)}</p>
+        <p><strong>Event:</strong> ${esc(data.event_name ?? '—')}</p>
         <hr/>
         <p style="color:#888;font-size:12px">Submitted ${timestamp}</p>
       `,
