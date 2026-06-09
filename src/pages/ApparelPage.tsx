@@ -9,19 +9,21 @@ import { useInView } from '../hooks/useInView';
 import type { Product, ProductCategory } from '../types/product';
 import { ProductDetailModal } from '../components/modals/ProductDetailModal';
 import { useLoadingBarStore } from '../store/loadingBarStore';
+import { accessories } from '../data/apparel';
+import { AccessoryCard } from '../components/apparel/AccessoryCard';
 
 type FilterCategory = 'All' | ProductCategory;
-type ActiveView = FilterCategory | 'get-a-quote' | 'submit-roster';
+type ActiveView = FilterCategory | 'Accessories' | 'get-a-quote' | 'submit-roster';
 
 type CatalogState =
   | { status: 'loading' }
   | { status: 'success'; data: Product[] }
   | { status: 'error' };
 
-const SIDEBAR_FILTER_TABS: { label: string; value: FilterCategory }[] = [
+const SIDEBAR_FILTER_TABS: { label: string; value: FilterCategory | 'Accessories' }[] = [
   { label: 'All Apparel', value: 'All' },
   { label: 'Jerseys', value: 'Jersey' },
-  { label: 'Trinkets', value: 'Trinket' },
+  { label: 'Accessories', value: 'Accessories' },
 ];
 
 const SIDEBAR_FORM_TABS: { label: string; value: 'get-a-quote' | 'submit-roster' }[] = [
@@ -297,10 +299,12 @@ export function ApparelPage() {
   const loadingBar = useLoadingBarStore();
 
   const isFormView = activeView === 'get-a-quote' || activeView === 'submit-roster';
-  const activeCategory: FilterCategory = isFormView ? 'All' : (activeView as FilterCategory);
+  const isAccessoriesView = activeView === 'Accessories';
+  const activeCategory: FilterCategory =
+    isFormView || isAccessoriesView ? 'All' : (activeView as FilterCategory);
 
   const displayedProducts =
-    catalogState.status === 'success' && !isFormView
+    catalogState.status === 'success' && !isFormView && !isAccessoriesView
       ? activeCategory === 'All'
         ? catalogState.data
         : catalogState.data.filter((p) => p.category === activeCategory)
@@ -473,7 +477,7 @@ export function ApparelPage() {
             )}
 
             {/* ── CATALOG VIEW ── */}
-            {!isFormView && (
+            {!isFormView && !isAccessoriesView && (
               <section id="catalog" ref={catalogRef} className="animate-fade-in-fast">
 
                 {catalogState.status === 'loading' && <CatalogSkeleton />}
@@ -528,6 +532,29 @@ export function ApparelPage() {
                           onSeeAll={() => setActiveView(cat)}
                         />
                       ))}
+
+                    {/* Accessories section in All view */}
+                    <div className="mt-8">
+                      <div className="flex items-center justify-between mb-3">
+                        <h2 className="font-display uppercase text-[28px] leading-none tracking-[0.005em] m-0">
+                          Accessories
+                        </h2>
+                        <button
+                          type="button"
+                          onClick={() => setActiveView('Accessories')}
+                          className="font-mono text-[10px] tracking-[0.12em] uppercase text-pm-muted hover:text-pm-ink transition-colors duration-150 shrink-0 ml-4"
+                        >
+                          See all →
+                        </button>
+                      </div>
+                      <div className="flex gap-4 overflow-x-auto [&::-webkit-scrollbar]:hidden [scrollbar-width:none]">
+                        {accessories.map((item) => (
+                          <div key={item.id} className="flex-none w-[200px]">
+                            <AccessoryCard item={item} onInquire={() => setActiveView('get-a-quote')} />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
                   </>
                 )}
 
@@ -587,6 +614,29 @@ export function ApparelPage() {
                   </>
                 )}
 
+              </section>
+            )}
+
+            {/* ── ACCESSORIES VIEW ── */}
+            {isAccessoriesView && (
+              <section className="animate-fade-in-fast pt-6 lg:pt-10">
+                <div className="flex items-baseline justify-between mb-4">
+                  <h2 className="font-display uppercase text-[clamp(24px,2.5vw,36px)] leading-none tracking-[0.005em] m-0">
+                    Accessories
+                  </h2>
+                  <span className="font-mono text-[11px] tracking-[0.1em] uppercase text-pm-muted">
+                    {accessories.filter((a) => !a.comingSoon).length} in stock
+                  </span>
+                </div>
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-10">
+                  {accessories.map((item) => (
+                    <AccessoryCard
+                      key={item.id}
+                      item={item}
+                      onInquire={() => setActiveView('get-a-quote')}
+                    />
+                  ))}
+                </div>
               </section>
             )}
 
