@@ -54,41 +54,9 @@ function TournamentRow({
       style={delay > 0 ? { animationDelay: `${delay}ms` } : undefined}
     >
       <DateTile startDate={t.startDate} endDate={t.endDate} />
-      <div className="min-w-0">
-        <h3 className="font-display uppercase text-[17px] sm:text-[20px] leading-[0.95] tracking-[0.005em] text-pm-black">
-          {t.name}
-        </h3>
-        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1.5 font-mono text-[11px] tracking-[0.06em] uppercase text-pm-muted">
-          {t.location && <span>{t.location}</span>}
-          {t.location && <span className="text-pm-rule" aria-hidden="true">·</span>}
-          <span>{t.organizer}</span>
-          {t.ageGroups && (
-            <>
-              <span className="text-pm-rule" aria-hidden="true">·</span>
-              <span>{t.ageGroups}</span>
-            </>
-          )}
-          {t.notes && (
-            <>
-              <span className="text-pm-rule" aria-hidden="true">·</span>
-              <span>{t.notes}</span>
-            </>
-          )}
-          {t.sourceUrl && (
-            <>
-              <span className="text-pm-rule" aria-hidden="true">·</span>
-              <a
-                href={t.sourceUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-pm-yellow-deep hover:text-pm-black transition-colors duration-150 normal-case"
-              >
-                Tournament info →
-              </a>
-            </>
-          )}
-        </div>
-      </div>
+      <span className="font-mono text-[13px] tracking-[0.06em] uppercase text-pm-ink">
+        {t.location}
+      </span>
     </div>
   );
 }
