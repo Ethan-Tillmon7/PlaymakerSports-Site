@@ -26,4 +26,9 @@ export const PAGE_META = {
     description: 'Common questions about tournaments, apparel orders, refunds, and weather cancellation policies.',
     path: '/faq',
   },
+  contact: {
+    title: 'Contact · Playmaker Sports',
+    description: 'Get in touch with Playmaker Sports. Players, parents, and coaches welcome.',
+    path: '/contact',
+  },
 } as const;
