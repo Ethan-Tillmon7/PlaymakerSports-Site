@@ -15,7 +15,6 @@ export function JsonLd({ data }: JsonLdProps) {
       type="application/ld+json"
       // safeJsonStringify escapes <, >, & to prevent any HTML injection
       // even though all data comes from controlled application sources
-      // eslint-disable-next-line react/no-danger
       dangerouslySetInnerHTML={{ __html: safeJsonStringify(data) }}
     />
   );

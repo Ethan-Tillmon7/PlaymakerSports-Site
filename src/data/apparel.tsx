@@ -35,15 +35,6 @@ export interface ProcessStep {
   yellow: boolean;
 }
 
-export interface AccessoryItem {
-  id: string;
-  name: string;
-  desc: string;
-  price: string;
-  comingSoon: boolean;
-  imageUrl?: string;
-}
-
 export const jerseyCards: JerseyCard[] = [
   {
     stage: 'stage-cream',
@@ -130,94 +121,6 @@ export const processSteps: ProcessStep[] = [
   { num: '02', title: 'Drop your art', desc: "Wordmark, logo, sponsors. We'll vector it for free if you've only got a phone photo.", day: 'Day 1', yellow: false },
   { num: '03', title: 'Approve proof', desc: 'Same-day digital proof. Two free revisions. Sign off and we send it to print.', day: 'Day 2', yellow: false },
   { num: '04', title: 'Ship to field', desc: 'Direct to the dugout. Local Lafayette delivery available.', day: 'Day 7', yellow: true },
-];
-
-export const accessories: AccessoryItem[] = [
-  {
-    id: 'sliding-mitts',
-    name: 'Sliding Mitts',
-    desc: 'Protective sliding mitts in multiple colors.',
-    price: 'From $18',
-    comingSoon: false,
-    imageUrl: '/accessories/sliding-mitts.jpg',
-  },
-  {
-    id: 'chains',
-    name: 'Chains',
-    desc: 'Gold and silver rope chains for the diamond.',
-    price: 'From $14',
-    comingSoon: false,
-    imageUrl: '/accessories/chains.jpg',
-  },
-  {
-    id: 'cubans',
-    name: 'Cubans',
-    desc: 'Classic Cuban link chains — bold look for the field.',
-    price: 'From $16',
-    comingSoon: false,
-    imageUrl: '/accessories/cubans.jpg',
-  },
-  {
-    id: 'arm-sleeves',
-    name: 'Arm Sleeves',
-    desc: 'Compression arm sleeves, multiple colors.',
-    price: 'From $12',
-    comingSoon: false,
-    imageUrl: '/accessories/arm-sleeves.jpg',
-  },
-  {
-    id: 'bead-necklaces',
-    name: 'Bead Necklaces',
-    desc: 'Colorful bead necklaces to rep your team.',
-    price: 'From $8',
-    comingSoon: false,
-    imageUrl: '/accessories/bead-necklaces.jpg',
-  },
-  {
-    id: 'ball-on-string',
-    name: 'Ball on String',
-    desc: 'Baseball charm on a cord — a dugout staple.',
-    price: 'From $10',
-    comingSoon: false,
-    imageUrl: '/accessories/ball-on-string.jpg',
-  },
-  {
-    id: 'eye-black',
-    name: 'Eye Black',
-    desc: 'Anti-glare eye black strips.',
-    price: 'From $4',
-    comingSoon: false,
-    imageUrl: '/accessories/eye-black.jpg',
-  },
-  {
-    id: 'cooling-towels',
-    name: 'Cooling Towels',
-    desc: 'Stay-cool towels for the sideline and dugout.',
-    price: 'From $10',
-    comingSoon: false,
-    imageUrl: '/accessories/cooling-towels.jpg',
-  },
-  {
-    id: 'sunglasses',
-    name: 'Sunglasses',
-    desc: 'UV-protection sport frames.',
-    price: 'From $22',
-    comingSoon: false,
-  },
-  {
-    id: 'hats',
-    name: 'Hats',
-    desc: 'Playmaker Sports custom hat designs — arriving soon.',
-    price: 'Coming Soon',
-    comingSoon: true,
-  },
-  {
-    id: 'batting-gloves',
-    name: 'Batting Gloves',
-    desc: 'Playmaker Sports custom batting gloves — arriving soon.',
-    price: 'Coming Soon',
-    comingSoon: true,
-  },
 ];
 
 export const JERSEY_STYLE_OPTIONS = jerseyCards.map((c) => c.name);

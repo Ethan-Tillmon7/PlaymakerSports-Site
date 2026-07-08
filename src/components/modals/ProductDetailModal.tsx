@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { useForm, type Resolver } from 'react-hook-form';
+import { useForm, useWatch, type Resolver } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Diamond } from '../layout/DiamondMark';
@@ -195,14 +195,14 @@ function PurchaseForm({
     register,
     handleSubmit,
     setValue,
-    watch,
+    control,
     formState: { errors, isSubmitting },
   } = useForm<PurchaseFormValues>({
     resolver: zodResolver(purchaseFormSchema) as Resolver<PurchaseFormValues>,
     defaultValues: { quantity: 1 },
   });
 
-  const selectedSize = watch('size');
+  const selectedSize = useWatch({ control, name: 'size' });
 
   const onSubmit = async (values: PurchaseFormValues) => {
     setSubmitError(null);
