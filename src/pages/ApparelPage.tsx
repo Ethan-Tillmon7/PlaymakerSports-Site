@@ -5,6 +5,7 @@ import { PAGE_META, SITE_URL } from '../seo/config';
 import { accessoryCategories, type AccessoryCategory } from '../data/accessories';
 import { AccessoryCard } from '../components/apparel/AccessoryCard';
 import { AccessoryDetailModal } from '../components/modals/AccessoryDetailModal';
+import { ResponsiveImage } from '../components/ui/ResponsiveImage';
 
 type Section = 'accessories' | 'jerseys';
 type AccessoryFilter = 'all' | string; // 'all' or a category id
@@ -236,7 +237,12 @@ export function ApparelPage() {
                       className="group flex flex-col text-left cursor-pointer hover:-translate-y-0.5 transition-transform duration-150"
                     >
                       <div className="aspect-square stage-cream rounded-xl overflow-hidden border border-pm-rule">
-                        <img src={v.imageUrl} alt={v.label} className="w-full h-full object-cover" />
+                        <ResponsiveImage
+                          image={v.image}
+                          alt={v.label}
+                          sizes="(min-width:1024px) 260px, (min-width:640px) 30vw, 45vw"
+                          className="w-full h-full object-cover"
+                        />
                       </div>
                       <span className="font-mono text-[10px] tracking-[0.06em] uppercase text-pm-muted mt-2 leading-tight">
                         {v.label}

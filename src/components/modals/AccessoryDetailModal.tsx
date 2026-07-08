@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { paletteFor, type AccessoryCategory } from '../../data/accessories';
+import { ResponsiveImage } from '../ui/ResponsiveImage';
 
 interface AccessoryDetailModalProps {
   category: AccessoryCategory;
@@ -104,8 +105,14 @@ export function AccessoryDetailModal({ category, initialVariantIndex = 0, onClos
             className="stage-cream w-full md:w-[44%] flex-shrink-0 flex items-center justify-center relative md:border-r border-b md:border-b-0 border-pm-rule"
             style={{ minHeight: '260px' }}
           >
-            {selected?.imageUrl && (
-              <img src={selected.imageUrl} alt={selected.label} className="w-full h-full object-contain p-6" />
+            {selected?.image && (
+              <ResponsiveImage
+                image={selected.image}
+                alt={selected.label}
+                sizes="(min-width:768px) 400px, 90vw"
+                loading="eager"
+                className="w-full h-full object-contain p-6"
+              />
             )}
             {selected?.label && (
               <span className="absolute bottom-3 left-3 font-mono text-[9px] tracking-[0.1em] uppercase text-pm-muted bg-white/70 px-2 py-1 rounded">
@@ -161,7 +168,12 @@ export function AccessoryDetailModal({ category, initialVariantIndex = 0, onClos
                       i === index ? 'border-pm-black' : 'border-pm-rule hover:border-pm-ink'
                     }`}
                   >
-                    <img src={v.imageUrl} alt={v.label} className="w-full h-full object-cover" />
+                    <ResponsiveImage
+                      image={v.image}
+                      alt={v.label}
+                      sizes="96px"
+                      className="w-full h-full object-cover"
+                    />
                   </button>
                 ))}
               </div>

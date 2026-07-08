@@ -1,4 +1,5 @@
 import type { AccessoryCategory } from '../../data/accessories';
+import { ResponsiveImage } from '../ui/ResponsiveImage';
 
 export function AccessoryCard({
   category,
@@ -47,9 +48,10 @@ export function AccessoryCard({
           </div>
         )}
         {category.coverImage ? (
-          <img
-            src={category.coverImage}
+          <ResponsiveImage
+            image={category.coverImage}
             alt={category.name}
+            sizes="(min-width:1024px) 340px, (min-width:640px) 30vw, 45vw"
             className="absolute inset-0 w-full h-full object-cover"
           />
         ) : (
