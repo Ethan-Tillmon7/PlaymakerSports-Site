@@ -1,9 +1,10 @@
 import { COLOR_MAP, colorLabel, parseVariantName } from './accessoryParse';
+import type { ResponsiveImageData } from '../types/image';
 
 export interface AccessoryVariant {
   id: string;
   label: string;
-  imageUrl: string;
+  image: ResponsiveImageData;
   colors: string[];
 }
 
@@ -14,7 +15,7 @@ export interface AccessoryCategory {
   folder: string; // inventory subfolder name
   prefix: string; // filename type prefix to strip
   comingSoon: boolean;
-  coverImage?: string;
+  coverImage?: ResponsiveImageData;
   variants: AccessoryVariant[];
 }
 
@@ -44,46 +45,59 @@ const COMING_SOON: CategoryDef[] = [
   { id: 'sunglasses', name: 'Sunglasses', desc: 'UV-protection sport frames — arriving soon.', folder: '', prefix: '' },
 ];
 
-// Eager URL glob of every inventory PNG. Vite resolves these to hashed asset URLs.
+interface ImageMetadata {
+  src: string;
+  width: number;
+  height: number;
+  format: string;
+}
+
 const modules = import.meta.glob('../assets/images/inventory/**/*.png', {
   eager: true,
-  query: '?url',
+  query: { w: '128;320;640;1024', format: 'webp', as: 'metadata' },
   import: 'default',
-}) as Record<string, string>;
+}) as Record<string, ImageMetadata[]>;
 
-// Group resolved URLs by their immediate parent folder name, skipping HEIC.
-const byFolder = new Map<string, { base: string; url: string }[]>();
-for (const [path, url] of Object.entries(modules)) {
+function toResponsive(meta: ImageMetadata[]): ResponsiveImageData {
+  const sorted = [...meta].sort((a, b) => a.width - b.width);
+  const srcset = sorted.map((m) => `${m.src} ${m.width}w`).join(', ');
+  const fallback = sorted[sorted.length - 1];
+  return { src: fallback.src, srcset, width: fallback.width, height: fallback.height };
+}
+
+// Group resolved metadata by their immediate parent folder name, skipping HEIC.
+const byFolder = new Map<string, { base: string; image: ResponsiveImageData }[]>();
+for (const [path, meta] of Object.entries(modules)) {
   if (path.includes('/HEIC/')) continue;
   const parts = path.split('/');
   const file = parts[parts.length - 1];
   const folder = parts[parts.length - 2];
   const base = file.replace(/\.png$/i, '');
   const list = byFolder.get(folder) ?? [];
-  list.push({ base, url });
+  list.push({ base, image: toResponsive(meta) });
   byFolder.set(folder, list);
 }
 
-function buildVariants(def: CategoryDef): { variants: AccessoryVariant[]; coverImage?: string } {
+function buildVariants(def: CategoryDef): { variants: AccessoryVariant[]; coverImage?: ResponsiveImageData } {
   const files = (byFolder.get(def.folder) ?? []).slice().sort((a, b) => a.base.localeCompare(b.base));
-  let coverImage: string | undefined;
+  let coverImage: ResponsiveImageData | undefined;
   const variants: AccessoryVariant[] = [];
   const seen = new Set<string>();
 
-  for (const { base, url } of files) {
+  for (const { base, image } of files) {
     // A "-package" shot becomes the cover, not a variant.
     if (/-package$/i.test(base)) {
-      coverImage = url;
+      coverImage = image;
       continue;
     }
     const parsed = parseVariantName(base, def.prefix);
     let id = parsed.id || base.toLowerCase();
     while (seen.has(id)) id = `${id}-x`;
     seen.add(id);
-    variants.push({ id, label: parsed.label, imageUrl: url, colors: parsed.colors });
+    variants.push({ id, label: parsed.label, image, colors: parsed.colors });
   }
 
-  if (!coverImage && variants.length > 0) coverImage = variants[0].imageUrl;
+  if (!coverImage && variants.length > 0) coverImage = variants[0].image;
   return { variants, coverImage };
 }
 
