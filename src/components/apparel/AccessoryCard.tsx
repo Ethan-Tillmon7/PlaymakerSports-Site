@@ -17,13 +17,21 @@ export function AccessoryCard({
         }`}
       >
         {item.comingSoon && (
-          <div className="absolute top-3 right-3 bg-pm-yellow text-pm-black font-mono text-[9px] tracking-[0.12em] uppercase px-2 py-1 rounded-lg border-b border-pm-yellow-deep">
+          <div className="absolute top-3 right-3 bg-pm-yellow text-pm-black font-mono text-[9px] tracking-[0.12em] uppercase px-2 py-1 rounded-lg border-b border-pm-yellow-deep z-10">
             Coming Soon
           </div>
         )}
-        <span className="font-display uppercase text-[18px] tracking-[0.02em] text-pm-muted text-center px-4 leading-tight">
-          {item.name}
-        </span>
+        {item.imageUrl ? (
+          <img
+            src={item.imageUrl}
+            alt={item.name}
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+        ) : (
+          <span className="font-display uppercase text-[18px] tracking-[0.02em] text-pm-muted text-center px-4 leading-tight">
+            {item.name}
+          </span>
+        )}
       </div>
       <div className="pt-3 flex flex-col flex-1">
         <span className="font-mono text-[10px] tracking-[0.1em] uppercase text-pm-muted">

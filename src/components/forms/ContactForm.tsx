@@ -4,7 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 
 const schema = z.object({
-  role: z.enum(['Player', 'Parent', 'Coach'], { message: 'Please select a role' }),
+  role: z.enum(['Event Organizer', 'Player', 'Parent', 'Coach'], { message: 'Please select a role' }),
   name: z.string().min(1, 'Required'),
   email: z.email('Enter a valid email'),
   phone: z.string().optional(),
@@ -13,7 +13,7 @@ const schema = z.object({
 });
 
 type FormValues = {
-  role: 'Player' | 'Parent' | 'Coach';
+  role: 'Event Organizer' | 'Player' | 'Parent' | 'Coach';
   name: string;
   email: string;
   phone?: string;
@@ -60,7 +60,7 @@ export function ContactForm() {
     handleSubmit,
     formState: { errors, isSubmitting },
     reset,
-  } = useForm<FormValues>({ resolver: zodResolver(schema) as Resolver<FormValues> });
+  } = useForm<FormValues>({ resolver: zodResolver(schema) as Resolver<FormValues>, defaultValues: { role: 'Coach' } });
 
   const onSubmit = async (values: FormValues) => {
     setSubmitStatus('idle');
@@ -95,9 +95,7 @@ export function ContactForm() {
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
       <Field label="I am a" required error={errors.role?.message} htmlFor="cf-role">
         <select {...register('role')} id="cf-role" className={inputClass}>
-          <option value="" disabled>
-            Select…
-          </option>
+          <option value="Event Organizer">Event Organizer</option>
           <option value="Player">Player</option>
           <option value="Parent">Parent</option>
           <option value="Coach">Coach</option>
@@ -155,6 +153,7 @@ export function ContactForm() {
         </p>
       )}
 
+      <div className="flex justify-center">
       <button
         type="submit"
         disabled={isSubmitting}
@@ -164,6 +163,7 @@ export function ContactForm() {
           {isSubmitting ? 'Sending…' : 'Send Message'}
         </span>
       </button>
+      </div>
     </form>
   );
 }

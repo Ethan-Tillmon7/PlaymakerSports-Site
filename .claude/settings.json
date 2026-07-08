@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "auto-approve Bash, Edit"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

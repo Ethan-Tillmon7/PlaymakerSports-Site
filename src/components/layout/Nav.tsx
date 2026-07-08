@@ -6,7 +6,6 @@ const navLinks = [
   { label: 'Apparel', to: '/apparel' },
   { label: 'Events', to: '/events' },
   { label: 'FAQ', to: '/faq' },
-  { label: 'Contact', to: '/contact' },
 ];
 
 export function Nav() {

@@ -9,7 +9,7 @@ const esc = (s: string) =>
 const safecell = (s: string) => (/^[=+\-@\t\r]/.test(s) ? "'" + s : s);
 
 const schema = z.object({
-  role: z.enum(['Player', 'Parent', 'Coach']),
+  role: z.enum(['Event Organizer', 'Player', 'Parent', 'Coach']),
   name: z.string().min(1),
   email: z.email(),
   phone: z.string().optional(),

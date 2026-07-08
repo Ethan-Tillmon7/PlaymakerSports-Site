@@ -55,7 +55,7 @@ function TournamentRow({
     >
       <DateTile startDate={t.startDate} endDate={t.endDate} />
       <span className="font-mono text-[13px] tracking-[0.06em] uppercase text-pm-ink">
-        {t.location}
+        {t.city}
       </span>
     </div>
   );
@@ -72,10 +72,7 @@ function TournamentSkeleton() {
           }`}
         >
           <div className="aspect-square bg-shimmer animate-shimmer rounded-lg" />
-          <div className="space-y-2">
-            <div className="h-4 bg-shimmer animate-shimmer rounded w-40" />
-            <div className="h-3 bg-shimmer animate-shimmer rounded w-64" />
-          </div>
+          <div className="h-4 bg-shimmer animate-shimmer rounded w-32" />
         </div>
       ))}
     </div>

@@ -1,18 +1,18 @@
 import type { Handler } from '@netlify/functions';
 import { getSheetsClient, SHEET_ID } from './_sheets';
 
-interface Tournament {
+interface PublicEvent {
   id: string;
   startDate: string;
   endDate: string;
-  name: string;
-  organizer: string;
-  location: string;
-  ageGroups?: string;
-  sourceUrl?: string;
-  notes?: string;
-  attending: boolean;
-  published: boolean;
+  city: string;
+}
+
+function extractCity(location: string): string {
+  const stateMatch = location.match(/,\s*([A-Z]{2})\s*$/);
+  const state = stateMatch ? stateMatch[1] : '';
+  const cityPart = location.split(/\s*[/,]/)[0].trim();
+  return state ? `${cityPart}, ${state}` : cityPart;
 }
 
 export const handler: Handler = async () => {
@@ -24,20 +24,13 @@ export const handler: Handler = async () => {
     });
 
     const rows = res.data.values ?? [];
-    const tournaments: Tournament[] = rows
-      .filter((row) => row[1] && row[10] === 'TRUE')
+    const tournaments: PublicEvent[] = rows
+      .filter((row) => row[1] && row[10] === 'TRUE' && row[5])
       .map((row) => ({
         id: String(row[0] ?? ''),
         startDate: String(row[1] ?? ''),
         endDate: String(row[2] ?? ''),
-        name: String(row[3] ?? ''),
-        organizer: String(row[4] ?? ''),
-        location: String(row[5] ?? ''),
-        ageGroups: row[6] ? String(row[6]) : undefined,
-        sourceUrl: row[7] ? String(row[7]) : undefined,
-        notes: row[8] ? String(row[8]) : undefined,
-        attending: row[9] === 'TRUE',
-        published: true,
+        city: extractCity(String(row[5])),
       }))
       .sort((a, b) => a.startDate.localeCompare(b.startDate));
 

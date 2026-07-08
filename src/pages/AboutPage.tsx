@@ -1,4 +1,4 @@
-import homeplateImg from '../assets/images/homeplate.jpg';
+import homeplateImg from '../assets/images/brand/Playmaker-Tent.jpeg';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { PageLayout } from '../components/layout/PageLayout';
@@ -63,17 +63,18 @@ export function AboutPage() {
 
           {/* ── Heading ── */}
           <span className="font-mono text-[11px] tracking-[0.16em] uppercase text-pm-yellow">
-            The backstory
+            Our backstory
           </span>
-          <h1 className="font-display uppercase text-[clamp(52px,8vw,96px)] leading-[0.85] tracking-[-0.01em] text-white mt-4">
-            About Playmaker
-          </h1>
-          <h2 className="font-display uppercase text-[clamp(16px,2.2vw,26px)] leading-[1.1] tracking-[0.01em] text-white/65 mt-4">
-            Built for the game, rooted in Lafayette
-          </h2>
 
           {/* ── Story ── */}
-          <div className="mt-10 pt-10 border-t border-white/20 max-w-[640px] mx-auto space-y-5">
+          <div className="mt-10 pt-10 border-t border-white/20 max-w-[640px] mx-auto">
+          <h1 className="font-display uppercase text-[clamp(52px,8vw,96px)] leading-[0.85] tracking-[-0.01em] text-white">
+            About Playmaker
+          </h1>
+          <h2 className="font-display uppercase text-[clamp(16px,2.2vw,26px)] leading-[1.1] tracking-[0.01em] text-white/65 mt-4 mb-8">
+            Built for the game, rooted in Lafayette
+          </h2>
+          <div className="space-y-5">
             <p className="text-[15px] leading-[1.7] text-white/80">
               Playmaker Sports was founded in 2025 with a straightforward mission: bring high-quality merchandise and a better buying experience to tournaments across the South.
             </p>
@@ -83,6 +84,7 @@ export function AboutPage() {
             <p className="text-[15px] leading-[1.7] text-white/80">
               What separates us from the big vendors is simple: when you reach out to Playmaker, you're talking to a real person who genuinely cares. We build relationships with tournament directors, coaches, and families because every athlete deserves to look and feel the part.
             </p>
+          </div>
           </div>
 
           {/* ── Stats ── */}

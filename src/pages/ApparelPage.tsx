@@ -3,8 +3,8 @@ import { Helmet } from 'react-helmet-async';
 import { PageLayout } from '../components/layout/PageLayout';
 import { Diamond } from '../components/layout/DiamondMark';
 import { PAGE_META, SITE_URL } from '../seo/config';
-import { ApparelInquiryForm } from '../components/forms/ApparelInquiryForm';
-import { PlayerUploadForm } from '../components/forms/PlayerUploadForm';
+// import { ApparelInquiryForm } from '../components/forms/ApparelInquiryForm';
+// import { PlayerUploadForm } from '../components/forms/PlayerUploadForm';
 import { useInView } from '../hooks/useInView';
 import type { Product, ProductCategory } from '../types/product';
 import { ProductDetailModal } from '../components/modals/ProductDetailModal';
@@ -26,14 +26,14 @@ const SIDEBAR_FILTER_TABS: { label: string; value: FilterCategory | 'Accessories
   { label: 'Accessories', value: 'Accessories' },
 ];
 
-const SIDEBAR_FORM_TABS: { label: string; value: 'get-a-quote' | 'submit-roster' }[] = [
-  { label: 'Custom Order', value: 'get-a-quote' },
-];
+// const SIDEBAR_FORM_TABS: { label: string; value: 'get-a-quote' | 'submit-roster' }[] = [
+//   { label: 'Custom Order', value: 'get-a-quote' },
+// ];
 
 // Combined for mobile tab strip (consumed by the mobile sidebar in Task 7)
 export const MOBILE_TABS = [
   ...SIDEBAR_FILTER_TABS,
-  ...SIDEBAR_FORM_TABS,
+  // ...SIDEBAR_FORM_TABS,
 ] as { label: string; value: ActiveView }[];
 
 const CATEGORY_HEADING: Record<FilterCategory, string> = {
@@ -422,10 +422,10 @@ export function ApparelPage() {
               ))}
             </ul>
 
-            <div className="border-t border-pm-rule my-4" />
+            {/* <div className="border-t border-pm-rule my-4" /> */}
 
-            {/* Form tabs */}
-            <ul className="flex flex-col gap-0.5">
+            {/* Form tabs — Custom Order tab commented out */}
+            {/* <ul className="flex flex-col gap-0.5">
               {SIDEBAR_FORM_TABS.map(({ label, value }) => (
                 <li key={value}>
                   <button
@@ -441,17 +441,16 @@ export function ApparelPage() {
                   </button>
                 </li>
               ))}
-            </ul>
+            </ul> */}
 
           </aside>
 
           {/* Main content */}
           <div className={`flex-1 min-w-0 pb-6 lg:pb-10 ${isFormView ? 'pt-0' : 'pt-6 lg:pt-10'}`}>
 
-            {/* ── FORM VIEW ── */}
-            {isFormView && (
+            {/* ── FORM VIEW — Custom Order tab commented out ── */}
+            {/* {isFormView && (
               <div className="animate-fade-in-fast">
-                {/* ── FULL-WIDTH TAB BAR ── */}
                 <div className="border-b border-pm-rule flex items-end gap-0 w-full">
                   <button
                     type="button"
@@ -475,10 +474,7 @@ export function ApparelPage() {
                     </button>
                   ))}
                 </div>
-
-                {/* ── FORM CONTENT (intro + form) — added in Task 3 ── */}
                 <div className="pt-10 pb-16">
-                  {/* ── INTRO BLOCK ── */}
                   <div className="max-w-[520px] mb-10 pb-8 border-b-[1.5px] border-pm-black">
                     <span className="font-mono text-[11px] tracking-[0.1em] uppercase text-pm-muted">
                       {activeView === 'get-a-quote' ? 'Request' : 'Roster'}
@@ -492,14 +488,12 @@ export function ApparelPage() {
                         : "Add each player's name, number, and size. Mix sizes freely at no extra charge."}
                     </p>
                   </div>
-
-                  {/* ── FORM (constrained to 520px) ── */}
                   <div className="max-w-[520px]">
                     {activeView === 'get-a-quote' ? <ApparelInquiryForm /> : <PlayerUploadForm />}
                   </div>
                 </div>
               </div>
-            )}
+            )} */}
 
             {/* ── CATALOG VIEW ── */}
             {!isFormView && !isAccessoriesView && (

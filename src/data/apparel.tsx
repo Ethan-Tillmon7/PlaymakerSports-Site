@@ -41,6 +41,7 @@ export interface AccessoryItem {
   desc: string;
   price: string;
   comingSoon: boolean;
+  imageUrl?: string;
 }
 
 export const jerseyCards: JerseyCard[] = [
@@ -138,6 +139,7 @@ export const accessories: AccessoryItem[] = [
     desc: 'Protective sliding mitts in multiple colors.',
     price: 'From $18',
     comingSoon: false,
+    imageUrl: '/accessories/sliding-mitts.jpg',
   },
   {
     id: 'chains',
@@ -145,6 +147,15 @@ export const accessories: AccessoryItem[] = [
     desc: 'Gold and silver rope chains for the diamond.',
     price: 'From $14',
     comingSoon: false,
+    imageUrl: '/accessories/chains.jpg',
+  },
+  {
+    id: 'cubans',
+    name: 'Cubans',
+    desc: 'Classic Cuban link chains — bold look for the field.',
+    price: 'From $16',
+    comingSoon: false,
+    imageUrl: '/accessories/cubans.jpg',
   },
   {
     id: 'arm-sleeves',
@@ -152,13 +163,23 @@ export const accessories: AccessoryItem[] = [
     desc: 'Compression arm sleeves, multiple colors.',
     price: 'From $12',
     comingSoon: false,
+    imageUrl: '/accessories/arm-sleeves.jpg',
   },
   {
-    id: 'sunglasses',
-    name: 'Sunglasses',
-    desc: 'UV-protection sport frames.',
-    price: 'From $22',
+    id: 'bead-necklaces',
+    name: 'Bead Necklaces',
+    desc: 'Colorful bead necklaces to rep your team.',
+    price: 'From $8',
     comingSoon: false,
+    imageUrl: '/accessories/bead-necklaces.jpg',
+  },
+  {
+    id: 'ball-on-string',
+    name: 'Ball on String',
+    desc: 'Baseball charm on a cord — a dugout staple.',
+    price: 'From $10',
+    comingSoon: false,
+    imageUrl: '/accessories/ball-on-string.jpg',
   },
   {
     id: 'eye-black',
@@ -166,12 +187,21 @@ export const accessories: AccessoryItem[] = [
     desc: 'Anti-glare eye black strips.',
     price: 'From $4',
     comingSoon: false,
+    imageUrl: '/accessories/eye-black.jpg',
   },
   {
     id: 'cooling-towels',
     name: 'Cooling Towels',
     desc: 'Stay-cool towels for the sideline and dugout.',
     price: 'From $10',
+    comingSoon: false,
+    imageUrl: '/accessories/cooling-towels.jpg',
+  },
+  {
+    id: 'sunglasses',
+    name: 'Sunglasses',
+    desc: 'UV-protection sport frames.',
+    price: 'From $22',
     comingSoon: false,
   },
   {

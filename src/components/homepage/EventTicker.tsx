@@ -5,7 +5,7 @@ import { formatDateRange } from '../../lib/dates';
 
 export function EventTicker() {
   const [paused, setPaused] = useState(false);
-  const items = tournaments.filter((t) => t.published);
+  const items = tournaments;
 
   if (items.length === 0) return null;
 
@@ -46,7 +46,7 @@ export function EventTicker() {
                   </span>
                   <span className="text-white/15 text-xs">·</span>
                   <span className="font-display text-[13px] uppercase text-white/85">
-                    {t.location}
+                    {t.city}
                   </span>
                 </div>
               );
