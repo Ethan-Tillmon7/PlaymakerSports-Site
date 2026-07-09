@@ -1,7 +1,9 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { paletteFor, type AccessoryCategory } from '../../data/accessories';
 import { ResponsiveImage } from '../ui/ResponsiveImage';
+
+const SWIPE_THRESHOLD = 50; // px of horizontal travel to commit a variant change
 
 interface AccessoryDetailModalProps {
   category: AccessoryCategory;
@@ -41,6 +43,25 @@ export function AccessoryDetailModal({ category, initialVariantIndex = 0, onClos
     [variants.length],
   );
 
+  // Touch swipe on the image area — mirrors the ‹ › arrows / arrow keys.
+  const touchStart = useRef<{ x: number; y: number } | null>(null);
+  const onTouchStart = (e: React.TouchEvent) => {
+    const t = e.touches[0];
+    touchStart.current = { x: t.clientX, y: t.clientY };
+  };
+  const onTouchEnd = (e: React.TouchEvent) => {
+    const start = touchStart.current;
+    touchStart.current = null;
+    if (!start || variants.length < 2) return;
+    const t = e.changedTouches[0];
+    const dx = t.clientX - start.x;
+    const dy = t.clientY - start.y;
+    // Commit only on a dominantly-horizontal drag past the threshold.
+    if (Math.abs(dx) > SWIPE_THRESHOLD && Math.abs(dx) > Math.abs(dy)) {
+      navigate(dx < 0 ? 1 : -1);
+    }
+  };
+
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') handleClose();
@@ -58,7 +79,7 @@ export function AccessoryDetailModal({ category, initialVariantIndex = 0, onClos
       onClick={handleClose}
     >
       <div
-        className={`relative bg-white rounded-2xl border-2 border-pm-black w-full max-w-[900px] max-h-[90vh] overflow-hidden flex flex-col transition-[opacity,transform] duration-150 ${visible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}
+        className={`relative bg-white rounded-2xl border-2 border-pm-black w-full max-w-[900px] max-h-[90dvh] overflow-hidden flex flex-col transition-[opacity,transform] duration-150 ${visible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
@@ -102,8 +123,10 @@ export function AccessoryDetailModal({ category, initialVariantIndex = 0, onClos
         <div className="flex flex-col md:flex-row flex-1 overflow-hidden min-h-0">
           {/* Image column */}
           <div
-            className="stage-cream w-full md:w-[44%] flex-shrink-0 flex items-center justify-center relative md:border-r border-b md:border-b-0 border-pm-rule"
+            className="stage-cream w-full md:w-[44%] flex-shrink-0 flex items-center justify-center relative md:border-r border-b md:border-b-0 border-pm-rule touch-pan-y"
             style={{ minHeight: '260px' }}
+            onTouchStart={onTouchStart}
+            onTouchEnd={onTouchEnd}
           >
             {selected?.image && (
               <ResponsiveImage
@@ -117,6 +140,11 @@ export function AccessoryDetailModal({ category, initialVariantIndex = 0, onClos
             {selected?.label && (
               <span className="absolute bottom-3 left-3 font-mono text-[9px] tracking-[0.1em] uppercase text-pm-muted bg-white/70 px-2 py-1 rounded">
                 {selected.label}
+              </span>
+            )}
+            {variants.length > 1 && (
+              <span className="md:hidden absolute bottom-3 right-3 font-mono text-[9px] tracking-[0.1em] uppercase text-pm-muted bg-white/70 px-2 py-1 rounded">
+                Swipe to browse
               </span>
             )}
           </div>

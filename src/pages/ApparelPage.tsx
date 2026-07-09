@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { PageLayout } from '../components/layout/PageLayout';
 import { PAGE_META, SITE_URL } from '../seo/config';
-import { accessoryCategories, type AccessoryCategory } from '../data/accessories';
+import { accessoryCategories, ACCESSORY_GROUP_ORDER, type AccessoryCategory } from '../data/accessories';
 import { AccessoryCard } from '../components/apparel/AccessoryCard';
 import { AccessoryDetailModal } from '../components/modals/AccessoryDetailModal';
 import { ResponsiveImage } from '../components/ui/ResponsiveImage';
@@ -89,54 +89,73 @@ export function ApparelPage() {
 
       {/* ── MOBILE NAV (< lg) ── */}
       <section className="lg:hidden border-b border-pm-rule bg-white sticky top-20 z-20">
-        <div className="max-w-[1480px] mx-auto px-6 h-14 flex items-center gap-2">
+        <div className="relative max-w-[1480px] mx-auto px-6 h-14 flex items-center gap-2">
           <button
             type="button"
             onClick={() => setMobileMenuOpen((o) => !o)}
-            className={`shrink-0 px-4 h-9 inline-flex items-center gap-2 font-display uppercase text-[13px] tracking-[0.04em] rounded-lg transition-colors duration-150 ${
+            aria-expanded={mobileMenuOpen}
+            className={`shrink-0 px-4 h-10 inline-flex items-center gap-2 font-display uppercase text-[13px] tracking-[0.04em] rounded-lg transition-colors duration-150 ${
               section === 'accessories' ? 'bg-pm-black text-white' : 'text-pm-ink hover:bg-pm-paper-2'
             }`}
           >
-            {section === 'accessories' && activeCategory ? activeCategory.name : 'Accessories'} ▾
+            {section === 'accessories' && activeCategory ? activeCategory.name : 'Accessories'}
+            <span className={`transition-transform duration-150 ${mobileMenuOpen ? 'rotate-180' : ''}`}>▾</span>
           </button>
           <button
             type="button"
             onClick={selectJerseys}
-            className={`shrink-0 px-4 h-9 inline-flex items-center font-display uppercase text-[13px] tracking-[0.04em] rounded-lg transition-colors duration-150 ${
+            className={`shrink-0 px-4 h-10 inline-flex items-center font-display uppercase text-[13px] tracking-[0.04em] rounded-lg transition-colors duration-150 ${
               section === 'jerseys' ? 'bg-pm-black text-white' : 'text-pm-ink hover:bg-pm-paper-2'
             }`}
           >
             Jerseys · Soon
           </button>
-        </div>
-        {mobileMenuOpen && (
-          <div className="border-t border-pm-rule px-6 py-3 flex flex-col gap-0.5 animate-fade-in-fast">
-            <button
-              type="button"
-              onClick={() => selectAccessories('all')}
-              className={subItemClass(section === 'accessories' && accessoryFilter === 'all')}
-            >
-              All Accessories
-            </button>
-            {inStock.map((c) => (
+
+          {/* Filter dropdown — absolute overlay so it floats over content instead of pushing it down */}
+          <div
+            className={`absolute top-full inset-x-6 mt-2 origin-top z-30 transition-[opacity,transform] duration-200 ease-out ${
+              mobileMenuOpen ? 'opacity-100 scale-y-100 pointer-events-auto' : 'opacity-0 scale-y-95 pointer-events-none'
+            }`}
+          >
+            <div className="max-h-[calc(100dvh-10rem)] overflow-y-auto flex flex-col gap-0.5 p-3 bg-white border border-pm-rule rounded-2xl shadow-[0_8px_24px_-6px_rgba(17,17,17,0.18)]">
               <button
-                key={c.id}
                 type="button"
-                onClick={() => selectAccessories(c.id)}
-                className={subItemClass(accessoryFilter === c.id)}
+                onClick={() => selectAccessories('all')}
+                className={subItemClass(section === 'accessories' && accessoryFilter === 'all')}
               >
-                {c.name}
+                All Accessories
               </button>
-            ))}
+              {ACCESSORY_GROUP_ORDER.map((group) => {
+                const cards = inStock.filter((c) => c.group === group);
+                if (cards.length === 0) return null;
+                return (
+                  <div key={group} className="mt-2">
+                    <span className="block px-3 pb-1 font-mono text-[9px] tracking-[0.14em] uppercase text-pm-muted">
+                      {group}
+                    </span>
+                    {cards.map((c) => (
+                      <button
+                        key={c.id}
+                        type="button"
+                        onClick={() => selectAccessories(c.id)}
+                        className={subItemClass(accessoryFilter === c.id)}
+                      >
+                        {c.name}
+                      </button>
+                    ))}
+                  </div>
+                );
+              })}
+            </div>
           </div>
-        )}
+        </div>
       </section>
 
       {/* ── SIDEBAR + MAIN ── */}
       <div className="max-w-[1480px] mx-auto px-6 sm:px-10">
         <div className="flex items-start gap-0 lg:gap-8">
           {/* Sidebar — desktop only */}
-          <aside className="hidden lg:flex flex-col w-[220px] shrink-0 sticky top-20 self-start border-r border-pm-rule py-6 pr-4 min-h-[calc(100vh-80px)]">
+          <aside className="hidden lg:flex flex-col w-[220px] shrink-0 sticky top-20 self-start border-r border-pm-rule py-6 pr-4 min-h-[calc(100dvh-80px)]">
             {/* Accessories dropdown */}
             <button
               type="button"
@@ -153,28 +172,36 @@ export function ApparelPage() {
             </button>
 
             {accessoriesExpanded && (
-              <ul className="flex flex-col gap-0.5 mt-0.5 pl-2">
-                <li>
-                  <button
-                    type="button"
-                    onClick={() => selectAccessories('all')}
-                    className={subItemClass(section === 'accessories' && accessoryFilter === 'all')}
-                  >
-                    All Accessories
-                  </button>
-                </li>
-                {inStock.map((c) => (
-                  <li key={c.id}>
-                    <button
-                      type="button"
-                      onClick={() => selectAccessories(c.id)}
-                      className={subItemClass(section === 'accessories' && accessoryFilter === c.id)}
-                    >
-                      {c.name}
-                    </button>
-                  </li>
-                ))}
-              </ul>
+              <div className="flex flex-col gap-0.5 mt-0.5 pl-2">
+                <button
+                  type="button"
+                  onClick={() => selectAccessories('all')}
+                  className={subItemClass(section === 'accessories' && accessoryFilter === 'all')}
+                >
+                  All Accessories
+                </button>
+                {ACCESSORY_GROUP_ORDER.map((group) => {
+                  const cards = inStock.filter((c) => c.group === group);
+                  if (cards.length === 0) return null;
+                  return (
+                    <div key={group} className="mt-2">
+                      <span className="block px-3 pb-1 font-mono text-[9px] tracking-[0.14em] uppercase text-pm-muted">
+                        {group}
+                      </span>
+                      {cards.map((c) => (
+                        <button
+                          key={c.id}
+                          type="button"
+                          onClick={() => selectAccessories(c.id)}
+                          className={subItemClass(section === 'accessories' && accessoryFilter === c.id)}
+                        >
+                          {c.name}
+                        </button>
+                      ))}
+                    </div>
+                  );
+                })}
+              </div>
             )}
 
             <div className="border-t border-pm-rule my-4" />
@@ -210,11 +237,22 @@ export function ApparelPage() {
                     {inStock.length} in stock
                   </span>
                 </div>
-                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-10">
-                  {accessoryCategories.map((c) => (
-                    <AccessoryCard key={c.id} category={c} onOpen={(cat) => openModal(cat)} />
-                  ))}
-                </div>
+                {ACCESSORY_GROUP_ORDER.map((group) => {
+                  const cards = accessoryCategories.filter((c) => c.group === group);
+                  if (cards.length === 0) return null;
+                  return (
+                    <div key={group} className="mb-12 last:mb-0">
+                      <h3 className="font-mono text-[11px] tracking-[0.16em] uppercase text-pm-yellow-deep mb-4 pb-2 border-b border-pm-rule">
+                        {group}
+                      </h3>
+                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-12">
+                        {cards.map((c) => (
+                          <AccessoryCard key={c.id} category={c} onOpen={(cat) => openModal(cat)} />
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })}
               </section>
             )}
 

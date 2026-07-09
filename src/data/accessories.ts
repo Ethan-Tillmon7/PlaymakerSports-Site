@@ -1,6 +1,10 @@
 import { COLOR_MAP, colorLabel, parseVariantName } from './accessoryParse';
 import type { ResponsiveImageData } from '../types/image';
 
+// Product-type groupings for the All Accessories view, in display order.
+export type AccessoryGroup = 'Jewelry' | 'Wearables' | 'Gear' | 'Coming Soon';
+export const ACCESSORY_GROUP_ORDER: AccessoryGroup[] = ['Jewelry', 'Wearables', 'Gear', 'Coming Soon'];
+
 export interface AccessoryVariant {
   id: string;
   label: string;
@@ -14,6 +18,7 @@ export interface AccessoryCategory {
   desc: string;
   folder: string; // inventory subfolder name
   prefix: string; // filename type prefix to strip
+  group: AccessoryGroup;
   comingSoon: boolean;
   coverImage?: ResponsiveImageData;
   variants: AccessoryVariant[];
@@ -26,23 +31,27 @@ interface CategoryDef {
   desc: string;
   folder: string;
   prefix: string;
+  group: AccessoryGroup;
 }
 
 const IN_STOCK: CategoryDef[] = [
-  { id: 'sliding-mitts', name: 'Sliding Mitts', desc: 'Protective sliding mitts in a stack of custom designs.', folder: 'Sliding Mitts', prefix: 'slidingMitt-' },
-  { id: 'chains', name: 'Chains', desc: 'Gold and silver rope chains with baseball medallions.', folder: 'Chains', prefix: 'chain-' },
-  { id: 'cubans', name: 'Cubans', desc: 'Classic Cuban link chains — bold look for the field.', folder: 'Cubans', prefix: 'cuban-' },
-  { id: 'arm-sleeves', name: 'Arm Sleeves', desc: 'Compression arm sleeves in every colorway.', folder: 'Arm Sleeves', prefix: 'armsleeve-' },
-  { id: 'bead-necklaces', name: 'Bead Necklaces', desc: 'Colorful bead necklaces to rep your team colors.', folder: 'Bead Necklaces', prefix: 'beadNecklace-' },
-  { id: 'ball-on-string', name: 'Ball on String', desc: 'Ball-on-a-string charms — a dugout staple.', folder: 'Ball on String', prefix: 'ballString-' },
-  { id: 'eye-black', name: 'Eye Black', desc: 'Anti-glare eye black for game day.', folder: 'Eye Black', prefix: 'eyeblack-' },
-  { id: 'cooling-towels', name: 'Cooling Towels', desc: 'Stay-cool towels for the sideline and dugout.', folder: 'Cooling Towel', prefix: 'coolingTowel-' },
+  // Jewelry
+  { id: 'chains', name: 'Chains', desc: 'Gold and silver rope chains with baseball medallions.', folder: 'Chains', prefix: 'chain-', group: 'Jewelry' },
+  { id: 'cubans', name: 'Cubans', desc: 'Classic Cuban link chains — bold look for the field.', folder: 'Cubans', prefix: 'cuban-', group: 'Jewelry' },
+  { id: 'bead-necklaces', name: 'Bead Necklaces', desc: 'Colorful bead necklaces to rep your team colors.', folder: 'Bead Necklaces', prefix: 'beadNecklace-', group: 'Jewelry' },
+  // Wearables
+  { id: 'arm-sleeves', name: 'Arm Sleeves', desc: 'Compression arm sleeves in every colorway.', folder: 'Arm Sleeves', prefix: 'armsleeve-', group: 'Wearables' },
+  { id: 'sliding-mitts', name: 'Sliding Mitts', desc: 'Protective sliding mitts in a stack of custom designs.', folder: 'Sliding Mitts', prefix: 'slidingMitt-', group: 'Wearables' },
+  { id: 'eye-black', name: 'Eye Black', desc: 'Anti-glare eye black for game day.', folder: 'Eye Black', prefix: 'eyeblack-', group: 'Wearables' },
+  // Gear
+  { id: 'ball-on-string', name: 'Ball on String', desc: 'Ball-on-a-string charms — a dugout staple.', folder: 'Ball on String', prefix: 'ballString-', group: 'Gear' },
+  { id: 'cooling-towels', name: 'Cooling Towels', desc: 'Stay-cool towels for the sideline and dugout.', folder: 'Cooling Towel', prefix: 'coolingTowel-', group: 'Gear' },
 ];
 
 const COMING_SOON: CategoryDef[] = [
-  { id: 'hats', name: 'Hats', desc: 'Custom Playmaker hat designs — arriving soon.', folder: '', prefix: '' },
-  { id: 'batting-gloves', name: 'Batting Gloves', desc: 'Custom batting gloves — arriving soon.', folder: '', prefix: '' },
-  { id: 'sunglasses', name: 'Sunglasses', desc: 'UV-protection sport frames — arriving soon.', folder: '', prefix: '' },
+  { id: 'hats', name: 'Hats', desc: 'Custom Playmaker hat designs — arriving soon.', folder: '', prefix: '', group: 'Coming Soon' },
+  { id: 'batting-gloves', name: 'Batting Gloves', desc: 'Custom batting gloves — arriving soon.', folder: '', prefix: '', group: 'Coming Soon' },
+  { id: 'sunglasses', name: 'Sunglasses', desc: 'UV-protection sport frames — arriving soon.', folder: '', prefix: '', group: 'Coming Soon' },
 ];
 
 interface ImageMetadata {

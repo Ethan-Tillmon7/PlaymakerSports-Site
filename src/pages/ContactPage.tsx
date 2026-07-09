@@ -2,7 +2,11 @@ import { Helmet } from 'react-helmet-async';
 import { PageLayout } from '../components/layout/PageLayout';
 import { PAGE_META, SITE_URL } from '../seo/config';
 import { ContactForm } from '../components/forms/ContactForm';
-import homeplate from '../assets/images/misc/homeplate.jpg';
+import { ResponsiveImage } from '../components/ui/ResponsiveImage';
+import { toResponsive } from '../lib/responsiveImage';
+import homeplateMeta from '../assets/images/misc/homeplate.jpg?w=480;768;1120&format=webp&quality=72&as=metadata';
+
+const homeplate = toResponsive(homeplateMeta);
 
 export function ContactPage() {
   return (
@@ -31,9 +35,10 @@ export function ContactPage() {
         </div>
 
         <div className="w-full lg:w-[480px] xl:w-[560px] shrink-0 flex items-center">
-          <img
-            src={homeplate}
+          <ResponsiveImage
+            image={homeplate}
             alt="Home plate at a baseball field"
+            sizes="(min-width: 1024px) 560px, 100vw"
             className="w-full h-auto object-cover rounded-lg"
           />
         </div>

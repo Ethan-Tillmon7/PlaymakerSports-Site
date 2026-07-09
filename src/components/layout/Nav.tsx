@@ -23,7 +23,8 @@ export function Nav() {
           <button
             onClick={() => setMobileOpen(o => !o)}
             aria-label="Toggle navigation"
-            className="lg:hidden p-2 -ml-1 rounded-lg hover:bg-pm-paper-2 transition-colors duration-150"
+            aria-expanded={mobileOpen}
+            className={`lg:hidden -ml-1 flex items-center justify-center w-11 h-11 rounded-lg hover:bg-pm-paper-2 transition-colors duration-150 ${mobileOpen ? 'bg-pm-paper-2' : ''}`}
           >
             <svg className="w-5 h-5 text-pm-ink" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
@@ -65,7 +66,7 @@ export function Nav() {
         <div className="flex-1 flex items-center justify-end">
           <Link
             to="/contact"
-            className="font-display uppercase text-[13px] lg:text-[14px] tracking-[0.04em] bg-pm-yellow text-pm-black px-4 lg:px-5 h-9 inline-flex items-center justify-center hover:bg-pm-yellow-deep transition-[colors,transform] duration-150 active:scale-[0.97] border-b-2 border-pm-yellow-deep hover:border-pm-black rounded-xl whitespace-nowrap"
+            className="font-display uppercase text-[13px] lg:text-[14px] tracking-[0.04em] bg-pm-yellow text-pm-black px-4 lg:px-5 h-10 inline-flex items-center justify-center hover:bg-pm-yellow-deep transition-[colors,transform] duration-150 active:scale-[0.97] border-b-2 border-pm-yellow-deep hover:border-pm-black rounded-xl whitespace-nowrap"
           >
             Contact
           </Link>
@@ -73,13 +74,13 @@ export function Nav() {
 
       </nav>
 
-      {/* ── Mobile dropdown ── */}
+      {/* ── Mobile dropdown — absolute overlay so it never pushes page content down ── */}
       <div
-        className={`lg:hidden border-t border-pm-rule overflow-hidden transition-[max-height,opacity] duration-200 ease-out ${
-          mobileOpen ? 'max-h-64 opacity-100' : 'max-h-0 opacity-0 pointer-events-none'
+        className={`lg:hidden absolute top-full inset-x-0 mt-2 origin-top transition-[opacity,transform] duration-200 ease-out ${
+          mobileOpen ? 'opacity-100 scale-y-100 pointer-events-auto' : 'opacity-0 scale-y-95 pointer-events-none'
         }`}
       >
-        <ul className="flex flex-col py-2 px-5 gap-0.5 font-display uppercase text-[14px] tracking-[0.04em]">
+        <ul className="flex flex-col py-2 px-3 gap-0.5 font-display uppercase text-[14px] tracking-[0.04em] bg-white rounded-[20px] shadow-[0_8px_24px_-6px_rgba(17,17,17,0.18)]">
           {navLinks.map(({ label, to }) => {
             const active = pathname === to || (to !== '/' && pathname.startsWith(to));
             return (

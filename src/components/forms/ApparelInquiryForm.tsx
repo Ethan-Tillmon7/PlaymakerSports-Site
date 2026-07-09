@@ -156,7 +156,7 @@ export function ApparelInquiryForm({ initialSku }: { initialSku?: string }) {
       <button
         type="submit"
         disabled={isSubmitting}
-        className="font-display uppercase text-[16px] tracking-[0.04em] bg-pm-yellow text-pm-black px-7 h-11 inline-flex items-center justify-center hover:bg-pm-yellow-deep transition-[colors,transform] duration-150 active:scale-[0.97] border-b-2 border-pm-yellow-deep hover:border-pm-black rounded-xl disabled:opacity-50 disabled:cursor-not-allowed"
+        className="font-display uppercase text-[16px] tracking-[0.04em] bg-pm-yellow text-pm-black w-full sm:w-auto px-7 h-11 inline-flex items-center justify-center hover:bg-pm-yellow-deep transition-[colors,transform] duration-150 active:scale-[0.97] border-b-2 border-pm-yellow-deep hover:border-pm-black rounded-xl disabled:opacity-50 disabled:cursor-not-allowed"
       >
         <span className={isSubmitting ? 'animate-pulse' : ''}>
           {isSubmitting ? 'Sending…' : 'Request a quote'}

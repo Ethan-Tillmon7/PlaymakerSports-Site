@@ -17,13 +17,13 @@ interface HelmetState {
 async function prerender() {
   const entryUrl = pathToFileURL(path.join(root, 'dist/server/entry-server.js')).href;
   const { render } = (await import(entryUrl)) as {
-    render: (url: string) => { html: string; helmet: HelmetState };
+    render: (url: string) => Promise<{ html: string; helmet: HelmetState }>;
   };
 
   const template = fs.readFileSync(path.join(root, 'dist/index.html'), 'utf-8');
 
   for (const route of ROUTES) {
-    const { html, helmet } = render(route);
+    const { html, helmet } = await render(route);
 
     const headTags = [
       helmet?.title?.toString() ?? '',

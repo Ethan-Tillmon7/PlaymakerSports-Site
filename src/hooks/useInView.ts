@@ -9,6 +9,12 @@ export function useInView(options?: IntersectionObserverInit) {
       observerRef.current?.disconnect();
       observerRef.current = null;
       if (!el) return;
+      // Fallback for environments without IntersectionObserver — reveal
+      // immediately so scroll-triggered content never stays hidden.
+      if (typeof IntersectionObserver === 'undefined') {
+        setInView(true);
+        return;
+      }
       const observer = new IntersectionObserver(
         ([entry]) => {
           if (entry.isIntersecting) {

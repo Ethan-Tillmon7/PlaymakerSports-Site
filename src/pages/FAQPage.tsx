@@ -142,7 +142,7 @@ export function FAQPage() {
       </header>
 
       <section className="max-w-[1480px] mx-auto px-6 sm:px-10 py-14 lg:py-16">
-        <div ref={faqRef} className="grid grid-cols-1 lg:grid-cols-2 gap-x-16 gap-y-14">
+        <div ref={faqRef} className="grid grid-cols-1 md:grid-cols-2 gap-x-10 lg:gap-x-16 gap-y-14">
           {faqGroups.map((group, gi) => {
             const indexOffset = faqGroups.slice(0, gi).reduce((sum, g) => sum + g.faqs.length, 0);
             return (

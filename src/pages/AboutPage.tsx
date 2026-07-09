@@ -1,4 +1,4 @@
-import homeplateImg from '../assets/images/brand/Playmaker-Tent.jpeg';
+import tentMeta from '../assets/images/brand/Playmaker-Tent.jpeg?w=1024;1600&format=webp&quality=62&as=metadata';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { PageLayout } from '../components/layout/PageLayout';
@@ -13,6 +13,10 @@ const values = [
   { stat: 'Lafayette', label: 'Home base'          },
   { stat: '6U–14U',   label: 'Divisions served'   },
 ];
+
+// Darkened, blur-on-scroll full-viewport background — the largest generated
+// WebP width covers every device; a heavier srcset buys nothing here.
+const heroBg = [...tentMeta].sort((a, b) => b.width - a.width)[0].src;
 
 const prefersReducedMotion =
   typeof window !== 'undefined' &&
@@ -41,18 +45,18 @@ export function AboutPage() {
       {/* ── SINGLE FULL SECTION ── */}
       <section
         ref={heroRef}
-        className="relative -mt-16 min-h-screen overflow-hidden flex flex-col items-center justify-center"
+        className="relative -mt-16 min-h-[100svh] overflow-hidden flex flex-col items-center justify-center"
       >
         {/* Photo background — zooms in and blurs as you scroll past */}
         <div
           className="absolute inset-0"
           style={{
-            backgroundImage: `url(${homeplateImg})`,
+            backgroundImage: `url(${heroBg})`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
             transform: `scale(${bgScale})`,
             filter: `blur(${bgBlur}px)`,
-            willChange: 'transform, filter',
+            willChange: prefersReducedMotion ? 'auto' : 'transform',
           }}
         />
         {/* Dark overlay */}
@@ -88,7 +92,7 @@ export function AboutPage() {
           </div>
 
           {/* ── Stats ── */}
-          <div ref={valuesRef} className="mt-12 pt-12 border-t border-white/20 grid grid-cols-3 gap-6">
+          <div ref={valuesRef} className="mt-12 pt-12 border-t border-white/20 grid grid-cols-1 sm:grid-cols-3 gap-8 sm:gap-6">
             {values.map((v, i) => (
               <div key={v.label}>
                 <div className="font-display uppercase text-[clamp(32px,4vw,56px)] leading-none tracking-[0.005em] text-white">

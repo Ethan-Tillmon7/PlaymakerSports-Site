@@ -13,7 +13,7 @@ export function Footer() {
 
           {/* Brand */}
           <div className="shrink-0">
-            <div className="bg-pm-yellow inline-flex items-baseline gap-1 px-3 py-1.5 font-display text-[28px] leading-none uppercase tracking-[0.005em] rounded-xl">
+            <div className="bg-pm-yellow hidden sm:inline-flex items-baseline gap-1 px-3 py-1.5 font-display text-[28px] leading-none uppercase tracking-[0.005em] rounded-xl">
               <span className="text-white">PLAY</span><span className="text-pm-black">MAKER</span>
             </div>
             <p className="font-mono text-[10.5px] tracking-[0.14em] uppercase text-pm-yellow/70 mt-2">

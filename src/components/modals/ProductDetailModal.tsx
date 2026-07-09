@@ -489,7 +489,7 @@ export function ProductDetailModal({ initialProduct, allProducts, onClose }: Pro
       onClick={handleClose}
     >
       <div
-        className={`relative bg-white rounded-2xl border-2 border-pm-black w-full max-w-[900px] max-h-[90vh] overflow-hidden flex flex-col transition-[opacity,transform] duration-150 ${visible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}
+        className={`relative bg-white rounded-2xl border-2 border-pm-black w-full max-w-[900px] max-h-[90dvh] overflow-hidden flex flex-col transition-[opacity,transform] duration-150 ${visible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}

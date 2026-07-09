@@ -83,21 +83,25 @@ export function PlayerUploadForm() {
       </div>
 
       <div>
-        <div className="grid grid-cols-[1fr_80px_100px_36px] gap-3 mb-2">
+        <div className="hidden sm:grid grid-cols-[1fr_80px_100px_36px] gap-3 mb-2">
           <span className="font-mono text-[10.5px] tracking-[0.1em] uppercase text-pm-muted">Player name</span>
           <span className="font-mono text-[10.5px] tracking-[0.1em] uppercase text-pm-muted">Number</span>
           <span className="font-mono text-[10.5px] tracking-[0.1em] uppercase text-pm-muted">Size</span>
           <span />
         </div>
 
-        <div className="space-y-2">
+        <div className="space-y-3 sm:space-y-2">
           {fields.map((field, index) => (
-            <div key={field.id} className="grid grid-cols-[1fr_80px_100px_36px] gap-3 items-start">
+            <div
+              key={field.id}
+              className="flex flex-col gap-2 rounded-xl border border-pm-rule p-3 sm:border-0 sm:p-0 sm:grid sm:grid-cols-[1fr_80px_100px_36px] sm:gap-3 sm:items-start"
+            >
               <div>
                 <input
                   {...register(`players.${index}.player_name`)}
                   className={inputClass}
                   placeholder="Alex Rodriguez"
+                  aria-label="Player name"
                 />
                 {errors.players?.[index]?.player_name && (
                   <p className="mt-0.5 text-[11px] text-pm-error">
@@ -105,37 +109,41 @@ export function PlayerUploadForm() {
                   </p>
                 )}
               </div>
-              <div>
-                <input
-                  {...register(`players.${index}.number`)}
-                  type="number"
-                  min={0}
-                  max={99}
-                  className={inputClass}
-                  placeholder="7"
-                />
-                {errors.players?.[index]?.number && (
-                  <p className="mt-0.5 text-[11px] text-pm-error">
-                    {errors.players[index]?.number?.message}
-                  </p>
-                )}
+              <div className="flex gap-2 sm:contents">
+                <div className="flex-1 sm:flex-none">
+                  <input
+                    {...register(`players.${index}.number`)}
+                    type="number"
+                    inputMode="numeric"
+                    min={0}
+                    max={99}
+                    className={inputClass}
+                    placeholder="7"
+                    aria-label="Jersey number"
+                  />
+                  {errors.players?.[index]?.number && (
+                    <p className="mt-0.5 text-[11px] text-pm-error">
+                      {errors.players[index]?.number?.message}
+                    </p>
+                  )}
+                </div>
+                <div className="flex-1 sm:flex-none">
+                  <select {...register(`players.${index}.size`)} className={inputClass} aria-label="Jersey size">
+                    {JERSEY_SIZES.map((s) => (
+                      <option key={s} value={s}>{s}</option>
+                    ))}
+                  </select>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => remove(index)}
+                  disabled={fields.length === 1}
+                  className="h-11 w-11 sm:w-9 flex-none flex items-center justify-center border border-pm-rule rounded-xl text-pm-muted hover:border-pm-ink hover:text-pm-black transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                  aria-label="Remove player"
+                >
+                  ×
+                </button>
               </div>
-              <div>
-                <select {...register(`players.${index}.size`)} className={inputClass}>
-                  {JERSEY_SIZES.map((s) => (
-                    <option key={s} value={s}>{s}</option>
-                  ))}
-                </select>
-              </div>
-              <button
-                type="button"
-                onClick={() => remove(index)}
-                disabled={fields.length === 1}
-                className="h-11 w-9 flex items-center justify-center border border-pm-rule rounded-xl text-pm-muted hover:border-pm-ink hover:text-pm-black transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
-                aria-label="Remove player"
-              >
-                ×
-              </button>
             </div>
           ))}
         </div>
@@ -143,7 +151,7 @@ export function PlayerUploadForm() {
         <button
           type="button"
           onClick={() => append({ player_name: '', number: 0, size: 'YM' })}
-          className="mt-3 font-mono text-[11px] tracking-[0.1em] uppercase text-pm-ink border border-pm-rule px-4 h-9 rounded-xl hover:border-pm-black transition-colors"
+          className="mt-3 font-mono text-[11px] tracking-[0.1em] uppercase text-pm-ink border border-pm-rule px-4 h-11 sm:h-9 rounded-xl hover:border-pm-black transition-colors"
         >
           + Add player
         </button>
