@@ -1,13 +1,30 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { tournaments } from '../../data/events';
+import type { Tournament } from '../../data/events';
 import { formatDateRange } from '../../lib/dates';
 
 export function EventTicker() {
   const [paused, setPaused] = useState(false);
-  const items = tournaments;
+  const [events, setEvents] = useState<Tournament[]>([]);
 
-  if (items.length === 0) return null;
+  useEffect(() => {
+    fetch('/api/get-events')
+      .then((res) => {
+        if (!res.ok) throw new Error();
+        return res.json() as Promise<Tournament[]>;
+      })
+      .then((data) => {
+        const today = new Date().toISOString().split('T')[0];
+        setEvents(data.filter((t) => t.endDate >= today));
+      })
+      .catch(() => setEvents([]));
+  }, []);
+
+  // Hidden until upcoming events load (also covers SSR/prerender, where the
+  // effect never runs and the API isn't reachable).
+  if (events.length === 0) return null;
+
+  const items = events;
 
   return (
     <Link
