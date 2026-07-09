@@ -4,6 +4,7 @@ import { PageLayout } from '../components/layout/PageLayout';
 import { PAGE_META, SITE_URL } from '../seo/config';
 import { accessoryCategories, ACCESSORY_GROUP_ORDER, type AccessoryCategory } from '../data/accessories';
 import { AccessoryCard } from '../components/apparel/AccessoryCard';
+import { CardRail } from '../components/apparel/CardRail';
 import { AccessoryDetailModal } from '../components/modals/AccessoryDetailModal';
 import { ResponsiveImage } from '../components/ui/ResponsiveImage';
 
@@ -37,6 +38,15 @@ export function ApparelPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [openCategory, setOpenCategory] = useState<AccessoryCategory | null>(null);
   const [openVariantIndex, setOpenVariantIndex] = useState(0);
+  const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set());
+
+  const toggleGroup = (group: string) =>
+    setExpandedGroups((prev) => {
+      const next = new Set(prev);
+      if (next.has(group)) next.delete(group);
+      else next.add(group);
+      return next;
+    });
 
   const selectAccessories = (filter: AccessoryFilter) => {
     setSection('accessories');
@@ -240,16 +250,32 @@ export function ApparelPage() {
                 {ACCESSORY_GROUP_ORDER.map((group) => {
                   const cards = accessoryCategories.filter((c) => c.group === group);
                   if (cards.length === 0) return null;
+                  const isExpanded = expandedGroups.has(group);
                   return (
                     <div key={group} className="mb-12 last:mb-0">
-                      <h3 className="font-mono text-[11px] tracking-[0.16em] uppercase text-pm-yellow-deep mb-4 pb-2 border-b border-pm-rule">
-                        {group}
-                      </h3>
-                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-12">
+                      <div className="flex items-center justify-between mb-4 pb-2 border-b border-pm-rule">
+                        <h3 className="font-mono text-[11px] tracking-[0.16em] uppercase text-pm-yellow-deep">
+                          {group}
+                        </h3>
+                        <button
+                          type="button"
+                          onClick={() => toggleGroup(group)}
+                          aria-expanded={isExpanded}
+                          className="shrink-0 ml-4 font-mono text-[10px] tracking-[0.12em] uppercase text-pm-muted hover:text-pm-ink transition-colors duration-150"
+                        >
+                          {isExpanded ? 'Show less' : 'See all →'}
+                        </button>
+                      </div>
+                      <CardRail
+                        expanded={isExpanded}
+                        expandedClassName="grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-12"
+                        gridClassName="lg:grid-cols-3 lg:gap-x-6 lg:gap-y-12"
+                        itemClassName="basis-[72%] sm:basis-[46%]"
+                      >
                         {cards.map((c) => (
                           <AccessoryCard key={c.id} category={c} onOpen={(cat) => openModal(cat)} />
                         ))}
-                      </div>
+                      </CardRail>
                     </div>
                   );
                 })}
@@ -266,7 +292,10 @@ export function ApparelPage() {
                     {activeCategory.variants.length} {activeCategory.variants.length === 1 ? 'design' : 'designs'}
                   </span>
                 </div>
-                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-x-4 gap-y-8">
+                <CardRail
+                  gridClassName="lg:grid-cols-5 lg:gap-x-4 lg:gap-y-8"
+                  itemClassName="basis-[42%] sm:basis-[30%]"
+                >
                   {activeCategory.variants.map((v, i) => (
                     <button
                       key={v.id}
@@ -287,7 +316,7 @@ export function ApparelPage() {
                       </span>
                     </button>
                   ))}
-                </div>
+                </CardRail>
               </section>
             )}
           </div>
