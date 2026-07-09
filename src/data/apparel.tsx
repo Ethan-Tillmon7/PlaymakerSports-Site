@@ -27,13 +27,6 @@ export interface JerseyCard {
   price: string;
 }
 
-export interface ProcessStep {
-  num: string;
-  title: string;
-  desc: string;
-  day: string;
-  yellow: boolean;
-}
 
 export const jerseyCards: JerseyCard[] = [
   {
@@ -114,13 +107,6 @@ export const jerseyCards: JerseyCard[] = [
     extraColors: '3 colors',
     price: '$74',
   },
-];
-
-export const processSteps: ProcessStep[] = [
-  { num: '01', title: 'Pick a base', desc: 'Sublimated, tackle-twill, throwback, or button-front. Four cuts, four price points.', day: 'Day 1', yellow: false },
-  { num: '02', title: 'Drop your art', desc: "Wordmark, logo, sponsors. We'll vector it for free if you've only got a phone photo.", day: 'Day 1', yellow: false },
-  { num: '03', title: 'Approve proof', desc: 'Same-day digital proof. Two free revisions. Sign off and we send it to print.', day: 'Day 2', yellow: false },
-  { num: '04', title: 'Ship to field', desc: 'Direct to the dugout. Local Lafayette delivery available.', day: 'Day 7', yellow: true },
 ];
 
 export const JERSEY_STYLE_OPTIONS = jerseyCards.map((c) => c.name);
