@@ -28,11 +28,11 @@ const faqGroups = [
     faqs: [
       {
         question: 'What does Playmaker Sports sell?',
-        answer: 'We carry jerseys, sliding mitts, arm sleeves, sunglasses, chains and necklaces, eye black, cooling towels, hats, batting gloves, player cards, and other sports accessories. Hats and player cards are our newest additions.',
+        answer: 'We carry jerseys, sliding mitts, arm sleeves, sunglasses, chains and necklaces, eye black, cooling towels, hats, batting gloves and other sport accessories.',
       },
       {
         question: 'Can you make custom jerseys for my team?',
-        answer: "Yes — we're already capable of fulfilling custom jersey orders. Send us your inspiration photos or mockups and we'll work with you from there. Our long-term goal is to expand this into full custom team travel ball uniforms.",
+        answer: "Yes — we are capable of filling custom jersey orders. If you can dream it we can create it. Send us your inspiration photos or mockups and we'll work with you from there.",
       },
       {
         question: 'How do I place an apparel order?',

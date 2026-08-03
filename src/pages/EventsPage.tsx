@@ -126,7 +126,7 @@ export function EventsPage() {
       <header className="border-b border-pm-rule">
         <div className="max-w-[1480px] mx-auto px-6 sm:px-10 pt-6 pb-8 animate-fade-up">
           <span className="font-mono text-[11px] tracking-[0.16em] uppercase text-pm-yellow-deep">
-            Tournaments · Acadiana
+            Tournaments · Where to find us
           </span>
           <h1 className="font-display uppercase text-[clamp(36px,5vw,56px)] leading-[0.86] tracking-[-0.005em] text-pm-black mt-4">
             Events &amp; Tournaments

@@ -11,7 +11,7 @@ import { useInView } from '../hooks/useInView';
 const values = [
   { stat: '2025',      label: 'Year founded'      },
   { stat: 'Lafayette', label: 'Home base'          },
-  { stat: '6U–14U',   label: 'Divisions served'   },
+  { stat: '6U–18U',   label: 'Divisions served'   },
 ];
 
 // Darkened, blur-on-scroll full-viewport background — the largest generated
@@ -76,17 +76,14 @@ export function AboutPage() {
             About Playmaker
           </h1>
           <h2 className="font-display uppercase text-[clamp(16px,2.2vw,26px)] leading-[1.1] tracking-[0.01em] text-white/65 mt-4 mb-8">
-            Built for the game, rooted in Lafayette
+            Built for the game, made for the moment
           </h2>
           <div className="space-y-5">
             <p className="text-[15px] leading-[1.7] text-white/80">
-              Playmaker Sports was founded in 2025 with a straightforward mission: bring high-quality merchandise and a better buying experience to tournaments across the South.
+              Playmaker Sports was founded in 2025 with a straightforward mission: to deliver premium apparel, accessories, and tournament merchandise to athletes and families across the US. From jerseys and gear to custom player cards and exclusive event merchandise, we're committed to making every tournament experience even better.
             </p>
             <p className="text-[15px] leading-[1.7] text-white/80">
-              We show up to events throughout the region — stocking jerseys, accessories, batting gear, hats, player cards, and custom apparel for athletes from 6U to high school. From Acadiana to wherever the schedule takes us, Playmaker is on the sideline.
-            </p>
-            <p className="text-[15px] leading-[1.7] text-white/80">
-              What separates us from the big vendors is simple: when you reach out to Playmaker, you're talking to a real person who genuinely cares. We build relationships with tournament directors, coaches, and families because every athlete deserves to look and feel the part.
+              We believe the best brands are built through relationships. That's why we partner with tournament directors, coaches, and organizations to provide reliable service, quality products, and a shopping experience players and families look forward to every weekend.
             </p>
           </div>
           </div>

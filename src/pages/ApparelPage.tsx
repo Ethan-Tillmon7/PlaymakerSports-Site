@@ -89,7 +89,7 @@ export function ApparelPage() {
       <header className="border-b border-pm-rule">
         <div className="max-w-[1480px] mx-auto px-6 sm:px-10 pt-6 pb-8 animate-fade-up">
           <span className="font-mono text-[11px] tracking-[0.16em] uppercase text-pm-yellow-deep">
-            Custom uniforms · Acadiana made
+            Custom uniforms · Built to order
           </span>
           <h1 className="font-display uppercase text-[clamp(36px,5vw,56px)] leading-[0.86] tracking-[-0.005em] text-pm-black mt-4">
             Gear built for the <span className="bg-pm-yellow px-[0.08em] rounded-md">play.</span>
@@ -301,7 +301,7 @@ export function ApparelPage() {
                       key={v.id}
                       type="button"
                       onClick={() => openModal(activeCategory, i)}
-                      className="group flex flex-col text-left cursor-pointer hover:-translate-y-0.5 transition-transform duration-150"
+                      className="group w-full flex flex-col text-left cursor-pointer hover:-translate-y-0.5 transition-transform duration-150"
                     >
                       <div className="aspect-square stage-cream rounded-xl overflow-hidden border border-pm-rule">
                         <ResponsiveImage

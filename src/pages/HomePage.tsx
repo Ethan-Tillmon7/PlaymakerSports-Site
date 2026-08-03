@@ -68,7 +68,7 @@ export function HomePage() {
           </p>
 
           <p className="text-[clamp(17px,1.6vw,21px)] leading-[1.5] text-white/50 max-w-[560px] mt-7 animate-fade-up" style={{ animationDelay: '280ms' }}>
-            We host the tournaments your kids want to play in — and outfit the teams who show up to win them.
+            We attend the tournaments your kids want to play in — and outfit the teams who show up to win them.
           </p>
 
           <div className="flex flex-wrap items-center justify-center gap-4 mt-10 animate-fade-up" style={{ animationDelay: '420ms' }}>

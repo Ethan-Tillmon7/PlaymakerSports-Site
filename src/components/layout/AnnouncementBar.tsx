@@ -5,7 +5,7 @@ interface AnnouncementBarProps {
 
 export function AnnouncementBar({
   highlight = 'Now booking',
-  message = 'Summer 2026 tournaments — Acadiana & Gulf Coast',
+  message = 'Catch us at Summer 2026 tournaments nationwide',
 }: AnnouncementBarProps) {
   return (
     <div className="bg-pm-black text-white">
@@ -16,7 +16,7 @@ export function AnnouncementBar({
           <span className="text-white/70 hidden sm:inline">{message}</span>
         </div>
         <div className="hidden md:flex items-center gap-5 text-white/55">
-          <a href="/about" className="hover:text-white">Contact us</a>
+          <a href="/contact" className="hover:text-white">Contact us</a>
           <a href="/apparel" className="hover:text-white">View apparel ↗</a>
         </div>
       </div>

@@ -20,7 +20,7 @@ export function Footer() {
               Made for the Moment
             </p>
             <p className="text-[13px] leading-[1.5] text-white/60 mt-2 max-w-[220px]">
-              Sports merch and custom apparel, built in Lafayette.
+              Sports merch and custom apparel for athletes and families across the US.
             </p>
           </div>
 
@@ -44,7 +44,7 @@ export function Footer() {
               <h4 className="font-display uppercase text-[12px] tracking-[0.16em] text-pm-yellow mb-2">Company</h4>
               <ul className="flex flex-col gap-2 font-mono text-[12px] tracking-[0.04em] text-white/70 uppercase">
                 <li><Link to="/about" className="hover:text-white transition-colors duration-150">About</Link></li>
-                <li><Link to="/about" className="hover:text-white transition-colors duration-150">Contact</Link></li>
+                <li><Link to="/contact" className="hover:text-white transition-colors duration-150">Contact</Link></li>
                 <li><Link to="/faq" className="hover:text-white transition-colors duration-150">FAQ</Link></li>
               </ul>
             </div>
