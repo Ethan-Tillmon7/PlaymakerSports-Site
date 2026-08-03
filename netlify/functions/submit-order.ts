@@ -1,6 +1,6 @@
 import type { Handler } from '@netlify/functions';
 import { z } from 'zod';
-import { getSheetsClient, SHEET_ID } from './_sheets';
+import { getSheetsClient, SHEET_ID, safecell } from './_sheets';
 
 const SIZES = ['YS', 'YM', 'YL', 'AS', 'AM', 'AL', 'AXL', 'A2XL', 'A3XL'] as const;
 
@@ -63,14 +63,14 @@ export const handler: Handler = async (event) => {
       const { type: _type, ...data } = parsed.data;
       const row = [
         timestamp,
-        data.team_name,
-        data.contact_name,
-        data.email,
-        data.phone ?? '',
-        data.jersey_style_interest ?? '',
+        safecell(data.team_name),
+        safecell(data.contact_name),
+        safecell(data.email),
+        safecell(data.phone ?? ''),
+        safecell(data.jersey_style_interest ?? ''),
         String(data.roster_count),
-        data.sku ?? '',
-        data.notes ?? '',
+        safecell(data.sku ?? ''),
+        safecell(data.notes ?? ''),
       ];
       await sheets.spreadsheets.values.append({
         spreadsheetId: SHEET_ID,
@@ -87,8 +87,8 @@ export const handler: Handler = async (event) => {
     } else {
       const rows = parsed.data.players.map((p) => [
         timestamp,
-        parsed.data.team_name,
-        p.player_name,
+        safecell(parsed.data.team_name),
+        safecell(p.player_name),
         String(p.number),
         p.size,
       ]);

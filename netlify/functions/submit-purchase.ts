@@ -1,6 +1,6 @@
 import type { Handler } from '@netlify/functions';
 import { z } from 'zod';
-import { getSheetsClient, SHEET_ID } from './_sheets';
+import { getSheetsClient, SHEET_ID, safecell } from './_sheets';
 
 const purchaseSchema = z.object({
   contact_name: z.string().min(1),
@@ -43,13 +43,13 @@ export const handler: Handler = async (event) => {
     const row = [
       timestamp,
       'Individual Purchase',
-      parsed.data.contact_name,
-      parsed.data.email,
-      parsed.data.phone ?? '',
-      parsed.data.jersey_style_interest,
+      safecell(parsed.data.contact_name),
+      safecell(parsed.data.email),
+      safecell(parsed.data.phone ?? ''),
+      safecell(parsed.data.jersey_style_interest),
       String(parsed.data.quantity),
-      parsed.data.sku,
-      parsed.data.notes ?? '',
+      safecell(parsed.data.sku),
+      safecell(parsed.data.notes ?? ''),
     ];
 
     await sheets.spreadsheets.values.append({

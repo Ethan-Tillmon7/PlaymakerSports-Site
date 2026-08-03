@@ -12,3 +12,15 @@ export function getSheetsClient() {
 }
 
 export const SHEET_ID = process.env.GOOGLE_SHEETS_ID ?? '';
+
+/**
+ * Neutralizes spreadsheet formula injection by prefixing a single quote to any
+ * value that a spreadsheet client would treat as a formula.
+ *
+ * The Sheets API calls here all use valueInputOption: 'RAW', so these values are
+ * already stored literally and never evaluate inside Google Sheets. The real risk
+ * is downstream: exporting a tab to CSV and opening it in Excel or LibreOffice,
+ * which *do* parse a leading = + - @ as a formula. Apply to every user-supplied
+ * string written to a sheet.
+ */
+export const safecell = (s: string) => (/^[=+\-@\t\r]/.test(s) ? "'" + s : s);

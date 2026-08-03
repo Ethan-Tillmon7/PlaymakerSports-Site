@@ -1,12 +1,10 @@
 import type { Handler } from '@netlify/functions';
 import { z } from 'zod';
 import { Resend } from 'resend';
-import { getSheetsClient, SHEET_ID } from './_sheets';
+import { getSheetsClient, SHEET_ID, safecell } from './_sheets';
 
 const esc = (s: string) =>
   s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-
-const safecell = (s: string) => (/^[=+\-@\t\r]/.test(s) ? "'" + s : s);
 
 const schema = z.object({
   role: z.enum(['Event Organizer', 'Player', 'Parent', 'Coach']),
