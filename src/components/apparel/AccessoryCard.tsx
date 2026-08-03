@@ -48,10 +48,12 @@ export function AccessoryCard({
           </div>
         )}
         {category.coverImage ? (
+          // sizes matches the CardRail slot, not the lg grid: 72%/46% of the
+          // padded container below lg, then (container - gaps) / 3 cols at lg.
           <ResponsiveImage
             image={category.coverImage}
             alt={category.name}
-            sizes="(min-width:1024px) 340px, (min-width:640px) 30vw, 45vw"
+            sizes="(min-width:1480px) 367px, (min-width:1024px) calc((100vw - 380px) / 3), (min-width:640px) calc(46vw - 37px), calc(72vw - 35px)"
             className="absolute inset-0 w-full h-full object-cover"
           />
         ) : (
