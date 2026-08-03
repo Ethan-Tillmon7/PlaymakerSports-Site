@@ -46,6 +46,7 @@ const IN_STOCK: CategoryDef[] = [
   // Gear
   { id: 'ball-on-string', name: 'Ball on String', desc: 'Ball-on-a-string charms — a dugout staple.', folder: 'Ball on String', prefix: 'ballString-', group: 'Gear' },
   { id: 'cooling-towels', name: 'Cooling Towels', desc: 'Stay-cool towels for the sideline and dugout.', folder: 'Cooling Towel', prefix: 'coolingTowel-', group: 'Gear' },
+  { id: 'squishy-toys', name: 'Squishy Toys', desc: 'Fidget squishies in fruit, animal, and treat shapes.', folder: 'Squishy Toys', prefix: 'squishyToys-', group: 'Gear' },
 ];
 
 const COMING_SOON: CategoryDef[] = [
@@ -61,7 +62,7 @@ interface ImageMetadata {
   format: string;
 }
 
-const modules = import.meta.glob('../assets/images/inventory/**/*.png', {
+const modules = import.meta.glob('../assets/images/inventory/**/*.{png,jpg,jpeg}', {
   eager: true,
   query: { w: '128;320;640;1024', format: 'webp', as: 'metadata' },
   import: 'default',
@@ -81,7 +82,7 @@ for (const [path, meta] of Object.entries(modules)) {
   const parts = path.split('/');
   const file = parts[parts.length - 1];
   const folder = parts[parts.length - 2];
-  const base = file.replace(/\.png$/i, '');
+  const base = file.replace(/\.(png|jpe?g)$/i, '');
   const list = byFolder.get(folder) ?? [];
   list.push({ base, image: toResponsive(meta) });
   byFolder.set(folder, list);
