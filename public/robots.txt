@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /customizer
 
-Sitemap: https://playmakersportsla.com/sitemap.xml
+Sitemap: https://playmakersports.co/sitemap.xml
