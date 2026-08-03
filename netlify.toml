@@ -36,3 +36,21 @@
   from = "/*"
   to = "/index.html"
   status = 200
+
+# ── Security headers ──
+# script-src keeps 'unsafe-inline' on purpose: browsers apply script-src to
+# <script type="application/ld+json">, and dropping it silently kills the JSON-LD
+# structured data on every page. style-src needs it too — the pages use inline
+# style={{...}} props for scroll/parallax transforms. Tightening either to a
+# nonce or hash requires build-pipeline changes, not just a header edit.
+# img-src allows any https host because catalog image URLs come from the
+# Google Sheet and are not restricted to a known CDN.
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'; upgrade-insecure-requests"
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=(), interest-cohort=()"
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains"
