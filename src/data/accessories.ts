@@ -43,6 +43,7 @@ const IN_STOCK: CategoryDef[] = [
   { id: 'arm-sleeves', name: 'Arm Sleeves', desc: 'Compression arm sleeves in every colorway.', folder: 'Arm Sleeves', prefix: 'armsleeve-', group: 'Wearables' },
   { id: 'sliding-mitts', name: 'Sliding Mitts', desc: 'Protective sliding mitts in a stack of custom designs.', folder: 'Sliding Mitts', prefix: 'slidingMitt-', group: 'Wearables' },
   { id: 'eye-black', name: 'Eye Black', desc: 'Anti-glare eye black for game day.', folder: 'Eye Black', prefix: 'eyeblack-', group: 'Wearables' },
+  { id: 'wrist-tape', name: 'Wrist Tape', desc: 'Self-adhesive grip tape in bright game-day colors.', folder: 'Wrist Tape', prefix: 'wristTape-', group: 'Wearables' },
   // Gear
   { id: 'ball-on-string', name: 'Ball on String', desc: 'Ball-on-a-string charms — a dugout staple.', folder: 'Ball on String', prefix: 'ballString-', group: 'Gear' },
   { id: 'cooling-towels', name: 'Cooling Towels', desc: 'Stay-cool towels for the sideline and dugout.', folder: 'Cooling Towel', prefix: 'coolingTowel-', group: 'Gear' },

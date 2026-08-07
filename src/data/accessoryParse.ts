@@ -6,8 +6,11 @@ export const COLOR_MAP: Record<string, string> = {
   yellow: '#F5C842',
   gold: '#C99E1F',
   orange: '#E07A2F',
+  lightorange: '#F0A02A',
+  darkorange: '#C2551C',
   red: '#C0392B',
   pink: '#E86FA6',
+  hotpink: '#D45CB4',
   peach: '#F1B48A',
   purple: '#6C3FB5',
   navy: '#1A2B5C',
@@ -26,6 +29,9 @@ export const COLOR_MAP: Record<string, string> = {
 const COLOR_LABEL_OVERRIDES: Record<string, string> = {
   lightblue: 'Light Blue',
   darkgreen: 'Dark Green',
+  lightorange: 'Light Orange',
+  darkorange: 'Dark Orange',
+  hotpink: 'Hot Pink',
 };
 
 // Non-color tokens that need a nicer display label than plain title-case.
