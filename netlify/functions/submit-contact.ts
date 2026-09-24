@@ -71,9 +71,13 @@ export const handler: Handler = async (event) => {
 
   try {
     const resend = new Resend(process.env.RESEND_API_KEY!);
+    // Resend's sandbox sender only delivers to the Resend account owner's address.
+    // Set CONTACT_FROM_EMAIL to a verified-domain sender (e.g. notifications@playmakersports.co)
+    // once playmakersports.co is verified in Resend.
     await resend.emails.send({
-      from: 'Playmaker Sports <onboarding@resend.dev>',
+      from: process.env.CONTACT_FROM_EMAIL || 'Playmaker Sports <onboarding@resend.dev>',
       to: process.env.CONTACT_EMAIL!,
+      replyTo: data.email,
       subject: `New Contact: ${data.role} — ${data.name}`,
       html: `
         <p><strong>Role:</strong> ${esc(data.role)}</p>
