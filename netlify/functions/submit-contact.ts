@@ -6,18 +6,32 @@ import { getSheetsClient, SHEET_ID, safecell } from './_sheets';
 const esc = (s: string) =>
   s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 
+// Limits match ContactForm.tsx. They keep one submission well under the 50,000-
+// character Sheets cell cap, which would otherwise fail the append and lose the message.
 const schema = z.object({
   role: z.enum(['Event Organizer', 'Player', 'Parent', 'Coach']),
-  name: z.string().min(1),
-  email: z.email(),
-  phone: z.string().optional(),
-  message: z.string().min(1),
-  event_name: z.string().optional(),
+  name: z.string().trim().min(1).max(100),
+  email: z.email().max(254),
+  phone: z.string().trim().max(30).optional(),
+  message: z.string().trim().min(1).max(5000),
+  event_name: z.string().trim().max(150).optional(),
+  // Honeypot: a visually hidden field people never see. Bots that fill every input do.
+  company: z.string().optional(),
 });
+
+const MAX_BODY_BYTES = 20_000;
 
 export const handler: Handler = async (event) => {
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, body: 'Method Not Allowed' };
+  }
+
+  if ((event.body?.length ?? 0) > MAX_BODY_BYTES) {
+    return {
+      statusCode: 413,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ error: 'Submission too large' }),
+    };
   }
 
   let body: unknown;
@@ -41,6 +55,14 @@ export const handler: Handler = async (event) => {
   }
 
   const data = parsed.data;
+  if (data.company) {
+    // Answer like a success so the bot moves on; save nothing and email no one.
+    return {
+      statusCode: 200,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ success: true }),
+    };
+  }
   const timestamp = new Date().toISOString();
 
   try {
@@ -89,14 +111,14 @@ export const handler: Handler = async (event) => {
       from: process.env.CONTACT_FROM_EMAIL || 'Playmaker Sports <onboarding@resend.dev>',
       to: process.env.CONTACT_EMAIL,
       replyTo: data.email,
-      subject: `New Contact: ${data.role} — ${data.name}`,
+      subject: `New Contact: ${data.role} — ${data.name.replace(/\s+/g, ' ')}`,
       html: `
         <p><strong>Role:</strong> ${esc(data.role)}</p>
         <p><strong>Name:</strong> ${esc(data.name)}</p>
         <p><strong>Email:</strong> ${esc(data.email)}</p>
-        <p><strong>Phone:</strong> ${esc(data.phone ?? '—')}</p>
-        <p><strong>Message:</strong> ${esc(data.message)}</p>
-        <p><strong>Event:</strong> ${esc(data.event_name ?? '—')}</p>
+        <p><strong>Phone:</strong> ${esc(data.phone || '—')}</p>
+        <p><strong>Message:</strong><br/>${esc(data.message).replace(/\r?\n/g, '<br/>')}</p>
+        <p><strong>Event:</strong> ${esc(data.event_name || '—')}</p>
         <hr/>
         <p style="color:#888;font-size:12px">Submitted ${timestamp}</p>
       `,
