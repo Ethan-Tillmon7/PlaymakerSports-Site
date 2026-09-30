@@ -1,10 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { API } from '@shared/api';
-import type { PublicEvent } from '@shared/events';
 import { localISODate } from '@/lib/dates';
 import { formatDateRange } from '../eventDates';
-import { fetchWithTimeout } from '@/lib/http';
+import { useEvents } from '../useEvents';
 
 // The loop translates the track by -50%, so each half has to be wider than the
 // strip or a gap scrolls into view. ~8 items clears a 1480px container.
@@ -12,24 +10,10 @@ const MIN_ITEMS_PER_HALF = 8;
 
 export function EventTicker() {
   const [paused, setPaused] = useState(false);
-  const [events, setEvents] = useState<PublicEvent[]>([]);
-
-  useEffect(() => {
-    const controller = new AbortController();
-    fetchWithTimeout(API.events, { signal: controller.signal })
-      .then((res) => {
-        if (!res.ok) throw new Error();
-        return res.json() as Promise<unknown>;
-      })
-      .then((data) => {
-        if (!Array.isArray(data)) return;
-        const today = localISODate();
-        setEvents((data as PublicEvent[]).filter((t) => t.endDate >= today));
-      })
-      // The ticker is optional garnish on the hero: on any failure it stays hidden.
-      .catch(() => {});
-    return () => controller.abort();
-  }, []);
+  // The ticker is optional garnish on the hero: on any failure it stays hidden.
+  const result = useEvents();
+  const today = localISODate();
+  const events = result.status === 'success' ? result.events.filter((t) => t.endDate >= today) : [];
 
   // Hidden until upcoming events load (also covers SSR/prerender, where the
   // effect never runs and the API isn't reachable).

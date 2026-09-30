@@ -1,150 +1,19 @@
-import { useCallback, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { PageLayout } from '@/components/layout/PageLayout';
 import { PageHeader } from '@/components/layout/PageHeader';
+import { PageLayout } from '@/components/layout/PageLayout';
 import { Button, ButtonLink } from '@/components/ui/Button';
-import { Diamond } from '@/components/layout/DiamondMark';
+import { Container } from '@/components/ui/Container';
 import { PAGE_META } from '@/config/pageMeta';
 import { SITE_URL } from '@/config/site';
 import { useInView } from '@/hooks/useInView';
 import { localISODate } from '@/lib/dates';
-import { eventDateParts, type EventDateParts } from './eventDates';
-import { classifyFailure, fetchWithTimeout, type RequestFailure } from '@/lib/http';
-import { useLoadingBarStore } from '@/stores/loadingBar';
-import { API } from '@shared/api';
-import type { PublicEvent } from '@shared/events';
-import { Container } from '@/components/ui/Container';
-
-type EventStatus = { kind: 'live' } | { kind: 'soon'; days: number } | null;
-
-const DAY_MS = 86_400_000;
-
-/** Live while today falls inside the event; "soon" when it starts within 6 days. */
-function eventStatus(t: PublicEvent, today: string): EventStatus {
-  if (t.startDate <= today && today <= t.endDate) return { kind: 'live' };
-  const days = Math.round((Date.parse(t.startDate) - Date.parse(today)) / DAY_MS);
-  return days >= 1 && days <= 6 ? { kind: 'soon', days } : null;
-}
-
-function DateTile({ parts, live = false }: { parts: EventDateParts | null; live?: boolean }) {
-  // A live event inverts the tile: the one black date on a page of yellow ones.
-  const tone = live
-    ? 'bg-pm-black text-pm-yellow border-pm-black'
-    : 'bg-pm-yellow text-pm-black border-pm-yellow-deep';
-  return (
-    <div className={`${tone} w-16 sm:w-[72px] aspect-square flex flex-col items-center justify-center leading-none border-b-2 rounded-lg shrink-0`}>
-      {parts ? (
-        <>
-          <span className="font-mono text-[9px] tracking-[0.12em] uppercase">{parts.month}</span>
-          <span
-            className={`font-display tabular-nums mt-1 ${
-              parts.days.includes('–') ? 'text-[20px] sm:text-[23px]' : 'text-[26px] sm:text-[30px]'
-            }`}
-          >
-            {parts.days}
-          </span>
-        </>
-      ) : (
-        <span className="font-mono text-[9px] tracking-[0.1em] uppercase text-center">Date TBA</span>
-      )}
-    </div>
-  );
-}
-
-/** "Fort Walton Beach, FL" → ["Fort Walton Beach", "FL"]. */
-function splitCity(city: string): [string, string | null] {
-  const i = city.lastIndexOf(',');
-  return i === -1 ? [city.trim(), null] : [city.slice(0, i).trim(), city.slice(i + 1).trim()];
-}
-
-function StatusMark({ status }: { status: EventStatus }) {
-  if (!status) return null;
-  if (status.kind === 'live') {
-    return (
-      <span className="inline-flex items-center gap-1.5 self-start mb-2 bg-pm-yellow text-pm-black font-mono text-[9.5px] tracking-[0.12em] uppercase px-2 py-1 rounded-lg border-b border-pm-yellow-deep">
-        <span aria-hidden="true" className="w-1.5 h-1.5 rounded-full bg-pm-black" />
-        Happening now
-      </span>
-    );
-  }
-  return (
-    <span className="block mb-1.5 font-mono text-[10px] tracking-[0.12em] uppercase text-pm-yellow-ink">
-      {status.days === 1 ? 'Tomorrow' : `In ${status.days} days`}
-    </span>
-  );
-}
-
-function TournamentCard({
-  t,
-  animated,
-  delay = 0,
-  past = false,
-  status = null,
-}: {
-  t: PublicEvent;
-  animated?: boolean;
-  delay?: number;
-  past?: boolean;
-  status?: EventStatus;
-}) {
-  const live = status?.kind === 'live';
-  const parts = eventDateParts(t.startDate, t.endDate);
-  const [place, state] = splitCity(t.city);
-  const meta = [state, parts?.weekdays].filter(Boolean).join(' · ');
-  const animClass = animated === undefined ? '' : animated ? 'animate-fade-up' : 'opacity-0';
-
-  return (
-    <li
-      className={`flex items-center gap-4 p-3 bg-white border rounded-xl ${live ? 'border-pm-black' : 'border-pm-rule'} ${past ? 'opacity-70' : ''} ${animClass}`}
-      style={delay > 0 ? { animationDelay: `${delay}ms` } : undefined}
-    >
-      <DateTile parts={parts} live={live} />
-      <div className="min-w-0 flex flex-col">
-        <StatusMark status={status} />
-        <p className="font-display uppercase text-[19px] leading-[0.95] tracking-[0.005em] text-pm-black break-words">
-          {place}
-        </p>
-        {meta && (
-          <p className="font-mono text-[11px] tracking-[0.1em] uppercase text-pm-muted mt-1.5">{meta}</p>
-        )}
-      </div>
-    </li>
-  );
-}
-
-const cardGridClass = 'grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3';
-
-/** Upcoming events bucketed by the month they start in, in schedule order. */
-function groupByMonth(events: PublicEvent[]) {
-  const groups: { key: string; label: string; events: PublicEvent[] }[] = [];
-  for (const t of events) {
-    const parts = eventDateParts(t.startDate, t.endDate);
-    const key = parts?.monthKey ?? 'tba';
-    const last = groups[groups.length - 1];
-    if (last && last.key === key) last.events.push(t);
-    else groups.push({ key, label: parts?.monthLabel ?? 'Date TBA', events: [t] });
-  }
-  return groups;
-}
-
-function TournamentSkeleton() {
-  return (
-    <div role="status" aria-label="Loading the event schedule">
-      <div className="h-8 w-40 bg-shimmer animate-shimmer rounded-lg mb-5" />
-      <div className={cardGridClass}>
-        {[0, 1, 2, 3, 4, 5].map((i) => (
-          <div key={i} className="flex items-center gap-4 p-3 bg-white border border-pm-rule rounded-xl">
-            <div className="w-16 sm:w-[72px] aspect-square bg-shimmer animate-shimmer rounded-lg shrink-0" />
-            <div className="flex-1 space-y-2">
-              <div className="h-4 bg-shimmer animate-shimmer rounded w-3/5" />
-              <div className="h-3 bg-shimmer animate-shimmer rounded w-2/5" />
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
+import type { RequestFailure } from '@/lib/http';
+import { EventCard } from './components/EventCard';
+import { EventSkeleton } from './components/EventSkeleton';
+import { NoUpcomingEvents } from './components/NoUpcomingEvents';
+import { eventStatus, groupByMonth } from './eventDates';
+import { eventGridClass } from './eventGrid';
+import { useEvents } from './useEvents';
 
 const failureCopy: Record<RequestFailure, string> = {
   offline: "You're offline. Once you have signal again, try reloading the schedule.",
@@ -152,62 +21,12 @@ const failureCopy: Record<RequestFailure, string> = {
   server: "We couldn't load the schedule just now. Try again in a moment.",
 };
 
-function NoUpcomingEvents() {
-  return (
-    <div className="border border-pm-rule rounded-xl p-10 text-center max-w-[640px] mx-auto">
-      <Diamond className="w-6 h-6 text-pm-yellow mx-auto mb-4" />
-      <span className="font-mono text-[11px] tracking-[0.16em] uppercase text-pm-muted">Schedule</span>
-      <h2 className="font-display uppercase text-[clamp(24px,2.5vw,36px)] leading-none tracking-[0.005em] mt-4 text-pm-black">
-        No upcoming events confirmed
-      </h2>
-      <p className="text-[15px] leading-[1.6] text-pm-ink mt-4">
-        The schedule for the next few weeks is being finalized — check back soon, or contact us for the latest.
-      </p>
-      <ButtonLink to="/contact" size="md" className="mt-7">
-        Contact us for info
-      </ButtonLink>
-    </div>
-  );
-}
-
-type FetchState =
-  | { status: 'loading' }
-  | { status: 'success'; data: PublicEvent[] }
-  | { status: 'error'; reason: RequestFailure };
-
 export function EventsPage() {
-  const [state, setState] = useState<FetchState>({ status: 'loading' });
-  const [attempt, setAttempt] = useState(0);
+  const result = useEvents({ showLoadingBar: true });
   const [listRef, listInView] = useInView();
-  const loadingBar = useLoadingBarStore();
-
-  useEffect(() => {
-    const controller = new AbortController();
-    loadingBar.start();
-    fetchWithTimeout(API.events, { signal: controller.signal })
-      .then((res) => {
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        return res.json() as Promise<unknown>;
-      })
-      .then((data) => {
-        if (!Array.isArray(data)) throw new Error('Unexpected response');
-        setState({ status: 'success', data: data as PublicEvent[] });
-      })
-      .catch((err) => {
-        if (controller.signal.aborted) return;
-        setState({ status: 'error', reason: classifyFailure(err) });
-      })
-      .finally(() => loadingBar.done());
-    return () => controller.abort();
-  }, [attempt]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  const retry = useCallback(() => {
-    setState({ status: 'loading' });
-    setAttempt((n) => n + 1);
-  }, []);
 
   const today = localISODate();
-  const allEvents = state.status === 'success' ? state.data : [];
+  const allEvents = result.status === 'success' ? result.events : [];
   const upcomingEvents = allEvents.filter((t) => t.endDate >= today);
   const pastEvents = [...allEvents].filter((t) => t.endDate < today).reverse();
 
@@ -226,11 +45,11 @@ export function EventsPage() {
       <PageHeader eyebrow="Tournaments · Where to find us" title="Events & Tournaments" />
 
       <Container className="py-12 lg:py-16">
-        {state.status === 'loading' && <TournamentSkeleton />}
+        {result.status === 'loading' && <EventSkeleton />}
 
-        {state.status === 'success' && allEvents.length === 0 && <NoUpcomingEvents />}
+        {result.status === 'success' && allEvents.length === 0 && <NoUpcomingEvents />}
 
-        {state.status === 'success' && allEvents.length > 0 && (
+        {result.status === 'success' && allEvents.length > 0 && (
           <>
             {upcomingEvents.length > 0 ? (
               <div ref={listRef} className="flex flex-col gap-12 lg:gap-14">
@@ -249,9 +68,9 @@ export function EventsPage() {
                           {group.events.length} {group.events.length === 1 ? 'event' : 'events'}
                         </span>
                       </div>
-                      <ul className={cardGridClass}>
+                      <ul className={eventGridClass}>
                         {group.events.map((t, i) => (
-                          <TournamentCard
+                          <EventCard
                             key={t.id}
                             t={t}
                             animated={listInView}
@@ -284,9 +103,9 @@ export function EventsPage() {
                     Past events ({pastEvents.length})
                   </span>
                 </summary>
-                <ul className={`mt-6 ${cardGridClass}`}>
+                <ul className={`mt-6 ${eventGridClass}`}>
                   {pastEvents.map((t) => (
-                    <TournamentCard key={t.id} t={t} past />
+                    <EventCard key={t.id} t={t} past />
                   ))}
                 </ul>
               </details>
@@ -294,14 +113,14 @@ export function EventsPage() {
           </>
         )}
 
-        {state.status === 'error' && (
+        {result.status === 'error' && (
           <div role="alert" className="border border-pm-rule rounded-xl p-10 text-center max-w-[640px] mx-auto">
             <span className="font-mono text-[11px] tracking-[0.16em] uppercase text-pm-muted">
               Couldn't load schedule
             </span>
-            <p className="text-[15px] leading-[1.6] text-pm-ink mt-4">{failureCopy[state.reason]}</p>
+            <p className="text-[15px] leading-[1.6] text-pm-ink mt-4">{failureCopy[result.reason]}</p>
             <div className="mt-7 flex flex-wrap items-center justify-center gap-2">
-              <Button size="md" onClick={retry}>
+              <Button size="md" onClick={result.retry}>
                 Try again
               </Button>
               <ButtonLink to="/contact" variant="secondary" size="md">

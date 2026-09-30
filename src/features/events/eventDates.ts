@@ -1,3 +1,5 @@
+import type { PublicEvent } from '@shared/events';
+
 const FMT_MONTH = new Intl.DateTimeFormat('en-US', { month: 'short', timeZone: 'UTC' });
 const FMT_DAY = new Intl.DateTimeFormat('en-US', { day: 'numeric', timeZone: 'UTC' });
 
@@ -65,4 +67,28 @@ export function eventDateParts(startISO: string, endISO: string, currentYear = n
     days: sameDay ? FMT_DAY.format(start) : `${FMT_DAY.format(start)}–${FMT_DAY.format(end)}`,
     weekdays: sameDay ? FMT_WEEKDAY.format(start) : `${FMT_WEEKDAY.format(start)}–${FMT_WEEKDAY.format(end)}`,
   };
+}
+
+export type EventStatus = { kind: 'live' } | { kind: 'soon'; days: number } | null;
+
+const DAY_MS = 86_400_000;
+
+/** Live while today falls inside the event; "soon" when it starts within 6 days. */
+export function eventStatus(t: PublicEvent, today: string): EventStatus {
+  if (t.startDate <= today && today <= t.endDate) return { kind: 'live' };
+  const days = Math.round((Date.parse(t.startDate) - Date.parse(today)) / DAY_MS);
+  return days >= 1 && days <= 6 ? { kind: 'soon', days } : null;
+}
+
+/** Upcoming events bucketed by the month they start in, in schedule order. */
+export function groupByMonth(events: PublicEvent[]) {
+  const groups: { key: string; label: string; events: PublicEvent[] }[] = [];
+  for (const t of events) {
+    const parts = eventDateParts(t.startDate, t.endDate);
+    const key = parts?.monthKey ?? 'tba';
+    const last = groups[groups.length - 1];
+    if (last && last.key === key) last.events.push(t);
+    else groups.push({ key, label: parts?.monthLabel ?? 'Date TBA', events: [t] });
+  }
+  return groups;
 }
