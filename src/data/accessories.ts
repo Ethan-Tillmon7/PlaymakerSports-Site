@@ -1,5 +1,5 @@
 import { COLOR_MAP, colorLabel, parseVariantName } from './accessoryParse';
-import type { ResponsiveImageData } from '../types/image';
+import type { ResponsiveImageData } from '@/types/image';
 
 // Product-type groupings for the All Accessories view, in display order.
 export type AccessoryGroup = 'Jewelry' | 'Wearables' | 'Gear' | 'Coming Soon';

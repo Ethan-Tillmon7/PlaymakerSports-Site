@@ -1,15 +1,16 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { PageLayout } from '../components/layout/PageLayout';
-import { PageHeader } from '../components/layout/PageHeader';
-import { Diamond } from '../components/layout/DiamondMark';
-import { PAGE_META, SITE_URL } from '../seo/config';
-import { useInView } from '../hooks/useInView';
-import { eventDateParts, localISODate, type EventDateParts } from '../lib/dates';
-import { classifyFailure, fetchWithTimeout, type RequestFailure } from '../lib/http';
-import { useLoadingBarStore } from '../store/loadingBarStore';
-import type { Tournament } from '../data/events';
+import { PageLayout } from '@/components/layout/PageLayout';
+import { PageHeader } from '@/components/layout/PageHeader';
+import { Diamond } from '@/components/layout/DiamondMark';
+import { PAGE_META } from '@/config/pageMeta';
+import { SITE_URL } from '@/config/site';
+import { useInView } from '@/hooks/useInView';
+import { eventDateParts, localISODate, type EventDateParts } from '@/lib/dates';
+import { classifyFailure, fetchWithTimeout, type RequestFailure } from '@/lib/http';
+import { useLoadingBarStore } from '@/stores/loadingBar';
+import type { Tournament } from '@/data/events';
 
 type EventStatus = { kind: 'live' } | { kind: 'soon'; days: number } | null;
 

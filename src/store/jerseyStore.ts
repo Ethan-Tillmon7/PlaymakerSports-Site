@@ -5,8 +5,8 @@ import type {
   PlacementContent,
   ColorScheme,
   RosterEntry,
-} from '../types/jersey';
-import { INITIAL_DESIGN } from '../types/jersey';
+} from '@/types/jersey';
+import { INITIAL_DESIGN } from '@/types/jersey';
 
 /**
  * The customizer store. This is the architectural spine of the app —

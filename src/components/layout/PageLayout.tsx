@@ -3,9 +3,8 @@ import { Nav } from './Nav';
 import { Footer } from './Footer';
 import { DiamondMarkSymbol } from './DiamondMark';
 import { AnnouncementBar } from './AnnouncementBar';
-import { JsonLd } from '../../seo/JsonLd';
-import { SITE_URL } from '../../seo/config';
-import { contact } from '../../data/contact';
+import { JsonLd } from '@/components/seo/JsonLd';
+import { SITE_URL, contact } from '@/config/site';
 
 const BREADCRUMB_PATHS: Record<string, string> = {
   Events: '/events',

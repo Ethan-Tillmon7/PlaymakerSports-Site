@@ -1,11 +1,12 @@
 import { Helmet } from 'react-helmet-async';
-import { PageLayout } from '../components/layout/PageLayout';
-import { PageHeader } from '../components/layout/PageHeader';
-import { PAGE_META, SITE_URL } from '../seo/config';
-import { ContactForm } from '../components/forms/ContactForm';
-import { ResponsiveImage } from '../components/ui/ResponsiveImage';
-import { toResponsive } from '../lib/responsiveImage';
-import homeplateMeta from '../assets/images/misc/homeplate.jpg?w=480;768;1120&format=webp&quality=72&as=meta:src;width;height;format';
+import { PageLayout } from '@/components/layout/PageLayout';
+import { PageHeader } from '@/components/layout/PageHeader';
+import { PAGE_META } from '@/config/pageMeta';
+import { SITE_URL } from '@/config/site';
+import { ContactForm } from '@/components/forms/ContactForm';
+import { ResponsiveImage } from '@/components/ui/ResponsiveImage';
+import { toResponsive } from '@/lib/responsiveImage';
+import homeplateMeta from '@/assets/images/misc/homeplate.jpg?w=480;768;1120&format=webp&quality=72&as=meta:src;width;height;format';
 
 const homeplate = toResponsive(homeplateMeta);
 

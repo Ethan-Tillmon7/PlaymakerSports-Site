@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useForm, useWatch, type Resolver } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { classifyFailure, fetchWithTimeout, type RequestFailure } from '../../lib/http';
+import { classifyFailure, fetchWithTimeout, type RequestFailure } from '@/lib/http';
 
 // Limits match netlify/functions/submit-contact.ts.
 const LIMITS = { name: 100, email: 254, phone: 30, event_name: 150, message: 5000 } as const;

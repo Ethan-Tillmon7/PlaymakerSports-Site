@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
-import { contact } from '../../data/contact';
-import { FadeIn } from '../ui/FadeIn';
+import { contact } from '@/config/site';
+import { FadeIn } from '@/components/ui/FadeIn';
 
 export function Footer() {
   return (

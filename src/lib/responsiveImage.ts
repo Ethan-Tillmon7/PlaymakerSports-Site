@@ -1,4 +1,4 @@
-import type { ResponsiveImageData } from '../types/image';
+import type { ResponsiveImageData } from '@/types/image';
 
 interface ImageMetadata {
   src: string;

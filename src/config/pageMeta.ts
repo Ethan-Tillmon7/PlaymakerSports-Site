@@ -1,6 +1,3 @@
-// No trailing slash — paths from PAGE_META are appended directly.
-export const SITE_URL = 'https://playmakersports.co';
-
 export const PAGE_META = {
   home: {
     title: 'Playmaker Sports — Custom Jerseys & Tournament Apparel',

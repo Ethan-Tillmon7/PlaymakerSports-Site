@@ -1,13 +1,13 @@
-import tentMeta from '../assets/images/brand/Playmaker-Tent.jpeg?w=1024;1600&format=webp&quality=62&as=meta:src;width;height;format';
+import tentMeta from '@/assets/images/brand/Playmaker-Tent.jpeg?w=1024;1600&format=webp&quality=62&as=meta:src;width;height;format';
 import { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { PageLayout } from '../components/layout/PageLayout';
-import { PAGE_META, SITE_URL } from '../seo/config';
-import { contact } from '../data/contact';
-import { useScrollOut } from '../hooks/useScrollOut';
-import { useCountUp } from '../hooks/useCountUp';
-import { useInView } from '../hooks/useInView';
+import { PageLayout } from '@/components/layout/PageLayout';
+import { PAGE_META } from '@/config/pageMeta';
+import { SITE_URL, contact } from '@/config/site';
+import { useScrollOut } from '@/hooks/useScrollOut';
+import { useCountUp } from '@/hooks/useCountUp';
+import { useInView } from '@/hooks/useInView';
 
 const values = [
   { stat: '2025',      label: 'Year founded'      },

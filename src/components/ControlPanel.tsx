@@ -1,9 +1,9 @@
-import { useJerseyStore } from '../store/jerseyStore';
+import { useJerseyStore } from '@/store/jerseyStore';
 import type {
   BodyPattern,
   SleeveTreatment,
   HexColor,
-} from '../types/jersey';
+} from '@/types/jersey';
 
 /**
  * ControlPanel — Phase 0 plumbing. Every input writes to the Zustand

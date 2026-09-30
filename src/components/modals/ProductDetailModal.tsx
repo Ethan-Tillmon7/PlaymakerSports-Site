@@ -3,8 +3,8 @@ import { createPortal } from 'react-dom';
 import { useForm, useWatch, type Resolver } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Diamond } from '../layout/DiamondMark';
-import type { Product, ProductCategory } from '../../types/product';
+import { Diamond } from '@/components/layout/DiamondMark';
+import type { Product, ProductCategory } from '@/types/product';
 
 interface ProductDetailModalProps {
   initialProduct: Product;

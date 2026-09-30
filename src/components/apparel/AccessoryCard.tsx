@@ -1,5 +1,5 @@
-import type { AccessoryCategory } from '../../data/accessories';
-import { ResponsiveImage } from '../ui/ResponsiveImage';
+import type { AccessoryCategory } from '@/data/accessories';
+import { ResponsiveImage } from '@/components/ui/ResponsiveImage';
 
 export function AccessoryCard({
   category,

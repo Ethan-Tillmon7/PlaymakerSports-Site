@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import type { Tournament } from '../../data/events';
-import { formatDateRange, localISODate } from '../../lib/dates';
-import { fetchWithTimeout } from '../../lib/http';
+import type { Tournament } from '@/data/events';
+import { formatDateRange, localISODate } from '@/lib/dates';
+import { fetchWithTimeout } from '@/lib/http';
 
 // The loop translates the track by -50%, so each half has to be wider than the
 // strip or a gap scrolls into view. ~8 items clears a 1480px container.

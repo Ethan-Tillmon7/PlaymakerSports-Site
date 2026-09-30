@@ -1,9 +1,10 @@
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { PageLayout } from '../components/layout/PageLayout';
-import { Diamond } from '../components/layout/DiamondMark';
-import { PAGE_META, SITE_URL } from '../seo/config';
-import { EventTicker } from '../components/homepage/EventTicker';
+import { PageLayout } from '@/components/layout/PageLayout';
+import { Diamond } from '@/components/layout/DiamondMark';
+import { PAGE_META } from '@/config/pageMeta';
+import { SITE_URL } from '@/config/site';
+import { EventTicker } from '@/components/homepage/EventTicker';
 
 export function HomePage() {
   return (

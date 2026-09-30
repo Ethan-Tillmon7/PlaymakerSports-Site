@@ -1,4 +1,4 @@
-import { useLoadingBarStore } from '../../store/loadingBarStore';
+import { useLoadingBarStore } from '@/stores/loadingBar';
 
 export function LoadingBar() {
   const active = useLoadingBarStore((s) => s.active);

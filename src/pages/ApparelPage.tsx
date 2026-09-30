@@ -1,14 +1,15 @@
 import { useEffect, useRef, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
-import { PageLayout } from '../components/layout/PageLayout';
-import { PageHeader } from '../components/layout/PageHeader';
-import { PAGE_META, SITE_URL } from '../seo/config';
-import { accessoryCategories, ACCESSORY_GROUP_ORDER, type AccessoryCategory } from '../data/accessories';
-import { AccessoryCard } from '../components/apparel/AccessoryCard';
-import { CardRail } from '../components/apparel/CardRail';
-import { AccessoryDetailModal } from '../components/modals/AccessoryDetailModal';
-import { ResponsiveImage } from '../components/ui/ResponsiveImage';
+import { PageLayout } from '@/components/layout/PageLayout';
+import { PageHeader } from '@/components/layout/PageHeader';
+import { PAGE_META } from '@/config/pageMeta';
+import { SITE_URL } from '@/config/site';
+import { accessoryCategories, ACCESSORY_GROUP_ORDER, type AccessoryCategory } from '@/data/accessories';
+import { AccessoryCard } from '@/components/apparel/AccessoryCard';
+import { CardRail } from '@/components/apparel/CardRail';
+import { AccessoryDetailModal } from '@/components/modals/AccessoryDetailModal';
+import { ResponsiveImage } from '@/components/ui/ResponsiveImage';
 
 type Section = 'accessories' | 'jerseys';
 type AccessoryFilter = 'all' | string; // 'all' or a category id

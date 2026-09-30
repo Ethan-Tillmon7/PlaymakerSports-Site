@@ -1,10 +1,11 @@
 import { useId, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { PageLayout } from '../components/layout/PageLayout';
-import { PageHeader } from '../components/layout/PageHeader';
-import { PAGE_META, SITE_URL } from '../seo/config';
-import { JsonLd } from '../seo/JsonLd';
-import { useInView } from '../hooks/useInView';
+import { PageLayout } from '@/components/layout/PageLayout';
+import { PageHeader } from '@/components/layout/PageHeader';
+import { PAGE_META } from '@/config/pageMeta';
+import { SITE_URL } from '@/config/site';
+import { JsonLd } from '@/components/seo/JsonLd';
+import { useInView } from '@/hooks/useInView';
 
 const faqGroups = [
   {
