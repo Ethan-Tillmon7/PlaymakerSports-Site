@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useId, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { PageLayout } from '../components/layout/PageLayout';
 import { PageHeader } from '../components/layout/PageHeader';
@@ -56,6 +56,7 @@ function FAQItem({ question, answer, index, listInView }: {
   listInView: boolean;
 }) {
   const [open, setOpen] = useState(false);
+  const panelId = useId();
 
   return (
     <li
@@ -63,11 +64,13 @@ function FAQItem({ question, answer, index, listInView }: {
       style={{ animationDelay: `${index * 60}ms` }}
     >
       <button
+        type="button"
         onClick={() => setOpen(o => !o)}
         aria-expanded={open}
+        aria-controls={panelId}
         className="w-full flex items-center justify-between gap-6 py-5 text-left group"
       >
-        <span className="font-display uppercase text-[16px] lg:text-[17px] tracking-[0.02em] text-pm-black group-hover:text-pm-yellow-deep transition-colors duration-150">
+        <span className="font-display uppercase text-[16px] lg:text-[17px] tracking-[0.02em] text-pm-black group-hover:text-pm-yellow-ink transition-colors duration-150">
           {question}
         </span>
         <span className={`shrink-0 w-6 h-6 flex items-center justify-center border-2 border-pm-rule rounded-lg transition-colors duration-150 ${open ? 'bg-pm-yellow border-pm-yellow-deep' : 'group-hover:border-pm-ink'}`}>
@@ -82,7 +85,12 @@ function FAQItem({ question, answer, index, listInView }: {
           </svg>
         </span>
       </button>
-      <div className={`grid transition-[grid-template-rows] duration-200 ${open ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'}`}>
+      {/* inert while collapsed, so screen readers don't read an answer that isn't shown. */}
+      <div
+        id={panelId}
+        inert={!open}
+        className={`grid transition-[grid-template-rows] duration-200 ${open ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'}`}
+      >
         <div className="overflow-hidden">
           <p className="pb-5 text-[14px] leading-[1.65] text-pm-ink">
             {answer}

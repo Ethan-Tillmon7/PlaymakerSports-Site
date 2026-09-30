@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
 const navLinks = [
@@ -11,9 +11,27 @@ const navLinks = [
 export function Nav() {
   const { pathname } = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const rootRef = useRef<HTMLDivElement>(null);
+
+  // Esc or a tap anywhere outside the pill closes the mobile menu.
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setMobileOpen(false);
+    };
+    const onPointer = (e: PointerEvent) => {
+      if (!rootRef.current?.contains(e.target as Node)) setMobileOpen(false);
+    };
+    document.addEventListener('keydown', onKey);
+    document.addEventListener('pointerdown', onPointer);
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      document.removeEventListener('pointerdown', onPointer);
+    };
+  }, [mobileOpen]);
 
   return (
-    <div className="sticky top-[10px] z-30 w-[calc(100%-20px)] max-w-[800px] mx-auto bg-white rounded-[28px] shadow-[0_2px_8px_-2px_rgba(245,200,66,0.30)]">
+    <div ref={rootRef} className="sticky top-[10px] z-30 w-[calc(100%-20px)] max-w-[800px] mx-auto bg-white rounded-[28px] shadow-[0_2px_8px_-2px_rgba(245,200,66,0.30)]">
 
       {/* ── Main row ── */}
       <nav className="h-16 flex items-center px-5 sm:px-6">
@@ -22,11 +40,12 @@ export function Nav() {
         <div className="flex-1 flex items-center">
           <button
             onClick={() => setMobileOpen(o => !o)}
-            aria-label="Toggle navigation"
+            aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
             aria-expanded={mobileOpen}
+            aria-controls="mobile-nav"
             className={`lg:hidden -ml-1 flex items-center justify-center w-11 h-11 rounded-lg hover:bg-pm-paper-2 transition-colors duration-150 ${mobileOpen ? 'bg-pm-paper-2' : ''}`}
           >
-            <svg className="w-5 h-5 text-pm-ink" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 text-pm-ink" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
               <path
                 strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
                 d={mobileOpen ? 'M6 18L18 6M6 6l12 12' : 'M4 6h16M4 12h16M4 18h16'}
@@ -41,6 +60,7 @@ export function Nav() {
                 <li key={to}>
                   <Link
                     to={to}
+                    aria-current={active ? 'page' : undefined}
                     className={`px-3 py-1.5 rounded-lg transition-[colors,background-color] duration-200 inline-block ${
                       active
                         ? 'text-pm-black bg-pm-paper-2'
@@ -75,9 +95,12 @@ export function Nav() {
       </nav>
 
       {/* ── Mobile dropdown — absolute overlay so it never pushes page content down ── */}
+      {/* `invisible` when closed takes the links out of the tab order and the
+          accessibility tree; visibility flips after the fade, so it still animates. */}
       <div
-        className={`lg:hidden absolute top-full inset-x-0 mt-2 origin-top transition-[opacity,transform] duration-200 ease-out ${
-          mobileOpen ? 'opacity-100 scale-y-100 pointer-events-auto' : 'opacity-0 scale-y-95 pointer-events-none'
+        id="mobile-nav"
+        className={`lg:hidden absolute top-full inset-x-0 mt-2 origin-top transition-[opacity,transform,visibility] duration-200 ease-out ${
+          mobileOpen ? 'visible opacity-100 scale-y-100 pointer-events-auto' : 'invisible opacity-0 scale-y-95 pointer-events-none'
         }`}
       >
         <ul className="flex flex-col py-2 px-3 gap-0.5 font-display uppercase text-[14px] tracking-[0.04em] bg-white rounded-[20px] shadow-[0_8px_24px_-6px_rgba(17,17,17,0.18)]">
@@ -87,6 +110,7 @@ export function Nav() {
               <li key={to}>
                 <Link
                   to={to}
+                  aria-current={active ? 'page' : undefined}
                   onClick={() => setMobileOpen(false)}
                   className={`block px-3 py-2.5 rounded-lg transition-[colors,background-color] duration-200 ${
                     active
