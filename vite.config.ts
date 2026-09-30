@@ -1,9 +1,15 @@
+import { fileURLToPath, URL } from 'node:url';
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { imagetools } from 'vite-imagetools';
 
 export default defineConfig(({ isSsrBuild }) => ({
   plugins: [react(), imagetools()],
+  resolve: {
+    alias: {
+      '@': fileURLToPath(new URL('./src', import.meta.url)),
+    },
+  },
   build: {
     outDir: isSsrBuild ? 'dist/server' : 'dist',
     // Never base64 fonts into the CSS: the tiny @fontsource subset files
