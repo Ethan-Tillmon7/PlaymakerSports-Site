@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { PageLayout } from '../components/layout/PageLayout';
+import { PageHeader } from '../components/layout/PageHeader';
 import { PAGE_META, SITE_URL } from '../seo/config';
 import { JsonLd } from '../seo/JsonLd';
 import { useInView } from '../hooks/useInView';
@@ -118,28 +119,7 @@ export function FAQPage() {
           },
         })),
       }} />
-      <header className="border-b border-pm-rule">
-        <div className="max-w-[1480px] mx-auto px-6 sm:px-10 pt-6 pb-8 animate-fade-up flex items-end justify-between gap-6 flex-wrap">
-          <div>
-            <span className="font-mono text-[11px] tracking-[0.16em] uppercase text-pm-yellow-deep">Common questions</span>
-            <h1 className="font-display uppercase text-[clamp(36px,5vw,56px)] leading-[0.86] tracking-[-0.005em] text-pm-black mt-4">
-              FAQ
-            </h1>
-          </div>
-          {/* <div className="shrink-0 bg-pm-black rounded-xl px-5 py-4 flex flex-col items-center gap-3">
-            <div className="text-center">
-              <span className="font-mono text-[10px] tracking-[0.12em] uppercase text-white/40">Still have questions?</span>
-              <p className="font-display uppercase text-[17px] leading-[1] tracking-[0.005em] mt-1 text-white">Get in touch</p>
-            </div>
-            <Link
-              to="/contact"
-              className="font-display uppercase text-[12px] tracking-[0.04em] bg-pm-yellow text-pm-black px-4 h-8 inline-flex items-center justify-center hover:bg-pm-yellow-deep transition-[colors,transform] duration-150 active:scale-[0.97] border-b-2 border-pm-yellow-deep hover:border-pm-black rounded-xl"
-            >
-              Contact us
-            </Link>
-          </div> */}
-        </div>
-      </header>
+      <PageHeader eyebrow="Common questions" title="FAQ" />
 
       <section className="max-w-[1480px] mx-auto px-6 sm:px-10 py-14 lg:py-16">
         <div ref={faqRef} className="grid grid-cols-1 md:grid-cols-2 gap-x-10 lg:gap-x-16 gap-y-14">

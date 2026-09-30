@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { PageLayout } from '../components/layout/PageLayout';
+import { PageHeader } from '../components/layout/PageHeader';
 import { PAGE_META, SITE_URL } from '../seo/config';
 import { accessoryCategories, ACCESSORY_GROUP_ORDER, type AccessoryCategory } from '../data/accessories';
 import { AccessoryCard } from '../components/apparel/AccessoryCard';
@@ -86,16 +87,10 @@ export function ApparelPage() {
       </Helmet>
 
       {/* ── PAGE HEADER ── */}
-      <header className="border-b border-pm-rule">
-        <div className="max-w-[1480px] mx-auto px-6 sm:px-10 pt-6 pb-8 animate-fade-up">
-          <span className="font-mono text-[11px] tracking-[0.16em] uppercase text-pm-yellow-deep">
-            Custom uniforms · Built to order
-          </span>
-          <h1 className="font-display uppercase text-[clamp(36px,5vw,56px)] leading-[0.86] tracking-[-0.005em] text-pm-black mt-4">
-            Gear built for the <span className="bg-pm-yellow px-[0.08em] rounded-md">play.</span>
-          </h1>
-        </div>
-      </header>
+      <PageHeader
+        eyebrow="Custom uniforms · Built to order"
+        title={<>Gear built for the <span className="bg-pm-yellow px-[0.08em] rounded-md">play.</span></>}
+      />
 
       {/* ── MOBILE NAV (< lg) ── */}
       <section className="lg:hidden border-b border-pm-rule bg-white sticky top-20 z-20">

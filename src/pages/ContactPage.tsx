@@ -1,5 +1,6 @@
 import { Helmet } from 'react-helmet-async';
 import { PageLayout } from '../components/layout/PageLayout';
+import { PageHeader } from '../components/layout/PageHeader';
 import { PAGE_META, SITE_URL } from '../seo/config';
 import { ContactForm } from '../components/forms/ContactForm';
 import { ResponsiveImage } from '../components/ui/ResponsiveImage';
@@ -21,25 +22,20 @@ export function ContactPage() {
         <meta property="og:type" content="website" />
       </Helmet>
 
-      <div className="max-w-[1480px] mx-auto px-6 sm:px-10 py-12 flex flex-col lg:flex-row gap-12 lg:gap-16 items-stretch">
-        <div className="flex-1 min-w-0 animate-fade-up">
-          <header className="mb-10">
-            <span className="font-mono text-[11px] tracking-[0.16em] uppercase text-pm-yellow-deep">
-              Players · Parents · Coaches
-            </span>
-            <h1 className="font-display uppercase text-[clamp(36px,5vw,56px)] leading-[0.86] tracking-[-0.005em] text-pm-black mt-4">
-              Get in Touch
-            </h1>
-          </header>
+      <PageHeader eyebrow="Players · Parents · Coaches" title="Get in Touch" />
+
+      <div className="max-w-[1480px] mx-auto px-6 sm:px-10 py-12 lg:py-16 grid lg:grid-cols-[minmax(0,1fr)_480px] xl:grid-cols-[minmax(0,1fr)_560px] gap-12 lg:gap-16">
+        <div className="min-w-0 max-w-[760px] animate-fade-up">
           <ContactForm />
         </div>
 
-        <div className="w-full lg:w-[480px] xl:w-[560px] shrink-0 flex items-center">
+        {/* Decorative: fills the column to the form's height on desktop, dropped on phones where it would only push the footer down. */}
+        <div className="hidden lg:block relative min-h-[360px]">
           <ResponsiveImage
             image={homeplate}
             alt="Home plate at a baseball field"
-            sizes="(min-width: 1024px) 560px, 100vw"
-            className="w-full h-auto object-cover rounded-lg"
+            sizes="(min-width: 1280px) 560px, 480px"
+            className="absolute inset-0 w-full h-full object-cover rounded-xl"
           />
         </div>
       </div>
