@@ -3,6 +3,7 @@ import { Routes, Route, useLocation } from 'react-router-dom';
 import { HomePage } from './pages/HomePage';
 import { LoadingBar } from './components/ui/LoadingBar';
 import { RouteTransition } from './components/layout/RouteTransition';
+import { RouteErrorBoundary } from './components/layout/RouteErrorBoundary';
 
 // HomePage is the landing route — keep it in the main chunk for the fastest
 // first paint. Every other route is split into its own lazily-loaded chunk.
@@ -26,18 +27,21 @@ export default function App() {
       <LoadingBar />
       <ScrollToTop />
       <RouteTransition>
-        <Suspense fallback={null}>
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/events" element={<EventsPage />} />
-            <Route path="/apparel" element={<ApparelPage />} />
-            <Route path="/about" element={<AboutPage />} />
-            <Route path="/faq" element={<FAQPage />} />
-            <Route path="/contact" element={<ContactPage />} />
-            <Route path="/customizer" element={<CustomizerPage />} />
-            <Route path="*" element={<NotFoundPage />} />
-          </Routes>
-        </Suspense>
+        {/* RouteTransition remounts per pathname, which also clears a caught error. */}
+        <RouteErrorBoundary>
+          <Suspense fallback={null}>
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/events" element={<EventsPage />} />
+              <Route path="/apparel" element={<ApparelPage />} />
+              <Route path="/about" element={<AboutPage />} />
+              <Route path="/faq" element={<FAQPage />} />
+              <Route path="/contact" element={<ContactPage />} />
+              <Route path="/customizer" element={<CustomizerPage />} />
+              <Route path="*" element={<NotFoundPage />} />
+            </Routes>
+          </Suspense>
+        </RouteErrorBoundary>
       </RouteTransition>
     </>
   );
