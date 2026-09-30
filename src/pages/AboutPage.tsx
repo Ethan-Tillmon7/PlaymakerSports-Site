@@ -1,4 +1,5 @@
 import tentMeta from '../assets/images/brand/Playmaker-Tent.jpeg?w=1024;1600&format=webp&quality=62&as=meta:src;width;height;format';
+import { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { PageLayout } from '../components/layout/PageLayout';
@@ -23,11 +24,17 @@ const prefersReducedMotion =
   window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 export function AboutPage() {
-  const [heroRef, heroProgress] = useScrollOut();
+  // Zoom + blur the photo as the hero scrolls away. Written straight to the
+  // element once per frame, so scrolling doesn't re-render the page.
+  const bgRef = useRef<HTMLDivElement>(null);
+  const heroRef = useScrollOut<HTMLElement>((progress) => {
+    const bg = bgRef.current;
+    if (!bg || prefersReducedMotion) return;
+    bg.style.transform = `scale(${1 + progress * 0.1})`;
+    bg.style.filter = progress > 0 ? `blur(${progress * 7}px)` : '';
+  });
   const [valuesRef, valuesInView] = useInView();
 
-  const bgScale = prefersReducedMotion ? 1 : 1 + heroProgress * 0.1;
-  const bgBlur  = prefersReducedMotion ? 0 : heroProgress * 7;
   const countedYear = useCountUp(2025, 1200, valuesInView);
 
   return (
@@ -49,13 +56,12 @@ export function AboutPage() {
       >
         {/* Photo background — zooms in and blurs as you scroll past */}
         <div
+          ref={bgRef}
           className="absolute inset-0"
           style={{
             backgroundImage: `url(${heroBg})`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
-            transform: `scale(${bgScale})`,
-            filter: `blur(${bgBlur}px)`,
             willChange: prefersReducedMotion ? 'auto' : 'transform',
           }}
         />
