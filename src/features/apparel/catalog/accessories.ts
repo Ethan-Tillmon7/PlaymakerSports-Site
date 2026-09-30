@@ -1,5 +1,5 @@
 import { COLOR_MAP, colorLabel, parseVariantName } from './parseVariantName';
-import type { ResponsiveImageData } from '@/lib/responsiveImage';
+import { toResponsive, type ImageMetadata, type ResponsiveImageData } from '@/lib/responsiveImage';
 
 // Product-type groupings for the All Accessories view, in display order.
 export type AccessoryGroup = 'Jewelry' | 'Wearables' | 'Gear' | 'Coming Soon';
@@ -56,13 +56,6 @@ const COMING_SOON: CategoryDef[] = [
   { id: 'sunglasses', name: 'Sunglasses', desc: 'UV-protection sport frames — arriving soon.', folder: '', prefix: '', group: 'Coming Soon' },
 ];
 
-interface ImageMetadata {
-  src: string;
-  width: number;
-  height: number;
-  format: string;
-}
-
 const modules = import.meta.glob('/src/assets/images/inventory/**/*.{png,jpg,jpeg}', {
   eager: true,
   // q72 matches the other site photos and is ~35% lighter than the q80 default.
@@ -70,13 +63,6 @@ const modules = import.meta.glob('/src/assets/images/inventory/**/*.{png,jpg,jpe
   query: { w: '128;320;640;768;1024', format: 'webp', quality: '72', as: 'meta:src;width;height;format' },
   import: 'default',
 }) as Record<string, ImageMetadata[]>;
-
-function toResponsive(meta: ImageMetadata[]): ResponsiveImageData {
-  const sorted = [...meta].sort((a, b) => a.width - b.width);
-  const srcset = sorted.map((m) => `${m.src} ${m.width}w`).join(', ');
-  const fallback = sorted[sorted.length - 1];
-  return { src: fallback.src, srcset, width: fallback.width, height: fallback.height };
-}
 
 // Group resolved metadata by their immediate parent folder name, skipping heic/ originals.
 const byFolder = new Map<string, { base: string; image: ResponsiveImageData }[]>();
@@ -121,6 +107,9 @@ export const accessoryCategories: AccessoryCategory[] = [
   }),
   ...COMING_SOON.map((def) => ({ ...def, comingSoon: true, coverImage: undefined, variants: [] })),
 ];
+
+/** Categories with at least one photo, i.e. everything not "Coming Soon". */
+export const inStockCategories = accessoryCategories.filter((c) => !c.comingSoon);
 
 export function paletteFor(category: AccessoryCategory): { token: string; hex: string; name: string }[] {
   const present = new Set<string>();

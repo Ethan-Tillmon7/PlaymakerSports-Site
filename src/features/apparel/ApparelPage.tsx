@@ -1,65 +1,41 @@
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
-import { PageLayout } from '@/components/layout/PageLayout';
 import { PageHeader } from '@/components/layout/PageHeader';
+import { PageLayout } from '@/components/layout/PageLayout';
+import { Container } from '@/components/ui/Container';
+import { ResponsiveImage } from '@/components/ui/ResponsiveImage';
 import { PAGE_META } from '@/config/pageMeta';
 import { SITE_URL } from '@/config/site';
-import { accessoryCategories, ACCESSORY_GROUP_ORDER, type AccessoryCategory } from './catalog/accessories';
+import {
+  accessoryCategories,
+  ACCESSORY_GROUP_ORDER,
+  inStockCategories,
+  type AccessoryCategory,
+} from './catalog/accessories';
 import { AccessoryCard } from './components/AccessoryCard';
-import { CardRail } from './components/CardRail';
 import { AccessoryDetailModal } from './components/AccessoryDetailModal';
-import { ResponsiveImage } from '@/components/ui/ResponsiveImage';
-import { Container } from '@/components/ui/Container';
-import { useDismiss } from '@/hooks/useDismiss';
+import {
+  ApparelSidebar,
+  MobileApparelFilters,
+  type AccessoryFilter,
+  type ApparelSection,
+} from './components/ApparelFilters';
+import { CardRail } from './components/CardRail';
+import { ComingSoonJerseys } from './components/ComingSoonJerseys';
 
-type Section = 'accessories' | 'jerseys';
-type AccessoryFilter = 'all' | string; // 'all' or a category id
-
-const inStock = accessoryCategories.filter((c) => !c.comingSoon);
 // The first group's opening row is above the fold on load, so its images get priority.
 const firstGroup = ACCESSORY_GROUP_ORDER.find((g) => accessoryCategories.some((c) => c.group === g));
 
 const inlineLinkClass =
   'text-pm-black underline decoration-2 decoration-pm-yellow underline-offset-4 hover:decoration-pm-black transition-colors duration-150';
 
-function ComingSoonJerseys({ onBrowseAccessories }: { onBrowseAccessories: () => void }) {
-  return (
-    <div className="border border-pm-rule rounded-2xl p-10 sm:p-14 text-center max-w-[680px] flex flex-col items-center gap-5">
-      <svg viewBox="0 0 200 240" className="w-24 opacity-60" aria-hidden="true">
-        <use href="#jersey" fill="#FFFFFF" stroke="#D9D5C4" strokeWidth="1.4" />
-      </svg>
-      <span className="font-mono text-[11px] tracking-[0.16em] uppercase text-pm-yellow-ink">Coming Soon</span>
-      <h2 className="font-display uppercase text-[clamp(28px,4vw,44px)] leading-[0.9] tracking-[0.005em] text-pm-black text-balance">
-        Custom Jerseys Are On Deck
-      </h2>
-      <p className="text-[15px] leading-[1.6] text-pm-ink max-w-[440px]">
-        Our sublimated and tackle-twill jersey builder is coming soon. In the meantime, gear up with our
-        accessories.
-      </p>
-      <button
-        type="button"
-        onClick={onBrowseAccessories}
-        className="mt-2 text-[15px] px-5 h-11 font-display uppercase tracking-[0.04em] bg-white text-pm-black inline-flex items-center justify-center hover:bg-pm-paper-2 transition-[colors,transform] duration-150 active:scale-[0.97] border border-pm-rule border-b-2 hover:border-pm-black rounded-xl"
-      >
-        Browse accessories
-      </button>
-    </div>
-  );
-}
-
 export function ApparelPage() {
-  const [section, setSection] = useState<Section>('accessories');
+  const [section, setSection] = useState<ApparelSection>('accessories');
   const [accessoryFilter, setAccessoryFilter] = useState<AccessoryFilter>('all');
-  const [accessoriesExpanded, setAccessoriesExpanded] = useState(true);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [openCategory, setOpenCategory] = useState<AccessoryCategory | null>(null);
   const [openVariantIndex, setOpenVariantIndex] = useState(0);
   const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set());
-  const filterBarRef = useRef<HTMLDivElement>(null);
-
-  // Esc or a tap outside the filter bar closes the mobile filter dropdown.
-  useDismiss(filterBarRef, mobileMenuOpen, () => setMobileMenuOpen(false));
 
   const toggleGroup = (group: string) =>
     setExpandedGroups((prev) => {
@@ -72,16 +48,12 @@ export function ApparelPage() {
   const selectAccessories = (filter: AccessoryFilter) => {
     setSection('accessories');
     setAccessoryFilter(filter);
-    setMobileMenuOpen(false);
   };
-  const selectJerseys = () => {
-    setSection('jerseys');
-    setMobileMenuOpen(false);
-  };
+  const selectJerseys = () => setSection('jerseys');
 
   const activeCategory =
     section === 'accessories' && accessoryFilter !== 'all'
-      ? inStock.find((c) => c.id === accessoryFilter) ?? null
+      ? inStockCategories.find((c) => c.id === accessoryFilter) ?? null
       : null;
 
   const openModal = (category: AccessoryCategory, variantIndex = 0) => {
@@ -89,10 +61,7 @@ export function ApparelPage() {
     setOpenVariantIndex(variantIndex);
   };
 
-  const subItemClass = (active: boolean) =>
-    `w-full text-left px-3 py-2.5 lg:py-2 font-display uppercase text-[13px] tracking-[0.04em] rounded-lg transition-colors duration-150 ${
-      active ? 'bg-pm-black text-white' : 'text-pm-ink hover:bg-pm-paper-2'
-    }`;
+  const filterProps = { section, accessoryFilter, onSelectAccessories: selectAccessories, onSelectJerseys: selectJerseys };
 
   return (
     <PageLayout breadcrumb="Apparel">
@@ -125,140 +94,12 @@ export function ApparelPage() {
       </PageHeader>
 
       {/* ── MOBILE NAV (< lg) ── */}
-      <section className="lg:hidden border-b border-pm-rule bg-white sticky top-[74px] z-20">
-        <div ref={filterBarRef} className="relative max-w-[1480px] mx-auto px-6 h-14 flex items-center gap-2">
-          <button
-            type="button"
-            onClick={() => setMobileMenuOpen((o) => !o)}
-            aria-expanded={mobileMenuOpen}
-            aria-controls="apparel-filter-menu"
-            className={`shrink-0 px-4 h-10 inline-flex items-center gap-2 font-display uppercase text-[13px] tracking-[0.04em] rounded-lg transition-colors duration-150 ${
-              section === 'accessories' ? 'bg-pm-black text-white' : 'text-pm-ink hover:bg-pm-paper-2'
-            }`}
-          >
-            <span className="truncate max-w-[45vw]">
-              {section === 'accessories' && activeCategory ? activeCategory.name : 'Accessories'}
-            </span>
-            <span aria-hidden="true" className={`transition-transform duration-150 ${mobileMenuOpen ? 'rotate-180' : ''}`}>▾</span>
-          </button>
-          <button
-            type="button"
-            onClick={selectJerseys}
-            className={`shrink-0 px-4 h-10 inline-flex items-center font-display uppercase text-[13px] tracking-[0.04em] rounded-lg transition-colors duration-150 ${
-              section === 'jerseys' ? 'bg-pm-black text-white' : 'text-pm-ink hover:bg-pm-paper-2'
-            }`}
-          >
-            Jerseys · Soon
-          </button>
-
-          {/* Filter dropdown — absolute overlay so it floats over content instead of pushing it down */}
-          <div
-            id="apparel-filter-menu"
-            className={`absolute top-full inset-x-6 mt-2 origin-top z-30 transition-[opacity,transform,visibility] duration-200 ease-out ${
-              mobileMenuOpen ? 'visible opacity-100 scale-y-100 pointer-events-auto' : 'invisible opacity-0 scale-y-95 pointer-events-none'
-            }`}
-          >
-            <div className="max-h-[calc(100dvh-10rem)] overflow-y-auto flex flex-col gap-0.5 p-3 bg-white border border-pm-rule rounded-2xl shadow-[0_8px_24px_-6px_rgba(17,17,17,0.18)]">
-              <button
-                type="button"
-                onClick={() => selectAccessories('all')}
-                className={subItemClass(section === 'accessories' && accessoryFilter === 'all')}
-              >
-                All Accessories
-              </button>
-              {ACCESSORY_GROUP_ORDER.map((group) => {
-                const cards = inStock.filter((c) => c.group === group);
-                if (cards.length === 0) return null;
-                return (
-                  <div key={group} className="mt-2">
-                    <span className="block px-3 pb-1 font-mono text-[9px] tracking-[0.14em] uppercase text-pm-muted">
-                      {group}
-                    </span>
-                    {cards.map((c) => (
-                      <button
-                        key={c.id}
-                        type="button"
-                        onClick={() => selectAccessories(c.id)}
-                        className={subItemClass(accessoryFilter === c.id)}
-                      >
-                        {c.name}
-                      </button>
-                    ))}
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-      </section>
+      <MobileApparelFilters {...filterProps} activeCategory={activeCategory} />
 
       {/* ── SIDEBAR + MAIN ── */}
       <Container>
         <div className="flex items-start gap-0 lg:gap-8">
-          {/* Sidebar — desktop only */}
-          <aside className="hidden lg:flex flex-col w-[220px] shrink-0 sticky top-20 self-start border-r border-pm-rule py-6 pr-4 min-h-[calc(100dvh-80px)]">
-            {/* Accessories dropdown */}
-            <button
-              type="button"
-              onClick={() => {
-                setAccessoriesExpanded((o) => !o);
-                selectAccessories('all');
-              }}
-              className={`w-full flex items-center justify-between px-3 py-2 font-display uppercase text-[14px] tracking-[0.04em] rounded-lg transition-colors duration-150 ${
-                section === 'accessories' ? 'text-pm-black' : 'text-pm-ink hover:bg-pm-paper-2'
-              }`}
-            >
-              <span>Accessories</span>
-              <span aria-hidden="true" className={`transition-transform duration-150 ${accessoriesExpanded ? '' : '-rotate-90'}`}>▾</span>
-            </button>
-
-            {accessoriesExpanded && (
-              <div className="flex flex-col gap-0.5 mt-0.5 pl-2">
-                <button
-                  type="button"
-                  onClick={() => selectAccessories('all')}
-                  className={subItemClass(section === 'accessories' && accessoryFilter === 'all')}
-                >
-                  All Accessories
-                </button>
-                {ACCESSORY_GROUP_ORDER.map((group) => {
-                  const cards = inStock.filter((c) => c.group === group);
-                  if (cards.length === 0) return null;
-                  return (
-                    <div key={group} className="mt-2">
-                      <span className="block px-3 pb-1 font-mono text-[9px] tracking-[0.14em] uppercase text-pm-muted">
-                        {group}
-                      </span>
-                      {cards.map((c) => (
-                        <button
-                          key={c.id}
-                          type="button"
-                          onClick={() => selectAccessories(c.id)}
-                          className={subItemClass(section === 'accessories' && accessoryFilter === c.id)}
-                        >
-                          {c.name}
-                        </button>
-                      ))}
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-
-            <div className="border-t border-pm-rule my-4" />
-
-            {/* Jerseys */}
-            <button
-              type="button"
-              onClick={selectJerseys}
-              className={`w-full flex items-center justify-between px-3 py-2 font-display uppercase text-[14px] tracking-[0.04em] rounded-lg transition-colors duration-150 ${
-                section === 'jerseys' ? 'bg-pm-black text-white' : 'text-pm-muted hover:bg-pm-paper-2'
-              }`}
-            >
-              <span>Jerseys</span>
-              <span className="font-mono text-[9px] tracking-[0.12em]">Soon</span>
-            </button>
-          </aside>
+          <ApparelSidebar {...filterProps} />
 
           {/* Main content */}
           <div className="flex-1 min-w-0 pb-6 lg:pb-10 pt-6 lg:pt-10">
@@ -275,7 +116,7 @@ export function ApparelPage() {
                     All Accessories
                   </h2>
                   <span className="font-mono text-[11px] tracking-[0.1em] uppercase text-pm-muted">
-                    {inStock.length} {inStock.length === 1 ? 'category' : 'categories'}
+                    {inStockCategories.length} {inStockCategories.length === 1 ? 'category' : 'categories'}
                   </span>
                 </div>
                 {ACCESSORY_GROUP_ORDER.map((group) => {
