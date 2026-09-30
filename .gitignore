@@ -24,6 +24,9 @@ dist-ssr
 *.sw?
 
 docs
+PRODUCT.md
+DESIGN.md
+.impeccable/
 CLAUDE.md
 .env
 playmaker-sheets-6193a76fcbf2.json

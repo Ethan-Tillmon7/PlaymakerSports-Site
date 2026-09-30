@@ -22,5 +22,5 @@ Project docs live in [docs/](docs/) (git-ignored, local-only):
 
 - [CLAUDE.md](CLAUDE.md) — architecture, routing, design system, backend, and working guidance
 - [docs/md/playmaker-context-brief.md](docs/md/playmaker-context-brief.md) — full scope, phases, and client decisions
-- [docs/md/design-system.md](docs/md/design-system.md) — canonical design spec
+- [DESIGN.md](DESIGN.md) — canonical design spec ([docs/md/design-system.md](docs/md/design-system.md) is the superseded v0.1)
 - [docs/md/sheets-schema.md](docs/md/sheets-schema.md) — Google Sheets column contract
