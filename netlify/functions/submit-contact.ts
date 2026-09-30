@@ -1,73 +1,27 @@
 import type { Handler } from '@netlify/functions';
-import { z } from 'zod';
 import { Resend } from 'resend';
-import { getSheetsClient, SHEET_ID, safecell } from './_sheets';
+import { contactSchema } from '../../shared/contact';
+import { json, readJsonBody } from '../lib/http';
+import { appendRows, safecell } from '../lib/sheets';
 
 const esc = (s: string) =>
   s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 
-// Limits match ContactForm.tsx. They keep one submission well under the 50,000-
-// character Sheets cell cap, which would otherwise fail the append and lose the message.
-const schema = z.object({
-  role: z.enum(['Event Organizer', 'Player', 'Parent', 'Coach']),
-  name: z.string().trim().min(1).max(100),
-  email: z.email().max(254),
-  phone: z.string().trim().max(30).optional(),
-  message: z.string().trim().min(1).max(5000),
-  event_name: z.string().trim().max(150).optional(),
-  // Honeypot: a visually hidden field people never see. Bots that fill every input do.
-  company: z.string().optional(),
-});
-
 const MAX_BODY_BYTES = 20_000;
 
 export const handler: Handler = async (event) => {
-  if (event.httpMethod !== 'POST') {
-    return { statusCode: 405, body: 'Method Not Allowed' };
-  }
+  const body = readJsonBody(event, contactSchema, { maxBytes: MAX_BODY_BYTES });
+  if (!body.ok) return body.response;
+  const data = body.data;
 
-  if ((event.body?.length ?? 0) > MAX_BODY_BYTES) {
-    return {
-      statusCode: 413,
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ error: 'Submission too large' }),
-    };
-  }
-
-  let body: unknown;
-  try {
-    body = JSON.parse(event.body ?? '{}');
-  } catch {
-    return {
-      statusCode: 400,
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ error: 'Invalid JSON' }),
-    };
-  }
-
-  const parsed = schema.safeParse(body);
-  if (!parsed.success) {
-    return {
-      statusCode: 400,
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ error: 'Validation failed', issues: parsed.error.issues }),
-    };
-  }
-
-  const data = parsed.data;
   if (data.company) {
-    // Answer like a success so the bot moves on; save nothing and email no one.
-    return {
-      statusCode: 200,
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ success: true }),
-    };
+    // Honeypot filled: answer like a success so the bot moves on; save nothing and email no one.
+    return json(200, { success: true });
   }
   const timestamp = new Date().toISOString();
 
   try {
-    const sheets = getSheetsClient();
-    const row = [
+    await appendRows('ContactRequests!A1', [[
       timestamp,
       data.role,
       safecell(data.name),
@@ -75,24 +29,10 @@ export const handler: Handler = async (event) => {
       safecell(data.phone ?? ''),
       safecell(data.message),
       safecell(data.event_name ?? ''),
-    ];
-    await sheets.spreadsheets.values.append({
-      spreadsheetId: SHEET_ID,
-      range: 'ContactRequests!A1',
-      valueInputOption: 'RAW',
-      // INSERT_ROWS, not the default OVERWRITE: append writes just below the table it
-      // detects, and a Sheets "Table" that covers only the header makes that row 2 —
-      // so OVERWRITE replaced the previous submission every time.
-      insertDataOption: 'INSERT_ROWS',
-      requestBody: { values: [row] },
-    });
+    ]]);
   } catch (err) {
     console.error('submit-contact sheets error:', err);
-    return {
-      statusCode: 500,
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ error: 'Failed to save submission' }),
-    };
+    return json(500, { error: 'Failed to save submission' });
   }
 
   // Resend failure is non-fatal — the Sheets row is the source of record. But the SDK
@@ -128,9 +68,5 @@ export const handler: Handler = async (event) => {
     console.error('submit-contact resend error:', err);
   }
 
-  return {
-    statusCode: 200,
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ success: true }),
-  };
+  return json(200, { success: true });
 };

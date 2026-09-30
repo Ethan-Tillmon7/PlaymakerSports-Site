@@ -24,3 +24,19 @@ export const SHEET_ID = process.env.GOOGLE_SHEETS_ID ?? '';
  * string written to a sheet.
  */
 export const safecell = (s: string) => (/^[=+\-@\t\r]/.test(s) ? "'" + s : s);
+
+/**
+ * Append rows to a tab. Always RAW (values stored literally) and INSERT_ROWS:
+ * append writes just below the table it *detects*, and with the default
+ * OVERWRITE a Sheets "Table" that covers only the header made that row 2, so
+ * every submission replaced the last (incident 2026-09-30).
+ */
+export async function appendRows(range: string, rows: string[][]): Promise<void> {
+  await getSheetsClient().spreadsheets.values.append({
+    spreadsheetId: SHEET_ID,
+    range,
+    valueInputOption: 'RAW',
+    insertDataOption: 'INSERT_ROWS',
+    requestBody: { values: rows },
+  });
+}

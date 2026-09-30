@@ -1,7 +1,7 @@
 // LEGACY — no caller in src/ since 88b5f06; see src/legacy/jersey-orders/README.md
 import type { Handler } from '@netlify/functions';
 import { z } from 'zod';
-import { getSheetsClient, SHEET_ID, safecell } from './_sheets';
+import { getSheetsClient, SHEET_ID, safecell } from '../lib/sheets';
 
 const SIZES = ['YS', 'YM', 'YL', 'AS', 'AM', 'AL', 'AXL', 'A2XL', 'A3XL'] as const;
 

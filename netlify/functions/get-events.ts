@@ -1,12 +1,7 @@
 import type { Handler, HandlerResponse } from '@netlify/functions';
-import { getSheetsClient, SHEET_ID } from './_sheets';
-
-interface PublicEvent {
-  id: string;
-  startDate: string;
-  endDate: string;
-  city: string;
-}
+import type { PublicEvent } from '../../shared/events';
+import { json } from '../lib/http';
+import { getSheetsClient, SHEET_ID } from '../lib/sheets';
 
 function extractCity(location: string): string {
   const stateMatch = location.match(/,\s*([A-Z]{2})\s*$/);
@@ -46,7 +41,7 @@ export const handler: Handler = async (): Promise<HandlerResponse> => {
     });
 
     const rows = res.data.values ?? [];
-    const tournaments: PublicEvent[] = [];
+    const events: PublicEvent[] = [];
     rows.forEach((row, i) => {
       const published = String(row[10] ?? '').trim().toUpperCase() === 'TRUE';
       const location = String(row[5] ?? '').trim();
@@ -61,7 +56,7 @@ export const handler: Handler = async (): Promise<HandlerResponse> => {
       const parsedEnd = toISODate(row[2]);
       const endDate = parsedEnd && parsedEnd >= startDate ? parsedEnd : startDate;
 
-      tournaments.push({
+      events.push({
         // A blank id would collide as a React key; fall back to something unique.
         id: String(row[0] ?? '').trim() || `row-${i + 6}`,
         startDate,
@@ -69,26 +64,17 @@ export const handler: Handler = async (): Promise<HandlerResponse> => {
         city: extractCity(location),
       });
     });
-    tournaments.sort((a, b) => a.startDate.localeCompare(b.startDate));
+    events.sort((a, b) => a.startDate.localeCompare(b.startDate));
 
-    return {
-      statusCode: 200,
-      headers: {
-        'Content-Type': 'application/json',
-        // Browsers always revalidate; Netlify's CDN serves a cached copy for 2 min
-        // (and a stale one while it refetches). A QR-code rush at a tournament then
-        // costs one Sheets read, not one per phone, and stays under the API quota.
-        'Cache-Control': 'public, max-age=0, must-revalidate',
-        'Netlify-CDN-Cache-Control': 'public, s-maxage=120, stale-while-revalidate=600',
-      },
-      body: JSON.stringify(tournaments),
-    };
+    // Browsers always revalidate; Netlify's CDN serves a cached copy for 2 min
+    // (and a stale one while it refetches). A QR-code rush at a tournament then
+    // costs one Sheets read, not one per phone, and stays under the API quota.
+    return json(200, events, {
+      'Cache-Control': 'public, max-age=0, must-revalidate',
+      'Netlify-CDN-Cache-Control': 'public, s-maxage=120, stale-while-revalidate=600',
+    });
   } catch (err) {
     console.error('get-events error:', err);
-    return {
-      statusCode: 500,
-      headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
-      body: JSON.stringify({ error: 'Failed to load events' }),
-    };
+    return json(500, { error: 'Failed to load events' }, { 'Cache-Control': 'no-store' });
   }
 };
