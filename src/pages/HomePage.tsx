@@ -7,7 +7,7 @@ import { EventTicker } from '../components/homepage/EventTicker';
 
 export function HomePage() {
   return (
-    <PageLayout>
+    <PageLayout ground="night">
       <Helmet>
         <title>{PAGE_META.home.title}</title>
         <meta name="description" content={PAGE_META.home.description} />
@@ -49,7 +49,7 @@ export function HomePage() {
           />
 
           <h1 className="font-display uppercase leading-[0.84] tracking-[-0.005em] text-white m-0 animate-fade-up" style={{ animationDelay: '100ms' }}>
-            <span className="block text-[clamp(76px,14.5vw,232px)]">
+            <span className="block text-[clamp(64px,14.5vw,232px)]">
               <span className="inline-block bg-pm-yellow px-[0.10em] pb-[0.04em] rounded-lg">
                 <span className="text-white">PLAY</span><span className="text-pm-black">MAKER</span>
               </span>

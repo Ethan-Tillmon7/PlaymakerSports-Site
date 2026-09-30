@@ -38,7 +38,7 @@ export function AboutPage() {
   const countedYear = useCountUp(2025, 1200, valuesInView);
 
   return (
-    <PageLayout breadcrumb="About">
+    <PageLayout breadcrumb="About" breadcrumbTone="onDark" ground="night">
       <Helmet>
         <title>{PAGE_META.about.title}</title>
         <meta name="description" content={PAGE_META.about.description} />
@@ -71,17 +71,15 @@ export function AboutPage() {
         {/* All content — stays sharp */}
         <div className="relative z-[2] max-w-[1100px] mx-auto px-6 sm:px-10 py-24 w-full text-center animate-fade-up">
 
-          {/* ── Heading ── */}
+          {/* ── Heading + story ── */}
+          <div className="max-w-[640px] mx-auto">
           <span className="font-mono text-[11px] tracking-[0.16em] uppercase text-pm-yellow">
             Our backstory
           </span>
-
-          {/* ── Story ── */}
-          <div className="mt-10 pt-10 border-t border-white/20 max-w-[640px] mx-auto">
-          <h1 className="font-display uppercase text-[clamp(52px,8vw,96px)] leading-[0.85] tracking-[-0.01em] text-white">
+          <h1 className="font-display uppercase text-[clamp(52px,8vw,96px)] leading-[0.85] tracking-[-0.01em] text-white mt-4 text-balance">
             About Playmaker
           </h1>
-          <h2 className="font-display uppercase text-[clamp(16px,2.2vw,26px)] leading-[1.1] tracking-[0.01em] text-white/65 mt-4 mb-8">
+          <h2 className="font-display uppercase text-[clamp(16px,2.2vw,26px)] leading-[1.1] tracking-[0.01em] text-white/65 mt-5 mb-8">
             Built for the game, made for the moment
           </h2>
           <div className="space-y-5">
@@ -95,7 +93,7 @@ export function AboutPage() {
           </div>
 
           {/* ── Stats ── */}
-          <div ref={valuesRef} className="mt-12 pt-12 border-t border-white/20 grid grid-cols-1 sm:grid-cols-3 gap-8 sm:gap-6">
+          <div ref={valuesRef} className="mt-14 py-10 border-y border-white/20 grid grid-cols-1 sm:grid-cols-3 gap-8 sm:gap-6">
             {values.map((v, i) => (
               <div key={v.label}>
                 <div className="font-display uppercase text-[clamp(32px,4vw,56px)] leading-none tracking-[0.005em] text-white">
@@ -109,7 +107,7 @@ export function AboutPage() {
           </div>
 
           {/* ── CTA ── */}
-          <div className="mt-12 pt-12 border-t border-white/20">
+          <div className="mt-16 sm:mt-20">
             <span className="font-mono text-[11px] tracking-[0.1em] uppercase text-white/50">
               Get in touch
             </span>

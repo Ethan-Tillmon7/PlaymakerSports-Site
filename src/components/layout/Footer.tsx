@@ -27,25 +27,25 @@ export function Footer() {
           {/* Nav — collapsed wrapping flex */}
           <div className="flex flex-wrap gap-x-10 gap-y-5">
             <div>
-              <h4 className="font-display uppercase text-[12px] tracking-[0.16em] text-pm-yellow mb-2">Events</h4>
-              <ul className="flex flex-col gap-2 font-mono text-[12px] tracking-[0.04em] text-white/70 uppercase">
-                <li><Link to="/events" className="hover:text-white transition-colors duration-150">Schedule</Link></li>
+              <h4 className="font-display uppercase text-[12px] tracking-[0.16em] text-pm-yellow mb-1">Events</h4>
+              <ul className="flex flex-col font-mono text-[12px] tracking-[0.04em] text-white/70 uppercase">
+                <li><Link to="/events" className="inline-flex items-center min-h-8 lg:min-h-7 hover:text-white transition-colors duration-150">Schedule</Link></li>
               </ul>
             </div>
             <div>
-              <h4 className="font-display uppercase text-[12px] tracking-[0.16em] text-pm-yellow mb-2">Apparel</h4>
-              <ul className="flex flex-col gap-2 font-mono text-[12px] tracking-[0.04em] text-white/70 uppercase">
-                <li><Link to="/apparel" className="hover:text-white transition-colors duration-150">Custom jerseys</Link></li>
-                <li><Link to="/apparel" className="hover:text-white transition-colors duration-150">Accessories</Link></li>
-                <li><Link to="/apparel" className="hover:text-white transition-colors duration-150">Player cards</Link></li>
+              <h4 className="font-display uppercase text-[12px] tracking-[0.16em] text-pm-yellow mb-1">Apparel</h4>
+              <ul className="flex flex-col font-mono text-[12px] tracking-[0.04em] text-white/70 uppercase">
+                <li><Link to="/apparel" className="inline-flex items-center min-h-8 lg:min-h-7 hover:text-white transition-colors duration-150">Custom jerseys</Link></li>
+                <li><Link to="/apparel" className="inline-flex items-center min-h-8 lg:min-h-7 hover:text-white transition-colors duration-150">Accessories</Link></li>
+                <li><Link to="/apparel" className="inline-flex items-center min-h-8 lg:min-h-7 hover:text-white transition-colors duration-150">Player cards</Link></li>
               </ul>
             </div>
             <div>
-              <h4 className="font-display uppercase text-[12px] tracking-[0.16em] text-pm-yellow mb-2">Company</h4>
-              <ul className="flex flex-col gap-2 font-mono text-[12px] tracking-[0.04em] text-white/70 uppercase">
-                <li><Link to="/about" className="hover:text-white transition-colors duration-150">About</Link></li>
-                <li><Link to="/contact" className="hover:text-white transition-colors duration-150">Contact</Link></li>
-                <li><Link to="/faq" className="hover:text-white transition-colors duration-150">FAQ</Link></li>
+              <h4 className="font-display uppercase text-[12px] tracking-[0.16em] text-pm-yellow mb-1">Company</h4>
+              <ul className="flex flex-col font-mono text-[12px] tracking-[0.04em] text-white/70 uppercase">
+                <li><Link to="/about" className="inline-flex items-center min-h-8 lg:min-h-7 hover:text-white transition-colors duration-150">About</Link></li>
+                <li><Link to="/contact" className="inline-flex items-center min-h-8 lg:min-h-7 hover:text-white transition-colors duration-150">Contact</Link></li>
+                <li><Link to="/faq" className="inline-flex items-center min-h-8 lg:min-h-7 hover:text-white transition-colors duration-150">FAQ</Link></li>
               </ul>
             </div>
           </div>
