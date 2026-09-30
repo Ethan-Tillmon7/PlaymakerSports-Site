@@ -35,7 +35,7 @@ export function AboutPage() {
   });
   const [valuesRef, valuesInView] = useInView();
 
-  const countedYear = useCountUp(2025, 1200, valuesInView);
+  const countedYear = useCountUp(2025, 1200, valuesInView, 2000);
 
   return (
     <PageLayout breadcrumb="About" breadcrumbTone="onDark" ground="night">
