@@ -58,6 +58,10 @@ export const handler: Handler = async (event) => {
       spreadsheetId: SHEET_ID,
       range: 'ContactRequests!A1',
       valueInputOption: 'RAW',
+      // INSERT_ROWS, not the default OVERWRITE: append writes just below the table it
+      // detects, and a Sheets "Table" that covers only the header makes that row 2 —
+      // so OVERWRITE replaced the previous submission every time.
+      insertDataOption: 'INSERT_ROWS',
       requestBody: { values: [row] },
     });
   } catch (err) {
@@ -69,14 +73,21 @@ export const handler: Handler = async (event) => {
     };
   }
 
+  // Resend failure is non-fatal — the Sheets row is the source of record. But the SDK
+  // returns API failures as `{ error }` instead of throwing, so check it explicitly;
+  // otherwise a rejected send (unverified sender domain, sandbox recipient limit)
+  // disappears without a log line.
   try {
-    const resend = new Resend(process.env.RESEND_API_KEY!);
+    if (!process.env.RESEND_API_KEY || !process.env.CONTACT_EMAIL) {
+      throw new Error('RESEND_API_KEY or CONTACT_EMAIL is not set');
+    }
+    const resend = new Resend(process.env.RESEND_API_KEY);
     // Resend's sandbox sender only delivers to the Resend account owner's address.
     // Set CONTACT_FROM_EMAIL to a verified-domain sender (e.g. notifications@playmakersports.co)
     // once playmakersports.co is verified in Resend.
-    await resend.emails.send({
+    const { error } = await resend.emails.send({
       from: process.env.CONTACT_FROM_EMAIL || 'Playmaker Sports <onboarding@resend.dev>',
-      to: process.env.CONTACT_EMAIL!,
+      to: process.env.CONTACT_EMAIL,
       replyTo: data.email,
       subject: `New Contact: ${data.role} — ${data.name}`,
       html: `
@@ -90,9 +101,9 @@ export const handler: Handler = async (event) => {
         <p style="color:#888;font-size:12px">Submitted ${timestamp}</p>
       `,
     });
+    if (error) throw new Error(`${error.name}: ${error.message}`);
   } catch (err) {
     console.error('submit-contact resend error:', err);
-    // Resend failure is non-fatal — Sheets write is the source of record
   }
 
   return {

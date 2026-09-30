@@ -76,12 +76,14 @@ export const handler: Handler = async (event) => {
         spreadsheetId: SHEET_ID,
         range: 'SalesOrders!A1',
         valueInputOption: 'RAW',
+        insertDataOption: 'INSERT_ROWS',
         requestBody: { values: [row] },
       });
       await sheets.spreadsheets.values.append({
         spreadsheetId: SHEET_ID,
         range: 'Archive!A1',
         valueInputOption: 'RAW',
+        insertDataOption: 'INSERT_ROWS',
         requestBody: { values: [row] },
       });
     } else {
@@ -96,6 +98,7 @@ export const handler: Handler = async (event) => {
         spreadsheetId: SHEET_ID,
         range: 'CustomerContacts!A1',
         valueInputOption: 'RAW',
+        insertDataOption: 'INSERT_ROWS',
         requestBody: { values: rows },
       });
     }
