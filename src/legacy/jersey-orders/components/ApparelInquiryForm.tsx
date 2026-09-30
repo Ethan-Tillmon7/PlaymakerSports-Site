@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useForm, type Resolver } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { JERSEY_STYLE_OPTIONS } from '@/data/apparel';
+import { JERSEY_STYLE_OPTIONS } from '../jerseyCards';
 
 const schema = z.object({
   team_name: z.string().min(1, 'Required'),

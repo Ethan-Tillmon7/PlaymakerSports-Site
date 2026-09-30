@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
 import { Diamond } from '@/components/layout/DiamondMark';
 import { useInView } from '@/hooks/useInView';
-import type { Product, ProductCategory } from '@/types/product';
+import type { Product, ProductCategory } from '../types';
 
 type FilterCategory = 'All' | ProductCategory;
 

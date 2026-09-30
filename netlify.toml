@@ -6,11 +6,18 @@
 [build.environment]
   NODE_VERSION = "20"
 
+# Live endpoints. Paths are also listed in shared/api.ts (client side).
 [[redirects]]
   from = "/api/get-events"
   to = "/.netlify/functions/get-events"
   status = 200
 
+[[redirects]]
+  from = "/api/submit-contact"
+  to = "/.netlify/functions/submit-contact"
+  status = 200
+
+# Legacy (parked) endpoints — no caller in src/; see src/legacy/jersey-orders/README.md.
 [[redirects]]
   from = "/api/submit-order"
   to = "/.netlify/functions/submit-order"
@@ -24,11 +31,6 @@
 [[redirects]]
   from = "/api/submit-purchase"
   to = "/.netlify/functions/submit-purchase"
-  status = 200
-
-[[redirects]]
-  from = "/api/submit-contact"
-  to = "/.netlify/functions/submit-contact"
   status = 200
 
 # SPA fallback. Every public route is prerendered to a real file, so only

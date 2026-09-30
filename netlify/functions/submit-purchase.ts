@@ -1,3 +1,4 @@
+// LEGACY — no caller in src/ since 88b5f06; see src/legacy/jersey-orders/README.md
 import type { Handler } from '@netlify/functions';
 import { z } from 'zod';
 import { getSheetsClient, SHEET_ID, safecell } from './_sheets';
