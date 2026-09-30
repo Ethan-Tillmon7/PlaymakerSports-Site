@@ -6,6 +6,10 @@ export default defineConfig(({ isSsrBuild }) => ({
   plugins: [react(), imagetools()],
   build: {
     outDir: isSsrBuild ? 'dist/server' : 'dist',
+    // Never base64 fonts into the CSS: the tiny @fontsource subset files
+    // (vietnamese, greek…) would otherwise bloat the render-blocking stylesheet
+    // for glyphs the site almost never uses. unicode-range fetches them on demand.
+    assetsInlineLimit: (filePath: string) => (/\.woff2?$/.test(filePath) ? false : undefined),
     rollupOptions: isSsrBuild
       ? undefined
       : {
