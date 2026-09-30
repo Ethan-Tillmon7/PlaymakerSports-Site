@@ -4,9 +4,15 @@ import { ResponsiveImage } from '../ui/ResponsiveImage';
 export function AccessoryCard({
   category,
   onOpen,
+  priority,
 }: {
   category: AccessoryCategory;
   onOpen: (category: AccessoryCategory) => void;
+  /**
+   * Above-the-fold card: 'eager' skips lazy-loading; 'high' also jumps the fetch
+   * queue. Keep 'high' to one card so photos don't starve the fonts on slow links.
+   */
+  priority?: 'high' | 'eager';
 }) {
   const colorCount = new Set(category.variants.flatMap((v) => v.colors)).size;
   const clickable = !category.comingSoon && category.variants.length > 0;
@@ -38,8 +44,8 @@ export function AccessoryCard({
         : {})}
     >
       <div
-        className={`aspect-[4/5] stage-cream flex items-center justify-center rounded-xl relative overflow-hidden ${
-          clickable ? 'border border-pm-rule' : 'border-2 border-dashed border-pm-yellow-deep'
+        className={`stage-cream flex items-center justify-center rounded-xl relative overflow-hidden ${
+          clickable ? 'aspect-[4/5] border border-pm-rule' : 'aspect-[4/3] border-2 border-dashed border-pm-yellow-deep'
         }`}
       >
         {!clickable && (
@@ -49,12 +55,15 @@ export function AccessoryCard({
         )}
         {category.coverImage ? (
           // sizes matches the CardRail slot, not the lg grid: 72%/46% of the
-          // padded container below lg, then (container - gaps) / 3 cols at lg.
+          // padded container below lg, then (container - sidebar - gaps) / cols:
+          // 3 cols at lg, 4 at xl.
           <ResponsiveImage
             image={category.coverImage}
             alt={category.name}
-            sizes="(min-width:1480px) 367px, (min-width:1024px) calc((100vw - 380px) / 3), (min-width:640px) calc(46vw - 37px), calc(72vw - 35px)"
+            sizes="(min-width:1480px) 269px, (min-width:1280px) calc((100vw - 404px) / 4), (min-width:1024px) calc((100vw - 380px) / 3), (min-width:640px) calc(46vw - 37px), calc(72vw - 35px)"
             className="absolute inset-0 w-full h-full object-cover"
+            loading={priority ? 'eager' : 'lazy'}
+            fetchPriority={priority === 'high' ? 'high' : undefined}
           />
         ) : (
           <span className="font-display uppercase text-[18px] tracking-[0.02em] text-pm-muted text-center px-4 leading-tight">

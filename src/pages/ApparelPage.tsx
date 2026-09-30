@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
+import { Link } from 'react-router-dom';
 import { PageLayout } from '../components/layout/PageLayout';
 import { PageHeader } from '../components/layout/PageHeader';
 import { PAGE_META, SITE_URL } from '../seo/config';
@@ -13,21 +14,33 @@ type Section = 'accessories' | 'jerseys';
 type AccessoryFilter = 'all' | string; // 'all' or a category id
 
 const inStock = accessoryCategories.filter((c) => !c.comingSoon);
+// The first group's opening row is above the fold on load, so its images get priority.
+const firstGroup = ACCESSORY_GROUP_ORDER.find((g) => accessoryCategories.some((c) => c.group === g));
 
-function ComingSoonJerseys() {
+const inlineLinkClass =
+  'text-pm-black underline decoration-2 decoration-pm-yellow underline-offset-4 hover:decoration-pm-black transition-colors duration-150';
+
+function ComingSoonJerseys({ onBrowseAccessories }: { onBrowseAccessories: () => void }) {
   return (
     <div className="border border-pm-rule rounded-2xl p-10 sm:p-14 text-center max-w-[680px] flex flex-col items-center gap-5">
       <svg viewBox="0 0 200 240" className="w-24 opacity-60" aria-hidden="true">
         <use href="#jersey" fill="#FFFFFF" stroke="#D9D5C4" strokeWidth="1.4" />
       </svg>
-      <span className="font-mono text-[11px] tracking-[0.16em] uppercase text-pm-yellow-deep">Coming Soon</span>
-      <h2 className="font-display uppercase text-[clamp(28px,4vw,44px)] leading-[0.9] tracking-[0.005em] text-pm-black">
+      <span className="font-mono text-[11px] tracking-[0.16em] uppercase text-pm-yellow-ink">Coming Soon</span>
+      <h2 className="font-display uppercase text-[clamp(28px,4vw,44px)] leading-[0.9] tracking-[0.005em] text-pm-black text-balance">
         Custom Jerseys Are On Deck
       </h2>
       <p className="text-[15px] leading-[1.6] text-pm-ink max-w-[440px]">
         Our sublimated and tackle-twill jersey builder is coming soon. In the meantime, gear up with our
         accessories.
       </p>
+      <button
+        type="button"
+        onClick={onBrowseAccessories}
+        className="mt-2 text-[15px] px-5 h-11 font-display uppercase tracking-[0.04em] bg-white text-pm-black inline-flex items-center justify-center hover:bg-pm-paper-2 transition-[colors,transform] duration-150 active:scale-[0.97] border border-pm-rule border-b-2 hover:border-pm-black rounded-xl"
+      >
+        Browse accessories
+      </button>
     </div>
   );
 }
@@ -40,6 +53,24 @@ export function ApparelPage() {
   const [openCategory, setOpenCategory] = useState<AccessoryCategory | null>(null);
   const [openVariantIndex, setOpenVariantIndex] = useState(0);
   const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set());
+  const filterBarRef = useRef<HTMLDivElement>(null);
+
+  // Esc or a tap outside the filter bar closes the mobile filter dropdown.
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setMobileMenuOpen(false);
+    };
+    const onPointer = (e: PointerEvent) => {
+      if (!filterBarRef.current?.contains(e.target as Node)) setMobileMenuOpen(false);
+    };
+    document.addEventListener('keydown', onKey);
+    document.addEventListener('pointerdown', onPointer);
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      document.removeEventListener('pointerdown', onPointer);
+    };
+  }, [mobileMenuOpen]);
 
   const toggleGroup = (group: string) =>
     setExpandedGroups((prev) => {
@@ -70,7 +101,7 @@ export function ApparelPage() {
   };
 
   const subItemClass = (active: boolean) =>
-    `w-full text-left px-3 py-2 font-display uppercase text-[13px] tracking-[0.04em] rounded-lg transition-colors duration-150 ${
+    `w-full text-left px-3 py-2.5 lg:py-2 font-display uppercase text-[13px] tracking-[0.04em] rounded-lg transition-colors duration-150 ${
       active ? 'bg-pm-black text-white' : 'text-pm-ink hover:bg-pm-paper-2'
     }`;
 
@@ -90,21 +121,36 @@ export function ApparelPage() {
       <PageHeader
         eyebrow="Custom uniforms · Built to order"
         title={<>Gear built for the <span className="bg-pm-yellow px-[0.08em] rounded-md">play.</span></>}
-      />
+      >
+        <p>
+          Everything here is sold at the Playmaker tent.{' '}
+          <Link to="/events" className={inlineLinkClass}>
+            See where we'll be next
+          </Link>
+          , or{' '}
+          <Link to="/contact" className={inlineLinkClass}>
+            message us to order
+          </Link>
+          .
+        </p>
+      </PageHeader>
 
       {/* ── MOBILE NAV (< lg) ── */}
-      <section className="lg:hidden border-b border-pm-rule bg-white sticky top-20 z-20">
-        <div className="relative max-w-[1480px] mx-auto px-6 h-14 flex items-center gap-2">
+      <section className="lg:hidden border-b border-pm-rule bg-white sticky top-[74px] z-20">
+        <div ref={filterBarRef} className="relative max-w-[1480px] mx-auto px-6 h-14 flex items-center gap-2">
           <button
             type="button"
             onClick={() => setMobileMenuOpen((o) => !o)}
             aria-expanded={mobileMenuOpen}
+            aria-controls="apparel-filter-menu"
             className={`shrink-0 px-4 h-10 inline-flex items-center gap-2 font-display uppercase text-[13px] tracking-[0.04em] rounded-lg transition-colors duration-150 ${
               section === 'accessories' ? 'bg-pm-black text-white' : 'text-pm-ink hover:bg-pm-paper-2'
             }`}
           >
-            {section === 'accessories' && activeCategory ? activeCategory.name : 'Accessories'}
-            <span className={`transition-transform duration-150 ${mobileMenuOpen ? 'rotate-180' : ''}`}>▾</span>
+            <span className="truncate max-w-[45vw]">
+              {section === 'accessories' && activeCategory ? activeCategory.name : 'Accessories'}
+            </span>
+            <span aria-hidden="true" className={`transition-transform duration-150 ${mobileMenuOpen ? 'rotate-180' : ''}`}>▾</span>
           </button>
           <button
             type="button"
@@ -118,8 +164,9 @@ export function ApparelPage() {
 
           {/* Filter dropdown — absolute overlay so it floats over content instead of pushing it down */}
           <div
-            className={`absolute top-full inset-x-6 mt-2 origin-top z-30 transition-[opacity,transform] duration-200 ease-out ${
-              mobileMenuOpen ? 'opacity-100 scale-y-100 pointer-events-auto' : 'opacity-0 scale-y-95 pointer-events-none'
+            id="apparel-filter-menu"
+            className={`absolute top-full inset-x-6 mt-2 origin-top z-30 transition-[opacity,transform,visibility] duration-200 ease-out ${
+              mobileMenuOpen ? 'visible opacity-100 scale-y-100 pointer-events-auto' : 'invisible opacity-0 scale-y-95 pointer-events-none'
             }`}
           >
             <div className="max-h-[calc(100dvh-10rem)] overflow-y-auto flex flex-col gap-0.5 p-3 bg-white border border-pm-rule rounded-2xl shadow-[0_8px_24px_-6px_rgba(17,17,17,0.18)]">
@@ -173,7 +220,7 @@ export function ApparelPage() {
               }`}
             >
               <span>Accessories</span>
-              <span className={`transition-transform duration-150 ${accessoriesExpanded ? '' : '-rotate-90'}`}>▾</span>
+              <span aria-hidden="true" className={`transition-transform duration-150 ${accessoriesExpanded ? '' : '-rotate-90'}`}>▾</span>
             </button>
 
             {accessoriesExpanded && (
@@ -228,47 +275,53 @@ export function ApparelPage() {
           <div className="flex-1 min-w-0 pb-6 lg:pb-10 pt-6 lg:pt-10">
             {section === 'jerseys' && (
               <section className="animate-fade-in-fast flex justify-center pt-4">
-                <ComingSoonJerseys />
+                <ComingSoonJerseys onBrowseAccessories={() => selectAccessories('all')} />
               </section>
             )}
 
             {section === 'accessories' && accessoryFilter === 'all' && (
               <section className="animate-fade-in-fast">
-                <div className="flex items-baseline justify-between mb-4">
+                <div className="flex items-baseline justify-between mb-8">
                   <h2 className="font-display uppercase text-[clamp(24px,2.5vw,36px)] leading-none tracking-[0.005em] m-0">
                     All Accessories
                   </h2>
                   <span className="font-mono text-[11px] tracking-[0.1em] uppercase text-pm-muted">
-                    {inStock.length} in stock
+                    {inStock.length} {inStock.length === 1 ? 'category' : 'categories'}
                   </span>
                 </div>
                 {ACCESSORY_GROUP_ORDER.map((group) => {
                   const cards = accessoryCategories.filter((c) => c.group === group);
                   if (cards.length === 0) return null;
                   const isExpanded = expandedGroups.has(group);
+                  const isFirstGroup = group === firstGroup;
                   return (
                     <div key={group} className="mb-12 last:mb-0">
-                      <div className="flex items-center justify-between mb-4 pb-2 border-b border-pm-rule">
-                        <h3 className="font-mono text-[11px] tracking-[0.16em] uppercase text-pm-yellow-deep">
+                      <div className="flex items-center justify-between mb-4 border-b border-pm-rule">
+                        <h3 className="font-mono text-[11px] tracking-[0.16em] uppercase text-pm-yellow-ink">
                           {group}
                         </h3>
                         <button
                           type="button"
                           onClick={() => toggleGroup(group)}
                           aria-expanded={isExpanded}
-                          className="shrink-0 ml-4 font-mono text-[10px] tracking-[0.12em] uppercase text-pm-muted hover:text-pm-ink transition-colors duration-150"
+                          className="shrink-0 ml-4 -mr-2 px-2 min-h-10 inline-flex items-center font-mono text-[10px] tracking-[0.12em] uppercase text-pm-muted hover:text-pm-ink transition-colors duration-150"
                         >
                           {isExpanded ? 'Show less' : 'See all →'}
                         </button>
                       </div>
                       <CardRail
                         expanded={isExpanded}
-                        expandedClassName="grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-12"
-                        gridClassName="lg:grid-cols-3 lg:gap-x-6 lg:gap-y-12"
+                        expandedClassName="grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-x-4 sm:gap-x-6 gap-y-10 sm:gap-y-12"
+                        gridClassName="lg:grid-cols-3 xl:grid-cols-4 lg:gap-x-6 lg:gap-y-12"
                         itemClassName="basis-[72%] sm:basis-[46%]"
                       >
-                        {cards.map((c) => (
-                          <AccessoryCard key={c.id} category={c} onOpen={(cat) => openModal(cat)} />
+                        {cards.map((c, i) => (
+                          <AccessoryCard
+                            key={c.id}
+                            category={c}
+                            onOpen={(cat) => openModal(cat)}
+                            priority={!isFirstGroup ? undefined : i === 0 ? 'high' : i < 4 ? 'eager' : undefined}
+                          />
                         ))}
                       </CardRail>
                     </div>

@@ -6,9 +6,10 @@ interface ResponsiveImageProps {
   sizes: string;
   className?: string;
   loading?: 'lazy' | 'eager';
+  fetchPriority?: 'high' | 'low' | 'auto';
 }
 
-export function ResponsiveImage({ image, alt, sizes, className, loading = 'lazy' }: ResponsiveImageProps) {
+export function ResponsiveImage({ image, alt, sizes, className, loading = 'lazy', fetchPriority }: ResponsiveImageProps) {
   return (
     <img
       src={image.src}
@@ -18,6 +19,7 @@ export function ResponsiveImage({ image, alt, sizes, className, loading = 'lazy'
       height={image.height}
       alt={alt}
       loading={loading}
+      fetchPriority={fetchPriority}
       decoding="async"
       className={className}
     />
