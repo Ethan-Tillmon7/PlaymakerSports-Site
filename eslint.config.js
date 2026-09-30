@@ -32,4 +32,43 @@ export default defineConfig([
       ],
     },
   },
+  // ── Import boundaries (docs/superpowers/specs/2026-09-30-feature-structure-design.md) ──
+  {
+    files: ['src/features/**/*.{ts,tsx}'],
+    rules: {
+      'no-restricted-imports': ['error', {
+        patterns: [
+          { regex: '^@/legacy(/|$)', message: 'src/legacy is quarantined; nothing outside it may import it.' },
+          { regex: '^@/features/[^/]+/.+', message: 'Import another feature only through its index.ts (e.g. @/features/events). Inside a feature, use relative imports.' },
+          { regex: '^@/app(/|$)', message: 'Features must not depend on the app shell.' },
+        ],
+      }],
+    },
+  },
+  {
+    files: ['src/{components,hooks,lib,stores,config,styles}/**/*.{ts,tsx}'],
+    rules: {
+      'no-restricted-imports': ['error', {
+        patterns: [
+          { regex: '^@/(features|legacy|app)(/|$)', message: 'Shared code must stay feature-agnostic: no imports from features/, legacy/ or app/.' },
+        ],
+      }],
+    },
+  },
+  {
+    files: ['src/app/**/*.{ts,tsx}'],
+    rules: {
+      'no-restricted-imports': ['error', {
+        patterns: [{ regex: '^@/legacy(/|$)', message: 'src/legacy is quarantined; nothing outside it may import it.' }],
+      }],
+    },
+  },
+  {
+    files: ['shared/**/*.ts'],
+    rules: {
+      'no-restricted-imports': ['error', {
+        patterns: [{ regex: '^(@/|@shared/|\\.\\./src/|\\.\\./netlify/)', message: 'shared/ holds contracts only: relative imports within shared/ and zod.' }],
+      }],
+    },
+  },
 ])
