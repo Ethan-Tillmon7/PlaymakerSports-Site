@@ -11,14 +11,15 @@ import { localISODate } from '@/lib/dates';
 import { eventDateParts, type EventDateParts } from './eventDates';
 import { classifyFailure, fetchWithTimeout, type RequestFailure } from '@/lib/http';
 import { useLoadingBarStore } from '@/stores/loadingBar';
-import type { Tournament } from '@/data/events';
+import { API } from '@shared/api';
+import type { PublicEvent } from '@shared/events';
 
 type EventStatus = { kind: 'live' } | { kind: 'soon'; days: number } | null;
 
 const DAY_MS = 86_400_000;
 
 /** Live while today falls inside the event; "soon" when it starts within 6 days. */
-function eventStatus(t: Tournament, today: string): EventStatus {
+function eventStatus(t: PublicEvent, today: string): EventStatus {
   if (t.startDate <= today && today <= t.endDate) return { kind: 'live' };
   const days = Math.round((Date.parse(t.startDate) - Date.parse(today)) / DAY_MS);
   return days >= 1 && days <= 6 ? { kind: 'soon', days } : null;
@@ -79,7 +80,7 @@ function TournamentCard({
   past = false,
   status = null,
 }: {
-  t: Tournament;
+  t: PublicEvent;
   animated?: boolean;
   delay?: number;
   past?: boolean;
@@ -113,8 +114,8 @@ function TournamentCard({
 const cardGridClass = 'grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3';
 
 /** Upcoming events bucketed by the month they start in, in schedule order. */
-function groupByMonth(events: Tournament[]) {
-  const groups: { key: string; label: string; events: Tournament[] }[] = [];
+function groupByMonth(events: PublicEvent[]) {
+  const groups: { key: string; label: string; events: PublicEvent[] }[] = [];
   for (const t of events) {
     const parts = eventDateParts(t.startDate, t.endDate);
     const key = parts?.monthKey ?? 'tba';
@@ -173,7 +174,7 @@ function NoUpcomingEvents() {
 
 type FetchState =
   | { status: 'loading' }
-  | { status: 'success'; data: Tournament[] }
+  | { status: 'success'; data: PublicEvent[] }
   | { status: 'error'; reason: RequestFailure };
 
 export function EventsPage() {
@@ -185,14 +186,14 @@ export function EventsPage() {
   useEffect(() => {
     const controller = new AbortController();
     loadingBar.start();
-    fetchWithTimeout('/api/get-events', { signal: controller.signal })
+    fetchWithTimeout(API.events, { signal: controller.signal })
       .then((res) => {
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         return res.json() as Promise<unknown>;
       })
       .then((data) => {
         if (!Array.isArray(data)) throw new Error('Unexpected response');
-        setState({ status: 'success', data: data as Tournament[] });
+        setState({ status: 'success', data: data as PublicEvent[] });
       })
       .catch((err) => {
         if (controller.signal.aborted) return;

@@ -1,35 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import { useForm, useWatch, type Resolver } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
 import { classifyFailure, fetchWithTimeout, type RequestFailure } from '@/lib/http';
-
-// Limits match netlify/functions/submit-contact.ts.
-const LIMITS = { name: 100, email: 254, phone: 30, event_name: 150, message: 5000 } as const;
-
-const schema = z.object({
-  role: z.enum(['Event Organizer', 'Player', 'Parent', 'Coach'], { message: 'Please select a role' }),
-  name: z.string().trim().min(1, 'Enter your name').max(LIMITS.name, `Keep it under ${LIMITS.name} characters`),
-  email: z.email('Enter a valid email, like you@email.com').max(LIMITS.email, 'That email is too long'),
-  phone: z.string().trim().max(LIMITS.phone, `Keep it under ${LIMITS.phone} characters`).optional(),
-  message: z
-    .string()
-    .trim()
-    .min(1, 'Tell us what you need')
-    .max(LIMITS.message, `Keep it under ${LIMITS.message.toLocaleString('en-US')} characters`),
-  event_name: z.string().trim().max(LIMITS.event_name, `Keep it under ${LIMITS.event_name} characters`).optional(),
-  company: z.string().optional(),
-});
-
-type FormValues = {
-  role: 'Event Organizer' | 'Player' | 'Parent' | 'Coach';
-  name: string;
-  email: string;
-  phone?: string;
-  message: string;
-  event_name?: string;
-  company?: string;
-};
+import { API } from '@shared/api';
+import { CONTACT_LIMITS, contactSchema, type ContactSubmission } from '@shared/contact';
 
 type SubmitError = RequestFailure | 'invalid';
 
@@ -91,7 +65,7 @@ export function ContactForm() {
     control,
     formState: { errors, isSubmitting },
     reset,
-  } = useForm<FormValues>({ resolver: zodResolver(schema) as Resolver<FormValues>, defaultValues: { role: 'Coach' } });
+  } = useForm<ContactSubmission>({ resolver: zodResolver(contactSchema) as Resolver<ContactSubmission>, defaultValues: { role: 'Coach' } });
 
   const messageLength = useWatch({ control, name: 'message' })?.length ?? 0;
 
@@ -99,10 +73,10 @@ export function ContactForm() {
     if (submitStatus === 'success') successRef.current?.focus();
   }, [submitStatus]);
 
-  const onSubmit = async (values: FormValues) => {
+  const onSubmit = async (values: ContactSubmission) => {
     setSubmitError(null);
     try {
-      const res = await fetchWithTimeout('/api/submit-contact', {
+      const res = await fetchWithTimeout(API.contact, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(values),
@@ -157,7 +131,7 @@ export function ContactForm() {
             {...register('name')}
             id="cf-name"
             autoComplete="name"
-            maxLength={LIMITS.name}
+            maxLength={CONTACT_LIMITS.name}
             aria-required="true"
             className={inputClass}
             placeholder="Full name"
@@ -172,7 +146,7 @@ export function ContactForm() {
             autoComplete="email"
             inputMode="email"
             spellCheck={false}
-            maxLength={LIMITS.email}
+            maxLength={CONTACT_LIMITS.email}
             aria-required="true"
             className={inputClass}
             placeholder="you@email.com"
@@ -188,7 +162,7 @@ export function ContactForm() {
             id="cf-phone"
             type="tel"
             autoComplete="tel"
-            maxLength={LIMITS.phone}
+            maxLength={CONTACT_LIMITS.phone}
             className={inputClass}
             placeholder="(337) 555-0100"
             {...errorProps('cf-phone', errors.phone?.message)}
@@ -198,7 +172,7 @@ export function ContactForm() {
           <input
             {...register('event_name')}
             id="cf-event"
-            maxLength={LIMITS.event_name}
+            maxLength={CONTACT_LIMITS.event_name}
             className={inputClass}
             placeholder="Optional"
             {...errorProps('cf-event', errors.event_name?.message)}
@@ -211,15 +185,15 @@ export function ContactForm() {
           {...register('message')}
           id="cf-message"
           rows={5}
-          maxLength={LIMITS.message}
+          maxLength={CONTACT_LIMITS.message}
           aria-required="true"
           className="w-full border border-pm-rule rounded-xl px-4 py-3 text-[16px] text-pm-ink bg-white focus:outline-none focus:border-pm-black aria-[invalid=true]:border-pm-error transition-colors duration-150 resize-none"
           placeholder="What can we help you with?"
           {...errorProps('cf-message', errors.message?.message)}
         />
-        {messageLength > LIMITS.message * 0.8 && (
+        {messageLength > CONTACT_LIMITS.message * 0.8 && (
           <p className="mt-1 text-right font-mono text-[10px] tracking-[0.1em] uppercase text-pm-muted tabular-nums" aria-live="polite">
-            {messageLength.toLocaleString('en-US')} / {LIMITS.message.toLocaleString('en-US')}
+            {messageLength.toLocaleString('en-US')} / {CONTACT_LIMITS.message.toLocaleString('en-US')}
           </p>
         )}
       </Field>

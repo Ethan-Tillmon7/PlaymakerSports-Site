@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import type { Tournament } from '@/data/events';
+import { API } from '@shared/api';
+import type { PublicEvent } from '@shared/events';
 import { localISODate } from '@/lib/dates';
 import { formatDateRange } from '../eventDates';
 import { fetchWithTimeout } from '@/lib/http';
@@ -11,11 +12,11 @@ const MIN_ITEMS_PER_HALF = 8;
 
 export function EventTicker() {
   const [paused, setPaused] = useState(false);
-  const [events, setEvents] = useState<Tournament[]>([]);
+  const [events, setEvents] = useState<PublicEvent[]>([]);
 
   useEffect(() => {
     const controller = new AbortController();
-    fetchWithTimeout('/api/get-events', { signal: controller.signal })
+    fetchWithTimeout(API.events, { signal: controller.signal })
       .then((res) => {
         if (!res.ok) throw new Error();
         return res.json() as Promise<unknown>;
@@ -23,7 +24,7 @@ export function EventTicker() {
       .then((data) => {
         if (!Array.isArray(data)) return;
         const today = localISODate();
-        setEvents((data as Tournament[]).filter((t) => t.endDate >= today));
+        setEvents((data as PublicEvent[]).filter((t) => t.endDate >= today));
       })
       // The ticker is optional garnish on the hero: on any failure it stays hidden.
       .catch(() => {});
