@@ -33,7 +33,7 @@ playmaker-sheets-6193a76fcbf2.json
 
 # Raw HEIC source photos — kept as local backup outside the repo,
 # not bundled (build reads the optimized PNG/WebP inventory instead)
-src/assets/images/inventory/HEIC/
+src/assets/images/inventory/heic/
 
 # Local Netlify folder
 .netlify

@@ -36,18 +36,18 @@ interface CategoryDef {
 
 const IN_STOCK: CategoryDef[] = [
   // Jewelry
-  { id: 'chains', name: 'Chains', desc: 'Gold and silver rope chains with baseball medallions.', folder: 'Chains', prefix: 'chain-', group: 'Jewelry' },
-  { id: 'cubans', name: 'Cubans', desc: 'Classic Cuban link chains — bold look for the field.', folder: 'Cubans', prefix: 'cuban-', group: 'Jewelry' },
-  { id: 'bead-necklaces', name: 'Bead Necklaces', desc: 'Colorful bead necklaces to rep your team colors.', folder: 'Bead Necklaces', prefix: 'beadNecklace-', group: 'Jewelry' },
+  { id: 'chains', name: 'Chains', desc: 'Gold and silver rope chains with baseball medallions.', folder: 'chains', prefix: 'chain-', group: 'Jewelry' },
+  { id: 'cubans', name: 'Cubans', desc: 'Classic Cuban link chains — bold look for the field.', folder: 'cubans', prefix: 'cuban-', group: 'Jewelry' },
+  { id: 'bead-necklaces', name: 'Bead Necklaces', desc: 'Colorful bead necklaces to rep your team colors.', folder: 'bead-necklaces', prefix: 'beadNecklace-', group: 'Jewelry' },
   // Wearables
-  { id: 'arm-sleeves', name: 'Arm Sleeves', desc: 'Compression arm sleeves in every colorway.', folder: 'Arm Sleeves', prefix: 'armsleeve-', group: 'Wearables' },
-  { id: 'sliding-mitts', name: 'Sliding Mitts', desc: 'Protective sliding mitts in a stack of custom designs.', folder: 'Sliding Mitts', prefix: 'slidingMitt-', group: 'Wearables' },
-  { id: 'eye-black', name: 'Eye Black', desc: 'Anti-glare eye black for game day.', folder: 'Eye Black', prefix: 'eyeblack-', group: 'Wearables' },
-  { id: 'wrist-tape', name: 'Wrist Tape', desc: 'Self-adhesive grip tape in bright game-day colors.', folder: 'Wrist Tape', prefix: 'wristTape-', group: 'Wearables' },
+  { id: 'arm-sleeves', name: 'Arm Sleeves', desc: 'Compression arm sleeves in every colorway.', folder: 'arm-sleeves', prefix: 'armsleeve-', group: 'Wearables' },
+  { id: 'sliding-mitts', name: 'Sliding Mitts', desc: 'Protective sliding mitts in a stack of custom designs.', folder: 'sliding-mitts', prefix: 'slidingMitt-', group: 'Wearables' },
+  { id: 'eye-black', name: 'Eye Black', desc: 'Anti-glare eye black for game day.', folder: 'eye-black', prefix: 'eyeblack-', group: 'Wearables' },
+  { id: 'wrist-tape', name: 'Wrist Tape', desc: 'Self-adhesive grip tape in bright game-day colors.', folder: 'wrist-tape', prefix: 'wristTape-', group: 'Wearables' },
   // Gear
-  { id: 'ball-on-string', name: 'Ball on String', desc: 'Ball-on-a-string charms — a dugout staple.', folder: 'Ball on String', prefix: 'ballString-', group: 'Gear' },
-  { id: 'cooling-towels', name: 'Cooling Towels', desc: 'Stay-cool towels for the sideline and dugout.', folder: 'Cooling Towel', prefix: 'coolingTowel-', group: 'Gear' },
-  { id: 'squishy-toys', name: 'Squishy Toys', desc: 'Fidget squishies in fruit, animal, and treat shapes.', folder: 'Squishy Toys', prefix: 'squishyToys-', group: 'Gear' },
+  { id: 'ball-on-string', name: 'Ball on String', desc: 'Ball-on-a-string charms — a dugout staple.', folder: 'ball-on-string', prefix: 'ballString-', group: 'Gear' },
+  { id: 'cooling-towels', name: 'Cooling Towels', desc: 'Stay-cool towels for the sideline and dugout.', folder: 'cooling-towels', prefix: 'coolingTowel-', group: 'Gear' },
+  { id: 'squishy-toys', name: 'Squishy Toys', desc: 'Fidget squishies in fruit, animal, and treat shapes.', folder: 'squishy-toys', prefix: 'squishyToys-', group: 'Gear' },
 ];
 
 const COMING_SOON: CategoryDef[] = [
@@ -78,10 +78,10 @@ function toResponsive(meta: ImageMetadata[]): ResponsiveImageData {
   return { src: fallback.src, srcset, width: fallback.width, height: fallback.height };
 }
 
-// Group resolved metadata by their immediate parent folder name, skipping HEIC.
+// Group resolved metadata by their immediate parent folder name, skipping heic/ originals.
 const byFolder = new Map<string, { base: string; image: ResponsiveImageData }[]>();
 for (const [path, meta] of Object.entries(modules)) {
-  if (path.includes('/HEIC/')) continue;
+  if (path.includes('/heic/')) continue;
   const parts = path.split('/');
   const file = parts[parts.length - 1];
   const folder = parts[parts.length - 2];
