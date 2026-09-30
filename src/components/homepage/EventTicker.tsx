@@ -1,38 +1,50 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import type { Tournament } from '../../data/events';
-import { formatDateRange } from '../../lib/dates';
+import { formatDateRange, localISODate } from '../../lib/dates';
+import { fetchWithTimeout } from '../../lib/http';
+
+// The loop translates the track by -50%, so each half has to be wider than the
+// strip or a gap scrolls into view. ~8 items clears a 1480px container.
+const MIN_ITEMS_PER_HALF = 8;
 
 export function EventTicker() {
   const [paused, setPaused] = useState(false);
   const [events, setEvents] = useState<Tournament[]>([]);
 
   useEffect(() => {
-    fetch('/api/get-events')
+    const controller = new AbortController();
+    fetchWithTimeout('/api/get-events', { signal: controller.signal })
       .then((res) => {
         if (!res.ok) throw new Error();
-        return res.json() as Promise<Tournament[]>;
+        return res.json() as Promise<unknown>;
       })
       .then((data) => {
-        const today = new Date().toISOString().split('T')[0];
-        setEvents(data.filter((t) => t.endDate >= today));
+        if (!Array.isArray(data)) return;
+        const today = localISODate();
+        setEvents((data as Tournament[]).filter((t) => t.endDate >= today));
       })
-      .catch(() => setEvents([]));
+      // The ticker is optional garnish on the hero: on any failure it stays hidden.
+      .catch(() => {});
+    return () => controller.abort();
   }, []);
 
   // Hidden until upcoming events load (also covers SSR/prerender, where the
   // effect never runs and the API isn't reachable).
   if (events.length === 0) return null;
 
-  const items = events;
+  const reps = Math.ceil(MIN_ITEMS_PER_HALF / events.length);
+  const items = Array.from({ length: reps }, () => events).flat();
 
   return (
     <Link
       to="/events"
-      aria-label="Upcoming events ticker"
+      aria-label={`See all ${events.length} upcoming ${events.length === 1 ? 'event' : 'events'}`}
       className="block border-t border-white/[0.07] overflow-hidden"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
+      onFocus={() => setPaused(true)}
+      onBlur={() => setPaused(false)}
     >
       <div className="flex items-stretch h-[52px]">
         {/* "Upcoming" label */}
@@ -42,11 +54,12 @@ export function EventTicker() {
           </span>
         </div>
 
-        {/* Scrolling track — items rendered twice for seamless loop */}
+        {/* Scrolling track — items rendered twice for a seamless loop */}
         <div className="flex-1 overflow-hidden flex items-center">
           <div
             className="flex animate-ticker motion-reduce:animate-none"
-            style={{ animationPlayState: paused ? 'paused' : 'running' }}
+            // Keep the scroll speed constant (~3s per item) however many events there are.
+            style={{ animationPlayState: paused ? 'paused' : 'running', animationDuration: `${items.length * 3}s` }}
           >
             {[...items, ...items].map((t, i) => {
               const { lines } = formatDateRange(t.startDate, t.endDate);
@@ -55,7 +68,7 @@ export function EventTicker() {
                 <div
                   key={`${t.id}-${i}`}
                   className="inline-flex items-center gap-3 px-9 h-[52px] border-r border-white/[0.07] flex-shrink-0"
-                  aria-hidden={i >= items.length ? true : undefined}
+                  aria-hidden={i >= events.length ? true : undefined}
                 >
                   <span className="text-pm-yellow text-[7px]">◆</span>
                   <span className="font-mono text-[10px] tracking-[0.14em] uppercase text-pm-yellow">
