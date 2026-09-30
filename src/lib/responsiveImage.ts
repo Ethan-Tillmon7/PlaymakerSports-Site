@@ -8,7 +8,7 @@ interface ImageMetadata {
 }
 
 /**
- * Collapse a vite-imagetools `as=metadata` array (one entry per generated width)
+ * Collapse a vite-imagetools `as=meta:…` array (one entry per generated width)
  * into a single ResponsiveImageData with a `srcset` and a largest-width fallback.
  */
 export function toResponsive(meta: ImageMetadata[]): ResponsiveImageData {

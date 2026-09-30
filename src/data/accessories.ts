@@ -65,7 +65,9 @@ interface ImageMetadata {
 
 const modules = import.meta.glob('../assets/images/inventory/**/*.{png,jpg,jpeg}', {
   eager: true,
-  query: { w: '128;320;640;1024', format: 'webp', as: 'metadata' },
+  // q72 matches the other site photos and is ~35% lighter than the q80 default.
+  // 768 serves retina desktop cards (~367 CSS px) without jumping to 1024.
+  query: { w: '128;320;640;768;1024', format: 'webp', quality: '72', as: 'meta:src;width;height;format' },
   import: 'default',
 }) as Record<string, ImageMetadata[]>;
 

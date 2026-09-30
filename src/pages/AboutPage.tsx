@@ -1,4 +1,4 @@
-import tentMeta from '../assets/images/brand/Playmaker-Tent.jpeg?w=1024;1600&format=webp&quality=62&as=metadata';
+import tentMeta from '../assets/images/brand/Playmaker-Tent.jpeg?w=1024;1600&format=webp&quality=62&as=meta:src;width;height;format';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { PageLayout } from '../components/layout/PageLayout';
