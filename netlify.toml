@@ -31,10 +31,18 @@
   to = "/.netlify/functions/submit-contact"
   status = 200
 
-# SPA fallback — serves index.html for any unmatched path (client-side routing)
+# SPA fallback. Every public route is prerendered to a real file, so only
+# /customizer needs a rewrite. It gets the empty app shell (scripts/prerender.ts),
+# not index.html: that file is the prerendered homepage, and hydrating another
+# route against it throws and flashes the homepage.
+#
+# There's deliberately no "/*" catch-all. Netlify serves dist/404.html (the same
+# empty shell) with a real 404 status for any unknown path, and React renders
+# NotFoundPage. A "/*" rule with status 404 also swallows Vite's module requests
+# (/src/*, /@vite/*) under `netlify dev`, and the app never boots.
 [[redirects]]
-  from = "/*"
-  to = "/index.html"
+  from = "/customizer"
+  to = "/app.html"
   status = 200
 
 # ── Caching ──

@@ -22,6 +22,14 @@ async function prerender() {
 
   const template = fs.readFileSync(path.join(root, 'dist/index.html'), 'utf-8');
 
+  // Empty shell for every URL that isn't prerendered. dist/index.html can't serve
+  // them: after the loop below it holds the prerendered homepage, so React would
+  // hydrate the wrong page against it. app.html backs /customizer (netlify.toml);
+  // 404.html is what Netlify serves, with a 404 status, for any other unknown path.
+  const shell = template.replace('<!--app-head-->', '').replace('<!--app-html-->', '');
+  fs.writeFileSync(path.join(root, 'dist/app.html'), shell);
+  fs.writeFileSync(path.join(root, 'dist/404.html'), shell);
+
   for (const route of ROUTES) {
     const { html, helmet } = await render(route);
 
