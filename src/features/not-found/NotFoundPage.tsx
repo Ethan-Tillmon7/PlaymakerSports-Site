@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { PageLayout } from '@/components/layout/PageLayout';
 import { Diamond } from '@/components/layout/DiamondMark';
+import { Container } from '@/components/ui/Container';
 
 export function NotFoundPage() {
   return (
@@ -10,7 +11,7 @@ export function NotFoundPage() {
         <title>Page not found · Playmaker Sports</title>
         <meta name="robots" content="noindex" />
       </Helmet>
-      <section className="max-w-[1480px] mx-auto px-6 sm:px-10 py-24 flex flex-col items-center text-center gap-6">
+      <Container as="section" className="py-24 flex flex-col items-center text-center gap-6">
         <Diamond className="w-10 h-10 text-pm-yellow" />
         <h1 className="font-display uppercase text-[clamp(72px,14vw,160px)] leading-none text-pm-black">
           <span className="sr-only">Page not found · </span>404
@@ -24,7 +25,7 @@ export function NotFoundPage() {
         >
           Back to home
         </Link>
-      </section>
+      </Container>
     </PageLayout>
   );
 }

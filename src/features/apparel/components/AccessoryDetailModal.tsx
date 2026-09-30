@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useId, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { Link } from 'react-router-dom';
+import { ButtonLink } from '@/components/ui/Button';
 import { paletteFor, type AccessoryCategory } from '../catalog/accessories';
 import { ResponsiveImage } from '@/components/ui/ResponsiveImage';
 
@@ -212,15 +212,12 @@ export function AccessoryDetailModal({ category, initialVariantIndex = 0, onClos
                 Pick one up at the Playmaker tent, or message us to order.
               </p>
               <div className="flex flex-wrap gap-2 mt-3">
-                <Link
-                  to="/contact"
-                  className="font-display uppercase text-[14px] tracking-[0.04em] bg-pm-yellow text-pm-black px-4 h-10 inline-flex items-center justify-center hover:bg-pm-yellow-deep transition-[colors,transform] duration-150 active:scale-[0.97] border-b-2 border-pm-yellow-deep hover:border-pm-black rounded-xl"
-                >
+                <ButtonLink to="/contact" size="sm">
                   Message us to order
-                </Link>
-                <Link to="/events" className="text-[14px] px-4 h-10 font-display uppercase tracking-[0.04em] bg-white text-pm-black inline-flex items-center justify-center hover:bg-pm-paper-2 transition-[colors,transform] duration-150 active:scale-[0.97] border border-pm-rule border-b-2 hover:border-pm-black rounded-xl">
+                </ButtonLink>
+                <ButtonLink to="/events" variant="secondary" size="sm">
                   Find the tent
-                </Link>
+                </ButtonLink>
               </div>
             </div>
 

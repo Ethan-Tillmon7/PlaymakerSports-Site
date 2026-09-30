@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { useDismiss } from '@/hooks/useDismiss';
 
 const navLinks = [
   { label: 'About', to: '/about' },
@@ -14,21 +15,7 @@ export function Nav() {
   const rootRef = useRef<HTMLDivElement>(null);
 
   // Esc or a tap anywhere outside the pill closes the mobile menu.
-  useEffect(() => {
-    if (!mobileOpen) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setMobileOpen(false);
-    };
-    const onPointer = (e: PointerEvent) => {
-      if (!rootRef.current?.contains(e.target as Node)) setMobileOpen(false);
-    };
-    document.addEventListener('keydown', onKey);
-    document.addEventListener('pointerdown', onPointer);
-    return () => {
-      document.removeEventListener('keydown', onKey);
-      document.removeEventListener('pointerdown', onPointer);
-    };
-  }, [mobileOpen]);
+  useDismiss(rootRef, mobileOpen, () => setMobileOpen(false));
 
   return (
     <div ref={rootRef} className="sticky top-[10px] z-30 w-[calc(100%-20px)] max-w-[800px] mx-auto bg-white rounded-[28px] shadow-[0_2px_8px_-2px_rgba(245,200,66,0.30)]">

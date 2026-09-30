@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import { PageLayout } from '@/components/layout/PageLayout';
@@ -10,6 +10,8 @@ import { AccessoryCard } from './components/AccessoryCard';
 import { CardRail } from './components/CardRail';
 import { AccessoryDetailModal } from './components/AccessoryDetailModal';
 import { ResponsiveImage } from '@/components/ui/ResponsiveImage';
+import { Container } from '@/components/ui/Container';
+import { useDismiss } from '@/hooks/useDismiss';
 
 type Section = 'accessories' | 'jerseys';
 type AccessoryFilter = 'all' | string; // 'all' or a category id
@@ -57,21 +59,7 @@ export function ApparelPage() {
   const filterBarRef = useRef<HTMLDivElement>(null);
 
   // Esc or a tap outside the filter bar closes the mobile filter dropdown.
-  useEffect(() => {
-    if (!mobileMenuOpen) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setMobileMenuOpen(false);
-    };
-    const onPointer = (e: PointerEvent) => {
-      if (!filterBarRef.current?.contains(e.target as Node)) setMobileMenuOpen(false);
-    };
-    document.addEventListener('keydown', onKey);
-    document.addEventListener('pointerdown', onPointer);
-    return () => {
-      document.removeEventListener('keydown', onKey);
-      document.removeEventListener('pointerdown', onPointer);
-    };
-  }, [mobileMenuOpen]);
+  useDismiss(filterBarRef, mobileMenuOpen, () => setMobileMenuOpen(false));
 
   const toggleGroup = (group: string) =>
     setExpandedGroups((prev) => {
@@ -205,7 +193,7 @@ export function ApparelPage() {
       </section>
 
       {/* ── SIDEBAR + MAIN ── */}
-      <div className="max-w-[1480px] mx-auto px-6 sm:px-10">
+      <Container>
         <div className="flex items-start gap-0 lg:gap-8">
           {/* Sidebar — desktop only */}
           <aside className="hidden lg:flex flex-col w-[220px] shrink-0 sticky top-20 self-start border-r border-pm-rule py-6 pr-4 min-h-[calc(100dvh-80px)]">
@@ -370,7 +358,7 @@ export function ApparelPage() {
             )}
           </div>
         </div>
-      </div>
+      </Container>
 
       {openCategory && (
         <AccessoryDetailModal

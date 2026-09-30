@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { PageLayout } from '@/components/layout/PageLayout';
 import { PageHeader } from '@/components/layout/PageHeader';
+import { Button, ButtonLink } from '@/components/ui/Button';
 import { Diamond } from '@/components/layout/DiamondMark';
 import { PAGE_META } from '@/config/pageMeta';
 import { SITE_URL } from '@/config/site';
@@ -13,6 +13,7 @@ import { classifyFailure, fetchWithTimeout, type RequestFailure } from '@/lib/ht
 import { useLoadingBarStore } from '@/stores/loadingBar';
 import { API } from '@shared/api';
 import type { PublicEvent } from '@shared/events';
+import { Container } from '@/components/ui/Container';
 
 type EventStatus = { kind: 'live' } | { kind: 'soon'; days: number } | null;
 
@@ -145,9 +146,6 @@ function TournamentSkeleton() {
   );
 }
 
-const ctaClass =
-  'font-display uppercase text-[15px] tracking-[0.04em] bg-pm-yellow text-pm-black px-5 h-10 inline-flex items-center justify-center hover:bg-pm-yellow-deep transition-[colors,transform] duration-150 active:scale-[0.97] border-b-2 border-pm-yellow-deep hover:border-pm-black rounded-xl';
-
 const failureCopy: Record<RequestFailure, string> = {
   offline: "You're offline. Once you have signal again, try reloading the schedule.",
   timeout: 'The schedule is taking too long to load. The connection may be weak, so give it another try.',
@@ -165,9 +163,9 @@ function NoUpcomingEvents() {
       <p className="text-[15px] leading-[1.6] text-pm-ink mt-4">
         The schedule for the next few weeks is being finalized — check back soon, or contact us for the latest.
       </p>
-      <Link to="/contact" className={`${ctaClass} mt-7`}>
+      <ButtonLink to="/contact" size="md" className="mt-7">
         Contact us for info
-      </Link>
+      </ButtonLink>
     </div>
   );
 }
@@ -227,7 +225,7 @@ export function EventsPage() {
 
       <PageHeader eyebrow="Tournaments · Where to find us" title="Events & Tournaments" />
 
-      <div className="max-w-[1480px] mx-auto px-6 sm:px-10 py-12 lg:py-16">
+      <Container className="py-12 lg:py-16">
         {state.status === 'loading' && <TournamentSkeleton />}
 
         {state.status === 'success' && allEvents.length === 0 && <NoUpcomingEvents />}
@@ -303,19 +301,16 @@ export function EventsPage() {
             </span>
             <p className="text-[15px] leading-[1.6] text-pm-ink mt-4">{failureCopy[state.reason]}</p>
             <div className="mt-7 flex flex-wrap items-center justify-center gap-2">
-              <button type="button" onClick={retry} className={ctaClass}>
+              <Button size="md" onClick={retry}>
                 Try again
-              </button>
-              <Link
-                to="/contact"
-                className="font-display uppercase text-[15px] tracking-[0.04em] bg-white text-pm-black px-5 h-10 inline-flex items-center justify-center hover:bg-pm-paper-2 transition-[colors,transform] duration-150 active:scale-[0.97] border border-pm-rule border-b-2 hover:border-pm-black rounded-xl"
-              >
+              </Button>
+              <ButtonLink to="/contact" variant="secondary" size="md">
                 Ask us where we'll be
-              </Link>
+              </ButtonLink>
             </div>
           </div>
         )}
-      </div>
+      </Container>
     </PageLayout>
   );
 }

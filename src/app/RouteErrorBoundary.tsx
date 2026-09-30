@@ -1,4 +1,5 @@
 import { Component, type ErrorInfo, type ReactNode } from 'react';
+import { buttonClass } from '@/components/ui/buttonClass';
 
 const RELOAD_KEY = 'pm-chunk-reload-at';
 
@@ -73,13 +74,13 @@ export class RouteErrorBoundary extends Component<Props, State> {
             <button
               type="button"
               onClick={() => window.location.reload()}
-              className="font-display uppercase text-[16px] tracking-[0.04em] bg-pm-yellow text-pm-black px-6 h-11 inline-flex items-center justify-center hover:bg-pm-yellow-deep transition-[colors,transform] duration-150 active:scale-[0.97] border-b-2 border-pm-yellow-deep hover:border-pm-black rounded-xl"
+              className={buttonClass()}
             >
               Reload page
             </button>
             <a
               href="/"
-              className="font-display uppercase text-[16px] tracking-[0.04em] bg-white text-pm-black px-6 h-11 inline-flex items-center justify-center hover:bg-pm-paper-2 transition-[colors,transform] duration-150 active:scale-[0.97] border border-pm-rule border-b-2 hover:border-pm-black rounded-xl"
+              className={buttonClass({ variant: 'secondary' })}
             >
               Go home
             </a>

@@ -6,6 +6,7 @@ import { PAGE_META } from '@/config/pageMeta';
 import { SITE_URL } from '@/config/site';
 import { JsonLd } from '@/components/seo/JsonLd';
 import { useInView } from '@/hooks/useInView';
+import { Container } from '@/components/ui/Container';
 
 const faqGroups = [
   {
@@ -130,7 +131,7 @@ export function FAQPage() {
       }} />
       <PageHeader eyebrow="Common questions" title="FAQ" />
 
-      <section className="max-w-[1480px] mx-auto px-6 sm:px-10 py-14 lg:py-16">
+      <Container as="section" className="py-14 lg:py-16">
         <div ref={faqRef} className="grid grid-cols-1 md:grid-cols-2 gap-x-10 lg:gap-x-16 gap-y-14">
           {faqGroups.map((group, gi) => {
             const indexOffset = faqGroups.slice(0, gi).reduce((sum, g) => sum + g.faqs.length, 0);
@@ -157,7 +158,7 @@ export function FAQPage() {
           })}
         </div>
 
-      </section>
+      </Container>
     </PageLayout>
   );
 }

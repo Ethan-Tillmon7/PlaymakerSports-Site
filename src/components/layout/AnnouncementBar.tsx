@@ -1,3 +1,5 @@
+import { Container } from '@/components/ui/Container';
+
 interface AnnouncementBarProps {
   message?: string;
   highlight?: string;
@@ -9,7 +11,7 @@ export function AnnouncementBar({
 }: AnnouncementBarProps) {
   return (
     <div className="bg-pm-black text-white">
-      <div className="max-w-[1480px] mx-auto px-6 sm:px-10 h-9 flex items-center justify-between font-mono text-[10.5px] tracking-[0.1em] uppercase">
+      <Container className="h-9 flex items-center justify-between font-mono text-[10.5px] tracking-[0.1em] uppercase">
         <div className="flex items-center gap-3">
           <span className="inline-block w-1.5 h-1.5 bg-pm-yellow rounded-full" />
           <span className="text-pm-yellow">{highlight}</span>
@@ -19,7 +21,7 @@ export function AnnouncementBar({
           <a href="/contact" className="hover:text-white">Contact us</a>
           <a href="/apparel" className="hover:text-white">View apparel ↗</a>
         </div>
-      </div>
+      </Container>
     </div>
   );
 }

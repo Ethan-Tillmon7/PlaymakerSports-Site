@@ -2,9 +2,11 @@ import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { PageLayout } from '@/components/layout/PageLayout';
 import { Diamond } from '@/components/layout/DiamondMark';
+import { ButtonLink } from '@/components/ui/Button';
 import { PAGE_META } from '@/config/pageMeta';
 import { SITE_URL } from '@/config/site';
 import { EventTicker } from '@/features/events';
+import { Container } from '@/components/ui/Container';
 
 export function HomePage() {
   return (
@@ -40,7 +42,7 @@ export function HomePage() {
 
 
         {/* Centered hero content */}
-        <div className="relative max-w-[1480px] mx-auto px-6 sm:px-10 pt-14 pb-20 lg:pt-16 lg:pb-28 flex flex-col items-center text-center">
+        <Container className="relative pt-14 pb-20 lg:pt-16 lg:pb-28 flex flex-col items-center text-center">
 
           <Diamond
             className="w-7 h-7 text-pm-yellow shrink-0 mb-8"
@@ -73,14 +75,14 @@ export function HomePage() {
           </p>
 
           <div className="flex flex-wrap items-center justify-center gap-4 mt-10 animate-fade-up" style={{ animationDelay: '420ms' }}>
-            <Link to="/events" className="font-display uppercase text-[18px] tracking-[0.04em] bg-pm-yellow text-pm-black px-7 h-12 inline-flex items-center justify-center hover:bg-pm-yellow-deep transition-[colors,transform] duration-150 active:scale-[0.97] border-b-2 border-pm-yellow-deep hover:border-pm-black rounded-xl">
+            <ButtonLink to="/events" size="xl">
               View events
-            </Link>
+            </ButtonLink>
             <Link to="/apparel" className="font-display uppercase text-[18px] tracking-[0.04em] bg-transparent text-white px-7 h-12 inline-flex items-center justify-center hover:bg-white/10 transition-[colors,transform] duration-150 active:scale-[0.97] border-b-2 border-white/30 hover:border-white/60 rounded-xl">
               Shop apparel
             </Link>
           </div>
-        </div>{/* end hero content */}
+        </Container>{/* end hero content */}
 
         <EventTicker />
       </header>

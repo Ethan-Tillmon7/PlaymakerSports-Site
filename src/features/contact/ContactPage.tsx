@@ -7,6 +7,7 @@ import { ContactForm } from './ContactForm';
 import { ResponsiveImage } from '@/components/ui/ResponsiveImage';
 import { toResponsive } from '@/lib/responsiveImage';
 import homeplateMeta from '@/assets/images/misc/homeplate.jpg?w=480;768;1120&format=webp&quality=72&as=meta:src;width;height;format';
+import { Container } from '@/components/ui/Container';
 
 const homeplate = toResponsive(homeplateMeta);
 
@@ -25,7 +26,7 @@ export function ContactPage() {
 
       <PageHeader eyebrow="Players · Parents · Coaches" title="Get in Touch" />
 
-      <div className="max-w-[1480px] mx-auto px-6 sm:px-10 py-12 lg:py-16 grid lg:grid-cols-[minmax(0,1fr)_480px] xl:grid-cols-[minmax(0,1fr)_560px] gap-12 lg:gap-16">
+      <Container className="py-12 lg:py-16 grid lg:grid-cols-[minmax(0,1fr)_480px] xl:grid-cols-[minmax(0,1fr)_560px] gap-12 lg:gap-16">
         <div className="min-w-0 max-w-[760px] animate-fade-up">
           <ContactForm />
         </div>
@@ -39,7 +40,7 @@ export function ContactPage() {
             className="absolute inset-0 w-full h-full object-cover rounded-xl"
           />
         </div>
-      </div>
+      </Container>
     </PageLayout>
   );
 }
