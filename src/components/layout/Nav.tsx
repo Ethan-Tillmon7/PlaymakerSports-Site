@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useDismiss } from '@/hooks/useDismiss';
+import { ButtonLink } from '@/components/ui/Button';
 
 const navLinks = [
   { label: 'About', to: '/about' },
@@ -71,12 +72,9 @@ export function Nav() {
 
         {/* Right — contact CTA */}
         <div className="flex-1 flex items-center justify-end">
-          <Link
-            to="/contact"
-            className="font-display uppercase text-[13px] lg:text-[14px] tracking-[0.04em] bg-pm-yellow text-pm-black px-4 lg:px-5 h-10 inline-flex items-center justify-center hover:bg-pm-yellow-deep transition-[colors,transform] duration-150 active:scale-[0.97] border-b-2 border-pm-yellow-deep hover:border-pm-black rounded-xl whitespace-nowrap"
-          >
+          <ButtonLink to="/contact" size="sm" className="whitespace-nowrap">
             Contact
-          </Link>
+          </ButtonLink>
         </div>
 
       </nav>

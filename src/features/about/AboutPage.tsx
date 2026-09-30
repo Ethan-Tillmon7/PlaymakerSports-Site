@@ -1,8 +1,9 @@
 import tentMeta from '@/assets/images/brand/Playmaker-Tent.jpeg?w=1024;1600&format=webp&quality=62&as=meta:src;width;height;format';
 import { useRef } from 'react';
-import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { PageLayout } from '@/components/layout/PageLayout';
+import { ButtonLink } from '@/components/ui/Button';
+import { buttonClass } from '@/components/ui/buttonClass';
 import { PAGE_META } from '@/config/pageMeta';
 import { SITE_URL, contact } from '@/config/site';
 import { useScrollOut } from '@/hooks/useScrollOut';
@@ -118,7 +119,7 @@ export function AboutPage() {
               {contact.email && (
                 <a
                   href={`mailto:${contact.email}`}
-                  className="font-display uppercase text-[16px] tracking-[0.04em] bg-pm-yellow text-pm-black px-6 h-11 inline-flex items-center justify-center hover:bg-pm-yellow-deep transition-[colors,transform] duration-150 active:scale-[0.97] border-b-2 border-pm-yellow-deep rounded-xl"
+                  className={buttonClass()}
                 >
                   {contact.email}
                 </a>
@@ -132,12 +133,7 @@ export function AboutPage() {
                 </a>
               )}
               {!contact.email && !contact.phone && (
-                <Link
-                  to="/faq"
-                  className="font-display uppercase text-[16px] tracking-[0.04em] bg-pm-yellow text-pm-black px-6 h-11 inline-flex items-center justify-center hover:bg-pm-yellow-deep transition-[colors,transform] duration-150 active:scale-[0.97] border-b-2 border-pm-yellow-deep rounded-xl"
-                >
-                  See the FAQ
-                </Link>
+                <ButtonLink to="/faq">See the FAQ</ButtonLink>
               )}
             </div>
           </div>

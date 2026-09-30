@@ -1,7 +1,7 @@
-import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { PageLayout } from '@/components/layout/PageLayout';
 import { Diamond } from '@/components/layout/DiamondMark';
+import { ButtonLink } from '@/components/ui/Button';
 import { Container } from '@/components/ui/Container';
 
 export function NotFoundPage() {
@@ -19,12 +19,9 @@ export function NotFoundPage() {
         <p className="text-[16px] leading-[1.6] text-pm-ink max-w-[420px]">
           This page doesn't exist. Head back to the homepage and try again.
         </p>
-        <Link
-          to="/"
-          className="font-display uppercase text-[15px] tracking-[0.04em] bg-pm-yellow text-pm-black px-6 h-11 inline-flex items-center justify-center hover:bg-pm-yellow-deep transition-[colors,transform] duration-150 active:scale-[0.97] border-b-2 border-pm-yellow-deep hover:border-pm-black rounded-xl"
-        >
+        <ButtonLink to="/" size="lg">
           Back to home
-        </Link>
+        </ButtonLink>
       </Container>
     </PageLayout>
   );

@@ -1,3 +1,5 @@
+import { Button } from '@/components/ui/Button';
+
 export function ComingSoonJerseys({ onBrowseAccessories }: { onBrowseAccessories: () => void }) {
   return (
     <div className="border border-pm-rule rounded-2xl p-10 sm:p-14 text-center max-w-[680px] flex flex-col items-center gap-5">
@@ -12,13 +14,9 @@ export function ComingSoonJerseys({ onBrowseAccessories }: { onBrowseAccessories
         Our sublimated and tackle-twill jersey builder is coming soon. In the meantime, gear up with our
         accessories.
       </p>
-      <button
-        type="button"
-        onClick={onBrowseAccessories}
-        className="mt-2 text-[15px] px-5 h-11 font-display uppercase tracking-[0.04em] bg-white text-pm-black inline-flex items-center justify-center hover:bg-pm-paper-2 transition-[colors,transform] duration-150 active:scale-[0.97] border border-pm-rule border-b-2 hover:border-pm-black rounded-xl"
-      >
+      <Button variant="secondary" size="lg" onClick={onBrowseAccessories} className="mt-2">
         Browse accessories
-      </button>
+      </Button>
     </div>
   );
 }

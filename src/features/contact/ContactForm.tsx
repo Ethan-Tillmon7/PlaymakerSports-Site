@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useForm, useWatch, type Resolver } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Button } from '@/components/ui/Button';
 import { classifyFailure, fetchWithTimeout, type RequestFailure } from '@/lib/http';
 import { API } from '@shared/api';
 import { CONTACT_LIMITS, contactSchema, type ContactSubmission } from '@shared/contact';
@@ -211,16 +212,17 @@ export function ContactForm() {
       )}
 
       <div className="flex">
-      <button
-        type="submit"
-        disabled={isSubmitting}
-        aria-disabled={isSubmitting}
-        className="font-display uppercase text-[16px] tracking-[0.04em] bg-pm-yellow text-pm-black w-full sm:w-auto px-7 h-11 inline-flex items-center justify-center hover:bg-pm-yellow-deep transition-[colors,transform] duration-150 active:scale-[0.97] border-b-2 border-pm-yellow-deep hover:border-pm-black rounded-xl disabled:opacity-50 disabled:cursor-not-allowed"
-      >
-        <span className={isSubmitting ? 'animate-pulse' : ''}>
-          {isSubmitting ? 'Sending…' : 'Send Message'}
-        </span>
-      </button>
+        <Button
+          type="submit"
+          size="lg"
+          disabled={isSubmitting}
+          aria-disabled={isSubmitting}
+          className="w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          <span className={isSubmitting ? 'animate-pulse' : ''}>
+            {isSubmitting ? 'Sending…' : 'Send Message'}
+          </span>
+        </Button>
       </div>
     </form>
   );
