@@ -7,6 +7,9 @@ export default {
         'pm-yellow':      '#F5C842',
         'pm-yellow-deep': '#E5B72E',
         'pm-yellow-soft': '#FBE9A8',
+        // Yellow as *text* on paper/white. pm-yellow-deep is 1.8:1 there and
+        // unreadable in daylight; this is the same hue darkened to 5.3:1.
+        'pm-yellow-ink':  '#856300',
         'pm-black':       '#111111',
         'pm-ink':         '#1A1A1A',
         'pm-navy':        '#1A2B5C',
