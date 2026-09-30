@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import type { Tournament } from '@/data/events';
-import { formatDateRange, localISODate } from '@/lib/dates';
+import { localISODate } from '@/lib/dates';
+import { formatDateRange } from '../eventDates';
 import { fetchWithTimeout } from '@/lib/http';
 
 // The loop translates the track by -50%, so each half has to be wider than the

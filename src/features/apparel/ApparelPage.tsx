@@ -5,10 +5,10 @@ import { PageLayout } from '@/components/layout/PageLayout';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { PAGE_META } from '@/config/pageMeta';
 import { SITE_URL } from '@/config/site';
-import { accessoryCategories, ACCESSORY_GROUP_ORDER, type AccessoryCategory } from '@/data/accessories';
-import { AccessoryCard } from '@/components/apparel/AccessoryCard';
-import { CardRail } from '@/components/apparel/CardRail';
-import { AccessoryDetailModal } from '@/components/modals/AccessoryDetailModal';
+import { accessoryCategories, ACCESSORY_GROUP_ORDER, type AccessoryCategory } from './catalog/accessories';
+import { AccessoryCard } from './components/AccessoryCard';
+import { CardRail } from './components/CardRail';
+import { AccessoryDetailModal } from './components/AccessoryDetailModal';
 import { ResponsiveImage } from '@/components/ui/ResponsiveImage';
 
 type Section = 'accessories' | 'jerseys';

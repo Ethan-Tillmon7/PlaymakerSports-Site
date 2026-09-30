@@ -1,5 +1,5 @@
-import { JerseyCanvas } from '@/components/JerseyCanvas';
-import { ControlPanel } from '@/components/ControlPanel';
+import { JerseyCanvas } from './components/JerseyCanvas';
+import { ControlPanel } from './components/ControlPanel';
 
 export function CustomizerPage() {
   return (

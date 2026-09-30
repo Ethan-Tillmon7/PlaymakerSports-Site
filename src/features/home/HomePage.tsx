@@ -4,7 +4,7 @@ import { PageLayout } from '@/components/layout/PageLayout';
 import { Diamond } from '@/components/layout/DiamondMark';
 import { PAGE_META } from '@/config/pageMeta';
 import { SITE_URL } from '@/config/site';
-import { EventTicker } from '@/components/homepage/EventTicker';
+import { EventTicker } from '@/features/events';
 
 export function HomePage() {
   return (

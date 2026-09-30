@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useId, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Link } from 'react-router-dom';
-import { paletteFor, type AccessoryCategory } from '@/data/accessories';
+import { paletteFor, type AccessoryCategory } from '../catalog/accessories';
 import { ResponsiveImage } from '@/components/ui/ResponsiveImage';
 
 const SWIPE_THRESHOLD = 50; // px of horizontal travel to commit a variant change

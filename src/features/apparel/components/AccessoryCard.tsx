@@ -1,4 +1,4 @@
-import type { AccessoryCategory } from '@/data/accessories';
+import type { AccessoryCategory } from '../catalog/accessories';
 import { ResponsiveImage } from '@/components/ui/ResponsiveImage';
 
 export function AccessoryCard({

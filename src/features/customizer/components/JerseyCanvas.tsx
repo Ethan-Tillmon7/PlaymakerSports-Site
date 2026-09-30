@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
-import { useJerseyStore } from '@/store/jerseyStore';
-import jerseyFrontUrl from '@/assets/templates/jersey-front.svg?raw';
-import type { JerseyDesign, PlacementSlot } from '@/types/jersey';
+import { useJerseyStore } from '../jerseyStore';
+import jerseyFrontUrl from '../jersey-front.svg?raw';
+import type { JerseyDesign, PlacementSlot } from '../jerseyDesign';
 
 /**
  * JerseyCanvas — renders the jersey-front SVG and applies the current

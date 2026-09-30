@@ -1,4 +1,4 @@
-import type { ResponsiveImageData } from '@/types/image';
+import type { ResponsiveImageData } from '@/lib/responsiveImage';
 
 interface ResponsiveImageProps {
   image: ResponsiveImageData;

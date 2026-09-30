@@ -1,5 +1,5 @@
-import { COLOR_MAP, colorLabel, parseVariantName } from './accessoryParse';
-import type { ResponsiveImageData } from '@/types/image';
+import { COLOR_MAP, colorLabel, parseVariantName } from './parseVariantName';
+import type { ResponsiveImageData } from '@/lib/responsiveImage';
 
 // Product-type groupings for the All Accessories view, in display order.
 export type AccessoryGroup = 'Jewelry' | 'Wearables' | 'Gear' | 'Coming Soon';
@@ -63,7 +63,7 @@ interface ImageMetadata {
   format: string;
 }
 
-const modules = import.meta.glob('../assets/images/inventory/**/*.{png,jpg,jpeg}', {
+const modules = import.meta.glob('/src/assets/images/inventory/**/*.{png,jpg,jpeg}', {
   eager: true,
   // q72 matches the other site photos and is ~35% lighter than the q80 default.
   // 768 serves retina desktop cards (~367 CSS px) without jumping to 1024.

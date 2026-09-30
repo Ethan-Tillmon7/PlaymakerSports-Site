@@ -1,6 +1,12 @@
-import type { ResponsiveImageData } from '@/types/image';
+export interface ResponsiveImageData {
+  src: string; // fallback single URL (largest generated width)
+  srcset: string; // "url 128w, url 320w, url 640w, url 1024w"
+  width: number; // intrinsic width of the fallback src
+  height: number; // intrinsic height of the fallback src
+}
 
-interface ImageMetadata {
+/** One entry per generated width from a vite-imagetools `as=meta:src;width;height;format` import. */
+export interface ImageMetadata {
   src: string;
   width: number;
   height: number;
