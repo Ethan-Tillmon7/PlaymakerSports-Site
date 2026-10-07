@@ -9,6 +9,26 @@ const esc = (s: string) =>
 
 const MAX_BODY_BYTES = 20_000;
 
+// Mirrors SITE_URL in src/config/site.ts; functions can't import from src/.
+const APPAREL_URL = 'https://playmakersports.co/apparel';
+
+// The auto-reply goes to whatever address the submitter typed, so it is fully static:
+// nothing from the submission (name, message) is reflected back to that address.
+const AUTOREPLY_SUBJECT = 'Thanks for reaching out to Playmaker Sports';
+const AUTOREPLY_TEXT = `Thanks for reaching out to Playmaker Sports!
+
+We got your message, and someone from our team will get back to you soon. Need to add something? Just reply to this email.
+
+In the meantime, browse our gear: ${APPAREL_URL}
+
+Playmaker Sports`;
+const AUTOREPLY_HTML = `
+  <p>Thanks for reaching out to Playmaker Sports!</p>
+  <p>We got your message, and someone from our team will get back to you soon. Need to add something? Just reply to this email.</p>
+  <p>In the meantime, <a href="${APPAREL_URL}">browse our gear</a>.</p>
+  <p>Playmaker Sports</p>
+`;
+
 export const handler: Handler = async (event) => {
   const body = readJsonBody(event, contactSchema, { maxBytes: MAX_BODY_BYTES });
   if (!body.ok) return body.response;
@@ -35,6 +55,11 @@ export const handler: Handler = async (event) => {
     return json(500, { error: 'Failed to save submission' });
   }
 
+  // Resend's sandbox sender only delivers to the Resend account owner's address.
+  // Set CONTACT_FROM_EMAIL to a verified-domain sender (e.g. notifications@playmakersports.co)
+  // once playmakersports.co is verified in Resend.
+  const from = process.env.CONTACT_FROM_EMAIL || 'Playmaker Sports <onboarding@resend.dev>';
+
   // Resend failure is non-fatal — the Sheets row is the source of record. But the SDK
   // returns API failures as `{ error }` instead of throwing, so check it explicitly;
   // otherwise a rejected send (unverified sender domain, sandbox recipient limit)
@@ -44,11 +69,8 @@ export const handler: Handler = async (event) => {
       throw new Error('RESEND_API_KEY or CONTACT_EMAIL is not set');
     }
     const resend = new Resend(process.env.RESEND_API_KEY);
-    // Resend's sandbox sender only delivers to the Resend account owner's address.
-    // Set CONTACT_FROM_EMAIL to a verified-domain sender (e.g. notifications@playmakersports.co)
-    // once playmakersports.co is verified in Resend.
     const { error } = await resend.emails.send({
-      from: process.env.CONTACT_FROM_EMAIL || 'Playmaker Sports <onboarding@resend.dev>',
+      from,
       to: process.env.CONTACT_EMAIL,
       replyTo: data.email,
       subject: `New Contact: ${data.role} — ${data.name.replace(/\s+/g, ' ')}`,
@@ -66,6 +88,24 @@ export const handler: Handler = async (event) => {
     if (error) throw new Error(`${error.name}: ${error.message}`);
   } catch (err) {
     console.error('submit-contact resend error:', err);
+  }
+
+  // Auto-reply to the submitter. Separate try so it doesn't depend on the team send.
+  // Same non-fatal, check-`{ error }` rules as above.
+  try {
+    if (!process.env.RESEND_API_KEY) throw new Error('RESEND_API_KEY is not set');
+    const resend = new Resend(process.env.RESEND_API_KEY);
+    const { error } = await resend.emails.send({
+      from,
+      to: data.email,
+      replyTo: process.env.CONTACT_EMAIL,
+      subject: AUTOREPLY_SUBJECT,
+      html: AUTOREPLY_HTML,
+      text: AUTOREPLY_TEXT,
+    });
+    if (error) throw new Error(`${error.name}: ${error.message}`);
+  } catch (err) {
+    console.error('submit-contact autoreply error:', err);
   }
 
   return json(200, { success: true });
