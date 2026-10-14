@@ -18,9 +18,9 @@ npm run lint      # ESLint
 
 ## Documentation
 
-Project docs live in [docs/](docs/) (git-ignored, local-only):
+Project docs live in [docs/](docs/). The folder is git-ignored and shared with the team through Google Drive, so these links only resolve in a local checkout that has it. Start at [docs/README.md](docs/README.md), the index.
 
-- [CLAUDE.md](CLAUDE.md) — architecture, routing, design system, backend, and working guidance
+- [CLAUDE.md](CLAUDE.md) — architecture, routing, design system, backend, and working guidance (local; git-ignored)
 - [docs/md/playmaker-context-brief.md](docs/md/playmaker-context-brief.md) — full scope, phases, and client decisions
 - [DESIGN.md](DESIGN.md) — canonical design spec ([docs/md/design-system.md](docs/md/design-system.md) is the superseded v0.1)
 - [docs/md/sheets-schema.md](docs/md/sheets-schema.md) — Google Sheets column contract
