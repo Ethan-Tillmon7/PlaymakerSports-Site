@@ -1,0 +1,7 @@
+# Changes to these paths need Ethan's approval before merging (enforced by the
+# main branch ruleset's "Require review from Code Owners").
+/netlify/functions/ @Ethan-Tillmon7
+/netlify/lib/       @Ethan-Tillmon7
+/shared/            @Ethan-Tillmon7
+/netlify.toml       @Ethan-Tillmon7
+/.github/           @Ethan-Tillmon7
