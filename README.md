@@ -16,6 +16,8 @@ npm run lint      # ESLint
 
 `netlify dev` (not `npm run dev`) is required to exercise the Google Sheets functions locally. See `.env` requirements in [CLAUDE.md](CLAUDE.md).
 
+Outside contributors: start with [CONTRIBUTING.md](CONTRIBUTING.md).
+
 ## Documentation
 
 Project docs live in [docs/](docs/) (git-ignored, local-only):
