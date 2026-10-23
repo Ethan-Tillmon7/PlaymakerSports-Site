@@ -5,7 +5,10 @@ import { paletteFor, type AccessoryCategory } from '../catalog/accessories';
 import { ResponsiveImage } from '@/components/ui/ResponsiveImage';
 
 const SWIPE_THRESHOLD = 50; // px of horizontal travel to commit a variant change
+const SWIPE_VELOCITY = 0.11; // px/ms: a flick commits even below the distance threshold
+const SWIPE_DEADZONE = 8; // px before a touch counts as a drag at all (a tap stays a tap)
 const FOCUSABLE = 'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
+const STAGE_SIZES = '(min-width:768px) 400px, 90vw';
 
 interface AccessoryDetailModalProps {
   category: AccessoryCategory;
@@ -19,6 +22,10 @@ export function AccessoryDetailModal({ category, initialVariantIndex = 0, onClos
     Math.min(Math.max(0, initialVariantIndex), Math.max(0, variants.length - 1)),
   );
   const [visible, setVisible] = useState(false);
+  // Which way the last navigation went and how many have happened. The counter
+  // keys the stage so each change restarts the entrance; null = nothing yet,
+  // so opening the modal doesn't slide (the modal's own fade+scale covers that).
+  const [slide, setSlide] = useState<{ dir: 1 | -1; n: number } | null>(null);
   const titleId = useId();
   const dialogRef = useRef<HTMLDivElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
@@ -55,35 +62,74 @@ export function AccessoryDetailModal({ category, initialVariantIndex = 0, onClos
   }, [onClose]);
 
   const navigate = useCallback(
-    (dir: 1 | -1) => setIndex((i) => (i + dir + variants.length) % variants.length),
+    (dir: 1 | -1) => {
+      setIndex((i) => (i + dir + variants.length) % variants.length);
+      setSlide((s) => ({ dir, n: (s?.n ?? 0) + 1 }));
+    },
     [variants.length],
   );
 
-  // Touch swipe on the image area — mirrors the ‹ › arrows / arrow keys.
-  // A second finger (pinch-zoom) or a browser-cancelled touch abandons the swipe
-  // so it can't commit on the way out; the next single-finger swipe starts clean.
-  const touchStart = useRef<{ x: number; y: number } | null>(null);
+  // Touch swipe on the image area — mirrors the ‹ › arrows / arrow keys, but the
+  // image follows the finger and a flick commits on velocity. The transform is
+  // written to the stage wrapper's ref directly so a move never re-renders.
+  // A second finger (pinch-zoom), a browser-cancelled touch, or a mostly-vertical
+  // drag abandons the swipe so it can't commit on the way out.
+  const stageRef = useRef<HTMLDivElement>(null);
+  const touchStart = useRef<{ x: number; y: number; t: number } | null>(null);
+  const resetStage = (animated: boolean) => {
+    const el = stageRef.current;
+    if (!el) return;
+    el.style.transition = animated ? 'transform 200ms cubic-bezier(0, 0, 0.2, 1)' : '';
+    el.style.transform = '';
+  };
   const onTouchStart = (e: React.TouchEvent) => {
-    if (e.touches.length > 1) {
+    if (e.touches.length > 1 || variants.length < 2) {
       touchStart.current = null;
+      resetStage(false);
       return;
     }
     const t = e.touches[0];
-    touchStart.current = { x: t.clientX, y: t.clientY };
+    touchStart.current = { x: t.clientX, y: t.clientY, t: performance.now() };
+    if (stageRef.current) stageRef.current.style.transition = '';
+  };
+  const onTouchMove = (e: React.TouchEvent) => {
+    const start = touchStart.current;
+    if (!start || e.touches.length > 1) return;
+    const t = e.touches[0];
+    const dx = t.clientX - start.x;
+    const dy = t.clientY - start.y;
+    if (Math.abs(dy) > Math.abs(dx) && Math.abs(dy) > SWIPE_DEADZONE) {
+      // Vertical: let the page scroll and drop the swipe.
+      touchStart.current = null;
+      resetStage(true);
+      return;
+    }
+    if (Math.abs(dx) < SWIPE_DEADZONE || !stageRef.current) return;
+    stageRef.current.style.transform = `translateX(${dx}px)`;
   };
   const onTouchCancel = () => {
     touchStart.current = null;
+    resetStage(true);
   };
   const onTouchEnd = (e: React.TouchEvent) => {
     const start = touchStart.current;
     touchStart.current = null;
-    if (!start || variants.length < 2 || e.touches.length > 0) return;
+    if (!start || variants.length < 2 || e.touches.length > 0) {
+      resetStage(true);
+      return;
+    }
     const t = e.changedTouches[0];
     const dx = t.clientX - start.x;
     const dy = t.clientY - start.y;
-    // Commit only on a dominantly-horizontal drag past the threshold.
-    if (Math.abs(dx) > SWIPE_THRESHOLD && Math.abs(dx) > Math.abs(dy)) {
+    const elapsed = Math.max(1, performance.now() - start.t);
+    const velocity = Math.abs(dx) / elapsed;
+    const horizontal = Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > SWIPE_DEADZONE;
+    if (horizontal && (Math.abs(dx) > SWIPE_THRESHOLD || velocity > SWIPE_VELOCITY)) {
+      // navigate() remounts the stage (new key), which discards the dragged
+      // transform and plays the slide-in entrance from the right side.
       navigate(dx < 0 ? 1 : -1);
+    } else {
+      resetStage(true);
     }
   };
 
@@ -111,6 +157,22 @@ export function AccessoryDetailModal({ category, initialVariantIndex = 0, onClos
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   }, [handleClose, navigate]);
+
+  // Warm the previous and next designs at the stage's own sizes so the slide
+  // entrance never plays over an empty stage while the file downloads.
+  useEffect(() => {
+    if (variants.length < 2) return;
+    const warm = (i: number) => {
+      const v = variants[(i + variants.length) % variants.length];
+      if (!v?.image) return;
+      const img = new Image();
+      img.sizes = STAGE_SIZES;
+      img.srcset = v.image.srcset;
+      img.src = v.image.src;
+    };
+    warm(index + 1);
+    warm(index - 1);
+  }, [index, variants]);
 
   return createPortal(
     <div
@@ -172,17 +234,25 @@ export function AccessoryDetailModal({ category, initialVariantIndex = 0, onClos
             className="stage-cream w-full md:w-[44%] flex-shrink-0 flex items-center justify-center relative md:border-r border-b md:border-b-0 border-pm-rule touch-pan-y"
             style={{ minHeight: '260px' }}
             onTouchStart={onTouchStart}
+            onTouchMove={onTouchMove}
             onTouchEnd={onTouchEnd}
             onTouchCancel={onTouchCancel}
           >
             {selected?.image && (
-              <ResponsiveImage
-                image={selected.image}
-                alt={selected.label}
-                sizes="(min-width:768px) 400px, 90vw"
-                loading="eager"
-                className="w-full h-full object-contain p-6"
-              />
+              <div
+                ref={stageRef}
+                key={slide?.n ?? 0}
+                className={`w-full h-full flex items-center justify-center ${slide ? 'animate-slide-in' : ''}`}
+                style={slide ? ({ '--dir': slide.dir } as React.CSSProperties) : undefined}
+              >
+                <ResponsiveImage
+                  image={selected.image}
+                  alt={selected.label}
+                  sizes={STAGE_SIZES}
+                  loading="eager"
+                  className="w-full h-full object-contain p-6"
+                />
+              </div>
             )}
             {selected?.label && (
               <span className="absolute bottom-3 left-3 max-w-[calc(100%-1.5rem)] truncate font-mono text-label-sm uppercase text-pm-muted bg-white/70 px-2 py-1 rounded">
@@ -250,7 +320,11 @@ export function AccessoryDetailModal({ category, initialVariantIndex = 0, onClos
                   <button
                     key={v.id}
                     type="button"
-                    onClick={() => setIndex(i)}
+                    onClick={() => {
+                      if (i === index) return;
+                      setIndex(i);
+                      setSlide((s) => ({ dir: i > index ? 1 : -1, n: (s?.n ?? 0) + 1 }));
+                    }}
                     title={v.label}
                     aria-label={v.label}
                     aria-pressed={i === index}
