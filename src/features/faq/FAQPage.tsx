@@ -45,6 +45,10 @@ const faqGroups = [
         question: 'Can I upload my own logo or artwork?',
         answer: "Absolutely. We accept AI, EPS, PDF, or high-res PNG files. If you only have a phone photo, we'll work with it.",
       },
+      {
+        question: 'Do you offer free shipping?',
+        answer: 'Shipping is free on orders over $100; customers pay shipping under that.',
+      },
     ],
   },
 ];
