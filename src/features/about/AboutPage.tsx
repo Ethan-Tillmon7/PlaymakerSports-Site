@@ -73,7 +73,7 @@ export function AboutPage() {
         <div className="relative z-[2] max-w-[1100px] mx-auto px-6 sm:px-10 py-24 w-full text-center animate-fade-up">
 
           {/* ── Heading + story ── */}
-          <div className="max-w-[640px] mx-auto">
+          <div className="max-w-[560px] mx-auto">
           <span className="font-mono text-[11px] tracking-[0.16em] uppercase text-pm-yellow">
             Our backstory
           </span>
@@ -100,7 +100,7 @@ export function AboutPage() {
                 <div className="font-display uppercase text-[clamp(32px,4vw,56px)] leading-none tracking-[0.005em] text-white">
                   {i === 0 ? countedYear : v.stat}
                 </div>
-                <div className="font-mono text-[11px] tracking-[0.1em] uppercase text-pm-yellow mt-2">
+                <div className="font-mono text-label uppercase text-pm-yellow mt-2">
                   {v.label}
                 </div>
               </div>
@@ -109,7 +109,7 @@ export function AboutPage() {
 
           {/* ── CTA ── */}
           <div className="mt-16 sm:mt-20">
-            <span className="font-mono text-[11px] tracking-[0.1em] uppercase text-white/50">
+            <span className="font-mono text-label uppercase text-white/50">
               Get in touch
             </span>
             <h2 className="font-display uppercase text-[clamp(36px,5vw,72px)] leading-[0.90] tracking-[0.005em] text-white mt-3">

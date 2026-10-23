@@ -64,7 +64,7 @@ export function EventsPage() {
                         >
                           {group.label}
                         </h2>
-                        <span className="font-mono text-[11px] tracking-[0.1em] uppercase text-pm-muted shrink-0">
+                        <span className="font-mono text-label uppercase text-pm-muted shrink-0">
                           {group.events.length} {group.events.length === 1 ? 'event' : 'events'}
                         </span>
                       </div>

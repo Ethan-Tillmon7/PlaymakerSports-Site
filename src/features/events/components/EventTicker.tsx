@@ -35,7 +35,7 @@ export function EventTicker() {
       <div className="flex items-stretch h-[52px]">
         {/* "Upcoming" label */}
         <div className="flex-shrink-0 flex items-center px-5 bg-pm-yellow border-r-2 border-[#c9a628]">
-          <span className="font-mono text-[8.5px] tracking-[0.18em] uppercase text-pm-black font-bold">
+          <span className="font-mono text-label-sm font-medium uppercase text-pm-black">
             Upcoming
           </span>
         </div>
@@ -57,7 +57,7 @@ export function EventTicker() {
                   aria-hidden={i >= events.length ? true : undefined}
                 >
                   <span className="text-pm-yellow text-[7px]">◆</span>
-                  <span className="font-mono text-[10px] tracking-[0.14em] uppercase text-pm-yellow">
+                  <span className="font-mono text-label-sm uppercase text-pm-yellow">
                     {dateLabel}
                   </span>
                   <span className="text-white/15 text-xs">·</span>

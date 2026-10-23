@@ -139,7 +139,7 @@ export function AccessoryDetailModal({ category, initialVariantIndex = 0, onClos
                 >
                   ‹
                 </button>
-                <span className="font-mono text-[11px] tracking-[0.1em] uppercase text-pm-muted tabular-nums" aria-live="polite" aria-atomic="true">
+                <span className="font-mono text-label uppercase text-pm-muted tabular-nums" aria-live="polite" aria-atomic="true">
                   <span className="sr-only">Design </span>
                   {index + 1} / {variants.length}
                 </span>
@@ -185,12 +185,12 @@ export function AccessoryDetailModal({ category, initialVariantIndex = 0, onClos
               />
             )}
             {selected?.label && (
-              <span className="absolute bottom-3 left-3 max-w-[calc(100%-1.5rem)] truncate font-mono text-[9px] tracking-[0.1em] uppercase text-pm-muted bg-white/70 px-2 py-1 rounded">
+              <span className="absolute bottom-3 left-3 max-w-[calc(100%-1.5rem)] truncate font-mono text-label-sm uppercase text-pm-muted bg-white/70 px-2 py-1 rounded">
                 {selected.label}
               </span>
             )}
             {variants.length > 1 && (
-              <span className="md:hidden absolute bottom-3 right-3 font-mono text-[9px] tracking-[0.1em] uppercase text-pm-muted bg-white/70 px-2 py-1 rounded">
+              <span className="md:hidden absolute bottom-3 right-3 font-mono text-label-sm uppercase text-pm-muted bg-white/70 px-2 py-1 rounded">
                 Swipe to browse
               </span>
             )}

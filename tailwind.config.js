@@ -21,6 +21,11 @@ export default {
         'pm-error':       '#A03A1A',
         'pm-success':     '#2F6F3E',
       },
+      fontSize: {
+        // Mono label ramp (DESIGN.md → Typography). 10px is the floor; nothing smaller ships.
+        label:      ['11px', { lineHeight: '1.5', letterSpacing: '0.1em' }],
+        'label-sm': ['10px', { lineHeight: '1.5', letterSpacing: '0.12em' }],
+      },
       fontFamily: {
         display: ['Anton', 'sans-serif'],
         sans:    ['Inter', 'system-ui', '-apple-system', 'sans-serif'],

@@ -49,7 +49,7 @@ export function AccessoryCard({
         }`}
       >
         {!clickable && (
-          <div className="absolute top-3 right-3 bg-pm-yellow text-pm-black font-mono text-[9px] tracking-[0.12em] uppercase px-2 py-1 rounded-lg border-b border-pm-yellow-deep z-10">
+          <div className="absolute top-3 right-3 bg-pm-yellow text-pm-black font-mono text-label-sm uppercase px-2 py-1 rounded-lg border-b border-pm-yellow-deep z-10">
             Coming Soon
           </div>
         )}
@@ -76,7 +76,7 @@ export function AccessoryCard({
         <h3 className="font-display uppercase text-[19px] leading-[0.95] tracking-[0.005em] mt-1.5 text-pm-black">
           {category.name}
         </h3>
-        <p className="text-[12.5px] leading-[1.5] text-pm-ink mt-1.5">{category.desc}</p>
+        <p className="text-[13px] leading-[1.5] text-pm-ink mt-1.5">{category.desc}</p>
       </div>
     </article>
   );

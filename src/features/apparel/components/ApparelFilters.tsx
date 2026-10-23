@@ -87,7 +87,7 @@ export function MobileApparelFilters({
               if (cards.length === 0) return null;
               return (
                 <div key={group} className="mt-2">
-                  <span className="block px-3 pb-1 font-mono text-[9px] tracking-[0.14em] uppercase text-pm-muted">
+                  <span className="block px-3 pb-1 font-mono text-label-sm uppercase text-pm-muted">
                     {group}
                   </span>
                   {cards.map((c) => (
@@ -145,7 +145,7 @@ export function ApparelSidebar({ section, accessoryFilter, onSelectAccessories, 
             if (cards.length === 0) return null;
             return (
               <div key={group} className="mt-2">
-                <span className="block px-3 pb-1 font-mono text-[9px] tracking-[0.14em] uppercase text-pm-muted">
+                <span className="block px-3 pb-1 font-mono text-label-sm uppercase text-pm-muted">
                   {group}
                 </span>
                 {cards.map((c) => (
@@ -175,7 +175,7 @@ export function ApparelSidebar({ section, accessoryFilter, onSelectAccessories, 
         }`}
       >
         <span>Jerseys</span>
-        <span className="font-mono text-[9px] tracking-[0.12em]">Soon</span>
+        <span className="font-mono text-label-sm">Soon</span>
       </button>
     </aside>
   );

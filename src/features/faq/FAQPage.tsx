@@ -98,7 +98,7 @@ function FAQItem({ question, answer, index, listInView }: {
         className={`grid transition-[grid-template-rows] duration-200 ${open ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'}`}
       >
         <div className="overflow-hidden">
-          <p className="pb-5 text-[14px] leading-[1.65] text-pm-ink">
+          <p className="pb-5 text-[15px] md:text-[14px] leading-[1.65] text-pm-ink">
             {answer}
           </p>
         </div>

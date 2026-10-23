@@ -28,13 +28,13 @@ export function Footer() {
           {/* Nav — collapsed wrapping flex */}
           <div className="flex flex-wrap gap-x-10 gap-y-5">
             <div>
-              <h4 className="font-display uppercase text-[12px] tracking-[0.16em] text-pm-yellow mb-1">Events</h4>
+              <h4 className="font-display uppercase text-[12px] tracking-[0.04em] text-pm-yellow mb-1">Events</h4>
               <ul className="flex flex-col font-mono text-[12px] tracking-[0.04em] text-white/70 uppercase">
                 <li><Link to="/events" className="inline-flex items-center min-h-8 lg:min-h-7 hover:text-white transition-colors duration-150">Schedule</Link></li>
               </ul>
             </div>
             <div>
-              <h4 className="font-display uppercase text-[12px] tracking-[0.16em] text-pm-yellow mb-1">Apparel</h4>
+              <h4 className="font-display uppercase text-[12px] tracking-[0.04em] text-pm-yellow mb-1">Apparel</h4>
               <ul className="flex flex-col font-mono text-[12px] tracking-[0.04em] text-white/70 uppercase">
                 <li><Link to="/apparel" className="inline-flex items-center min-h-8 lg:min-h-7 hover:text-white transition-colors duration-150">Custom jerseys</Link></li>
                 <li><Link to="/apparel" className="inline-flex items-center min-h-8 lg:min-h-7 hover:text-white transition-colors duration-150">Accessories</Link></li>
@@ -42,7 +42,7 @@ export function Footer() {
               </ul>
             </div>
             <div>
-              <h4 className="font-display uppercase text-[12px] tracking-[0.16em] text-pm-yellow mb-1">Company</h4>
+              <h4 className="font-display uppercase text-[12px] tracking-[0.04em] text-pm-yellow mb-1">Company</h4>
               <ul className="flex flex-col font-mono text-[12px] tracking-[0.04em] text-white/70 uppercase">
                 <li><Link to="/about" className="inline-flex items-center min-h-8 lg:min-h-7 hover:text-white transition-colors duration-150">About</Link></li>
                 <li><Link to="/contact" className="inline-flex items-center min-h-8 lg:min-h-7 hover:text-white transition-colors duration-150">Contact</Link></li>

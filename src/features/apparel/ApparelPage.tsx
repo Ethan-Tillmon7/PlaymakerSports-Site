@@ -115,7 +115,7 @@ export function ApparelPage() {
                   <h2 className="font-display uppercase text-[clamp(24px,2.5vw,36px)] leading-none tracking-[0.005em] m-0">
                     All Accessories
                   </h2>
-                  <span className="font-mono text-[11px] tracking-[0.1em] uppercase text-pm-muted">
+                  <span className="font-mono text-label uppercase text-pm-muted">
                     {inStockCategories.length} {inStockCategories.length === 1 ? 'category' : 'categories'}
                   </span>
                 </div>
@@ -166,7 +166,7 @@ export function ApparelPage() {
                   <h2 className="font-display uppercase text-[clamp(24px,2.5vw,36px)] leading-none tracking-[0.005em] m-0">
                     {activeCategory.name}
                   </h2>
-                  <span className="font-mono text-[11px] tracking-[0.1em] uppercase text-pm-muted">
+                  <span className="font-mono text-label uppercase text-pm-muted">
                     {activeCategory.variants.length} {activeCategory.variants.length === 1 ? 'design' : 'designs'}
                   </span>
                 </div>
