@@ -134,7 +134,7 @@ export function ApparelPage() {
                           type="button"
                           onClick={() => toggleGroup(group)}
                           aria-expanded={isExpanded}
-                          className="shrink-0 ml-4 -mr-2 px-2 min-h-11 inline-flex items-center font-mono text-[10px] tracking-[0.12em] uppercase text-pm-muted hover:text-pm-ink transition-colors duration-150"
+                          className="shrink-0 ml-4 -mr-2 px-2 min-h-11 inline-flex items-center font-mono text-[10px] tracking-[0.12em] uppercase text-pm-muted hover:text-pm-ink active:text-pm-ink transition-colors duration-150"
                         >
                           {isExpanded ? 'Show less' : 'See all →'}
                         </button>
@@ -179,7 +179,7 @@ export function ApparelPage() {
                       key={v.id}
                       type="button"
                       onClick={() => openModal(activeCategory, i)}
-                      className="group w-full flex flex-col text-left cursor-pointer hover:-translate-y-0.5 transition-transform duration-150"
+                      className="group w-full flex flex-col text-left cursor-pointer hover:-translate-y-0.5 active:scale-[0.98] transition-transform duration-150 ease-out"
                     >
                       <div className="aspect-square stage-cream rounded-xl overflow-hidden border border-pm-rule">
                         <ResponsiveImage

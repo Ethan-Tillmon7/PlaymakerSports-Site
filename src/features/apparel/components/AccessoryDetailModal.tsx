@@ -51,7 +51,7 @@ export function AccessoryDetailModal({ category, initialVariantIndex = 0, onClos
     if (closing.current) return;
     closing.current = true;
     setVisible(false);
-    setTimeout(onClose, 120);
+    setTimeout(onClose, 150);
   }, [onClose]);
 
   const navigate = useCallback(
@@ -114,7 +114,7 @@ export function AccessoryDetailModal({ category, initialVariantIndex = 0, onClos
 
   return createPortal(
     <div
-      className={`fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-8 transition-opacity duration-150 ${visible ? 'opacity-100' : 'opacity-0'}`}
+      className={`fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-8 transition-opacity duration-150 ease-out ${visible ? 'opacity-100' : 'opacity-0'}`}
       style={{ background: 'rgba(17,17,17,0.65)' }}
       onClick={handleClose}
     >
@@ -123,7 +123,7 @@ export function AccessoryDetailModal({ category, initialVariantIndex = 0, onClos
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
-        className={`relative bg-white rounded-2xl border-2 border-pm-black w-full max-w-[900px] max-h-[90dvh] overflow-hidden flex flex-col transition-[opacity,transform] duration-150 ${visible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}
+        className={`relative bg-white rounded-2xl border-2 border-pm-black w-full max-w-[900px] max-h-[90dvh] overflow-hidden flex flex-col transition-[opacity,transform] duration-150 ease-out ${visible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
@@ -134,7 +134,7 @@ export function AccessoryDetailModal({ category, initialVariantIndex = 0, onClos
                 <button
                   type="button"
                   onClick={() => navigate(-1)}
-                  className="w-11 h-11 border border-pm-rule rounded-lg flex items-center justify-center hover:border-pm-black hover:bg-pm-paper-2 transition-colors duration-150"
+                  className="w-11 h-11 border border-pm-rule rounded-lg flex items-center justify-center hover:border-pm-black hover:bg-pm-paper-2 active:scale-[0.95] transition-[background-color,border-color,transform] duration-150 ease-out"
                   aria-label="Previous design"
                 >
                   ‹
@@ -146,7 +146,7 @@ export function AccessoryDetailModal({ category, initialVariantIndex = 0, onClos
                 <button
                   type="button"
                   onClick={() => navigate(1)}
-                  className="w-11 h-11 border border-pm-rule rounded-lg flex items-center justify-center hover:border-pm-black hover:bg-pm-paper-2 transition-colors duration-150"
+                  className="w-11 h-11 border border-pm-rule rounded-lg flex items-center justify-center hover:border-pm-black hover:bg-pm-paper-2 active:scale-[0.95] transition-[background-color,border-color,transform] duration-150 ease-out"
                   aria-label="Next design"
                 >
                   ›
@@ -158,7 +158,7 @@ export function AccessoryDetailModal({ category, initialVariantIndex = 0, onClos
             ref={closeRef}
             type="button"
             onClick={handleClose}
-            className="w-11 h-11 bg-pm-black text-white rounded-full flex items-center justify-center hover:bg-pm-ink transition-colors duration-150 text-[13px]"
+            className="w-11 h-11 bg-pm-black text-white rounded-full flex items-center justify-center hover:bg-pm-ink active:scale-[0.95] transition-[background-color,transform] duration-150 ease-out text-[13px]"
             aria-label="Close"
           >
             ✕

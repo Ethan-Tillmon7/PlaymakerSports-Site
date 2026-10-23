@@ -76,10 +76,10 @@ function FAQItem({ question, answer, index, listInView }: {
         aria-controls={panelId}
         className="w-full flex items-center justify-between gap-6 py-5 text-left group"
       >
-        <span className="font-display uppercase text-[16px] lg:text-[17px] tracking-[0.02em] text-pm-black group-hover:text-pm-yellow-ink transition-colors duration-150">
+        <span className="font-display uppercase text-[16px] lg:text-[17px] tracking-[0.02em] text-pm-black group-hover:text-pm-yellow-ink group-active:text-pm-yellow-ink transition-colors duration-150">
           {question}
         </span>
-        <span className={`shrink-0 w-6 h-6 flex items-center justify-center border-2 border-pm-rule rounded-lg transition-colors duration-150 ${open ? 'bg-pm-yellow border-pm-yellow-deep' : 'group-hover:border-pm-ink'}`}>
+        <span className={`shrink-0 w-6 h-6 flex items-center justify-center border-2 border-pm-rule rounded-lg transition-colors duration-150 ${open ? 'bg-pm-yellow border-pm-yellow-deep' : 'group-hover:border-pm-ink group-active:border-pm-ink'}`}>
           <svg
             className={`w-3 h-3 text-pm-black transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
             fill="none"

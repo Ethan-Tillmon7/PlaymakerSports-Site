@@ -24,6 +24,12 @@ const prefersReducedMotion =
   typeof window !== 'undefined' &&
   window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+// A scroll-linked blur re-rasterizes the full-viewport photo every frame, which
+// drops frames on phones. Touch devices keep the zoom and skip the blur.
+const coarsePointer =
+  typeof window !== 'undefined' &&
+  window.matchMedia('(pointer: coarse)').matches;
+
 export function AboutPage() {
   // Zoom + blur the photo as the hero scrolls away. Written straight to the
   // element once per frame, so scrolling doesn't re-render the page.
@@ -32,7 +38,7 @@ export function AboutPage() {
     const bg = bgRef.current;
     if (!bg || prefersReducedMotion) return;
     bg.style.transform = `scale(${1 + progress * 0.1})`;
-    bg.style.filter = progress > 0 ? `blur(${progress * 7}px)` : '';
+    bg.style.filter = progress > 0 && !coarsePointer ? `blur(${progress * 7}px)` : '';
   });
   const [valuesRef, valuesInView] = useInView();
 
@@ -127,7 +133,7 @@ export function AboutPage() {
               {contact.phone && (
                 <a
                   href={`tel:${contact.phone}`}
-                  className="font-display uppercase text-[16px] tracking-[0.04em] bg-white/10 text-white px-6 h-11 inline-flex items-center justify-center border border-white/25 hover:bg-white/20 transition-[colors,transform] duration-150 active:scale-[0.97] rounded-xl"
+                  className={buttonClass({ variant: 'ghost' })}
                 >
                   {contact.phone}
                 </a>

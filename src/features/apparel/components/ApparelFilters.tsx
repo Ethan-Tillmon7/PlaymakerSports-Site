@@ -15,8 +15,8 @@ interface FilterProps {
 }
 
 const subItemClass = (active: boolean) =>
-  `w-full text-left px-3 py-2.5 lg:py-2 font-display uppercase text-[13px] tracking-[0.04em] rounded-lg transition-colors duration-150 ${
-    active ? 'bg-pm-black text-white' : 'text-pm-ink hover:bg-pm-paper-2'
+  `w-full text-left px-3 py-2.5 lg:py-2 font-display uppercase text-[13px] tracking-[0.04em] rounded-lg transition-[background-color,color] duration-150 ${
+    active ? 'bg-pm-black text-white' : 'text-pm-ink hover:bg-pm-paper-2 active:bg-pm-paper-2'
   }`;
 
 /** Phone/tablet filter bar (< lg): a category pill with a floating menu, plus the Jerseys tab. */
@@ -48,7 +48,7 @@ export function MobileApparelFilters({
           onClick={() => setOpen((o) => !o)}
           aria-expanded={open}
           aria-controls="apparel-filter-menu"
-          className={`shrink-0 px-4 h-11 inline-flex items-center gap-2 font-display uppercase text-[13px] tracking-[0.04em] rounded-lg transition-colors duration-150 ${
+          className={`shrink-0 px-4 h-11 inline-flex items-center gap-2 font-display uppercase text-[13px] tracking-[0.04em] rounded-lg transition-[background-color,color,transform] duration-150 active:scale-[0.97] ${
             section === 'accessories' ? 'bg-pm-black text-white' : 'text-pm-ink hover:bg-pm-paper-2'
           }`}
         >
@@ -60,7 +60,7 @@ export function MobileApparelFilters({
         <button
           type="button"
           onClick={pickJerseys}
-          className={`shrink-0 px-4 h-11 inline-flex items-center font-display uppercase text-[13px] tracking-[0.04em] rounded-lg transition-colors duration-150 ${
+          className={`shrink-0 px-4 h-11 inline-flex items-center font-display uppercase text-[13px] tracking-[0.04em] rounded-lg transition-[background-color,color,transform] duration-150 active:scale-[0.97] ${
             section === 'jerseys' ? 'bg-pm-black text-white' : 'text-pm-ink hover:bg-pm-paper-2'
           }`}
         >
@@ -123,7 +123,7 @@ export function ApparelSidebar({ section, accessoryFilter, onSelectAccessories, 
           setExpanded((o) => !o);
           onSelectAccessories('all');
         }}
-        className={`w-full flex items-center justify-between px-3 py-2 font-display uppercase text-[14px] tracking-[0.04em] rounded-lg transition-colors duration-150 ${
+        className={`w-full flex items-center justify-between px-3 py-2 font-display uppercase text-[14px] tracking-[0.04em] rounded-lg transition-[background-color,color] duration-150 ${
           section === 'accessories' ? 'text-pm-black' : 'text-pm-ink hover:bg-pm-paper-2'
         }`}
       >
@@ -170,7 +170,7 @@ export function ApparelSidebar({ section, accessoryFilter, onSelectAccessories, 
       <button
         type="button"
         onClick={onSelectJerseys}
-        className={`w-full flex items-center justify-between px-3 py-2 font-display uppercase text-[14px] tracking-[0.04em] rounded-lg transition-colors duration-150 ${
+        className={`w-full flex items-center justify-between px-3 py-2 font-display uppercase text-[14px] tracking-[0.04em] rounded-lg transition-[background-color,color] duration-150 ${
           section === 'jerseys' ? 'bg-pm-black text-white' : 'text-pm-muted hover:bg-pm-paper-2'
         }`}
       >

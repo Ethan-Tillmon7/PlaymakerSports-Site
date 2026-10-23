@@ -30,23 +30,23 @@ export function Footer() {
             <div>
               <h4 className="font-display uppercase text-[12px] tracking-[0.04em] text-pm-yellow mb-1">Events</h4>
               <ul className="flex flex-col font-mono text-[12px] tracking-[0.04em] text-white/70 uppercase">
-                <li><Link to="/events" className="inline-flex items-center min-h-11 select-none hover:text-white transition-colors duration-150">Schedule</Link></li>
+                <li><Link to="/events" className="inline-flex items-center min-h-11 select-none hover:text-white active:text-white transition-colors duration-150">Schedule</Link></li>
               </ul>
             </div>
             <div>
               <h4 className="font-display uppercase text-[12px] tracking-[0.04em] text-pm-yellow mb-1">Apparel</h4>
               <ul className="flex flex-col font-mono text-[12px] tracking-[0.04em] text-white/70 uppercase">
-                <li><Link to="/apparel" className="inline-flex items-center min-h-11 select-none hover:text-white transition-colors duration-150">Custom jerseys</Link></li>
-                <li><Link to="/apparel" className="inline-flex items-center min-h-11 select-none hover:text-white transition-colors duration-150">Accessories</Link></li>
-                <li><Link to="/apparel" className="inline-flex items-center min-h-11 select-none hover:text-white transition-colors duration-150">Player cards</Link></li>
+                <li><Link to="/apparel" className="inline-flex items-center min-h-11 select-none hover:text-white active:text-white transition-colors duration-150">Custom jerseys</Link></li>
+                <li><Link to="/apparel" className="inline-flex items-center min-h-11 select-none hover:text-white active:text-white transition-colors duration-150">Accessories</Link></li>
+                <li><Link to="/apparel" className="inline-flex items-center min-h-11 select-none hover:text-white active:text-white transition-colors duration-150">Player cards</Link></li>
               </ul>
             </div>
             <div>
               <h4 className="font-display uppercase text-[12px] tracking-[0.04em] text-pm-yellow mb-1">Company</h4>
               <ul className="flex flex-col font-mono text-[12px] tracking-[0.04em] text-white/70 uppercase">
-                <li><Link to="/about" className="inline-flex items-center min-h-11 select-none hover:text-white transition-colors duration-150">About</Link></li>
-                <li><Link to="/contact" className="inline-flex items-center min-h-11 select-none hover:text-white transition-colors duration-150">Contact</Link></li>
-                <li><Link to="/faq" className="inline-flex items-center min-h-11 select-none hover:text-white transition-colors duration-150">FAQ</Link></li>
+                <li><Link to="/about" className="inline-flex items-center min-h-11 select-none hover:text-white active:text-white transition-colors duration-150">About</Link></li>
+                <li><Link to="/contact" className="inline-flex items-center min-h-11 select-none hover:text-white active:text-white transition-colors duration-150">Contact</Link></li>
+                <li><Link to="/faq" className="inline-flex items-center min-h-11 select-none hover:text-white active:text-white transition-colors duration-150">FAQ</Link></li>
               </ul>
             </div>
           </div>
@@ -61,7 +61,7 @@ export function Footer() {
                 href={`https://www.instagram.com/${contact.instagram}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hover:text-white transition-colors duration-150"
+                className="hover:text-white active:text-white transition-colors duration-150"
               >
                 Instagram ↗
               </a>

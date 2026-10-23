@@ -31,7 +31,7 @@ export function Nav() {
             aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
             aria-expanded={mobileOpen}
             aria-controls="mobile-nav"
-            className={`lg:hidden -ml-1 flex items-center justify-center w-11 h-11 rounded-lg hover:bg-pm-paper-2 transition-colors duration-150 ${mobileOpen ? 'bg-pm-paper-2' : ''}`}
+            className={`lg:hidden -ml-1 flex items-center justify-center w-11 h-11 rounded-lg hover:bg-pm-paper-2 active:bg-pm-paper-2 transition-colors duration-150 ${mobileOpen ? 'bg-pm-paper-2' : ''}`}
           >
             <svg className="w-5 h-5 text-pm-ink" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
               <path
@@ -49,7 +49,7 @@ export function Nav() {
                   <Link
                     to={to}
                     aria-current={active ? 'page' : undefined}
-                    className={`px-3 py-3 rounded-lg select-none transition-[colors,background-color] duration-200 inline-block ${
+                    className={`px-3 py-3 rounded-lg select-none transition-[background-color,color] duration-150 active:bg-pm-paper-2 inline-block ${
                       active
                         ? 'text-pm-black bg-pm-paper-2'
                         : 'text-pm-ink hover:text-pm-black hover:bg-pm-paper-2'
@@ -97,7 +97,7 @@ export function Nav() {
                   to={to}
                   aria-current={active ? 'page' : undefined}
                   onClick={() => setMobileOpen(false)}
-                  className={`block px-3 py-3 rounded-lg select-none transition-[colors,background-color] duration-200 ${
+                  className={`block px-3 py-3 rounded-lg select-none transition-[background-color,color] duration-150 active:bg-pm-paper-2 ${
                     active
                       ? 'text-pm-black bg-pm-paper-2'
                       : 'text-pm-ink hover:text-pm-black hover:bg-pm-paper-2'

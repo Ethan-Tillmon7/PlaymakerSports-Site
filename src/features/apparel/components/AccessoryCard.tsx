@@ -28,7 +28,7 @@ export function AccessoryCard({
 
   return (
     <article
-      className={`flex flex-col ${clickable ? 'group cursor-pointer hover:-translate-y-0.5 transition-transform duration-150' : 'opacity-60'}`}
+      className={`flex flex-col ${clickable ? 'group cursor-pointer hover:-translate-y-0.5 active:scale-[0.98] transition-transform duration-150 ease-out' : 'opacity-60'}`}
       {...(clickable
         ? {
             role: 'button',

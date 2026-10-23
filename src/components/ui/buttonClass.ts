@@ -1,4 +1,4 @@
-export type ButtonVariant = 'primary' | 'secondary';
+export type ButtonVariant = 'primary' | 'secondary' | 'ghost';
 export type ButtonSize = 'sm' | 'md' | 'lg' | 'xl';
 
 export interface ButtonStyle {
@@ -9,13 +9,16 @@ export interface ButtonStyle {
 }
 
 // Chunky "equipment" buttons: a 2px bottom lip instead of a shadow that hardens
-// to black on hover, and a slight press on tap (DESIGN.md → Buttons).
+// on hover, and a press-in on pointer-down (DESIGN.md → Buttons). The transition
+// lists real properties: `colors` is not one, and silently animates nothing.
 const BASE =
-  'font-display uppercase tracking-[0.04em] select-none inline-flex items-center justify-center rounded-xl border-b-2 hover:border-pm-black transition-[colors,transform] duration-150 active:scale-[0.97]';
+  'font-display uppercase tracking-[0.04em] select-none inline-flex items-center justify-center rounded-xl border-b-2 transition-[background-color,border-color,color,transform] duration-150 ease-out active:scale-[0.97]';
 
 const VARIANTS: Record<ButtonVariant, string> = {
-  primary: 'bg-pm-yellow text-pm-black hover:bg-pm-yellow-deep border-pm-yellow-deep',
-  secondary: 'bg-white text-pm-black hover:bg-pm-paper-2 border border-pm-rule',
+  primary: 'bg-pm-yellow text-pm-black hover:bg-pm-yellow-deep border-pm-yellow-deep hover:border-pm-black',
+  secondary: 'bg-white text-pm-black hover:bg-pm-paper-2 border border-pm-rule hover:border-pm-black',
+  /** The secondary action on a black ground (hero, About): no fill, a white/30 lip. */
+  ghost: 'bg-transparent text-white hover:bg-white/10 border-white/30 hover:border-white/60',
 };
 
 const SIZES: Record<ButtonSize, string> = {
