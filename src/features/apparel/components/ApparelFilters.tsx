@@ -123,46 +123,53 @@ export function ApparelSidebar({ section, accessoryFilter, onSelectAccessories, 
           setExpanded((o) => !o);
           onSelectAccessories('all');
         }}
+        aria-expanded={expanded}
         className={`w-full flex items-center justify-between px-3 py-2 font-display uppercase text-[14px] tracking-[0.04em] rounded-lg transition-[background-color,color] duration-150 ${
           section === 'accessories' ? 'text-pm-black' : 'text-pm-ink hover:bg-pm-paper-2'
         }`}
       >
         <span>Accessories</span>
-        <span aria-hidden="true" className={`transition-transform duration-150 ${expanded ? '' : '-rotate-90'}`}>▾</span>
+        <span aria-hidden="true" className={`transition-transform duration-200 ease-out ${expanded ? '' : '-rotate-90'}`}>▾</span>
       </button>
 
-      {expanded && (
-        <div className="flex flex-col gap-0.5 mt-0.5 pl-2">
-          <button
-            type="button"
-            onClick={() => onSelectAccessories('all')}
-            className={subItemClass(section === 'accessories' && accessoryFilter === 'all')}
-          >
-            All Accessories
-          </button>
-          {ACCESSORY_GROUP_ORDER.map((group) => {
-            const cards = inStockCategories.filter((c) => c.group === group);
-            if (cards.length === 0) return null;
-            return (
-              <div key={group} className="mt-2">
-                <span className="block px-3 pb-1 font-mono text-label-sm uppercase text-pm-muted">
-                  {group}
-                </span>
-                {cards.map((c) => (
-                  <button
-                    key={c.id}
-                    type="button"
-                    onClick={() => onSelectAccessories(c.id)}
-                    className={subItemClass(section === 'accessories' && accessoryFilter === c.id)}
-                  >
-                    {c.name}
-                  </button>
-                ))}
-              </div>
-            );
-          })}
+      {/* inert while collapsed, so the category buttons leave the tab order and the accessibility tree. */}
+      <div
+        inert={!expanded}
+        className={`grid transition-[grid-template-rows] duration-200 ease-out ${expanded ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'}`}
+      >
+        <div className="overflow-hidden">
+          <div className="flex flex-col gap-0.5 mt-0.5 pl-2">
+            <button
+              type="button"
+              onClick={() => onSelectAccessories('all')}
+              className={subItemClass(section === 'accessories' && accessoryFilter === 'all')}
+            >
+              All Accessories
+            </button>
+            {ACCESSORY_GROUP_ORDER.map((group) => {
+              const cards = inStockCategories.filter((c) => c.group === group);
+              if (cards.length === 0) return null;
+              return (
+                <div key={group} className="mt-2">
+                  <span className="block px-3 pb-1 font-mono text-label-sm uppercase text-pm-muted">
+                    {group}
+                  </span>
+                  {cards.map((c) => (
+                    <button
+                      key={c.id}
+                      type="button"
+                      onClick={() => onSelectAccessories(c.id)}
+                      className={subItemClass(section === 'accessories' && accessoryFilter === c.id)}
+                    >
+                      {c.name}
+                    </button>
+                  ))}
+                </div>
+              );
+            })}
+          </div>
         </div>
-      )}
+      </div>
 
       <div className="border-t border-pm-rule my-4" />
 
