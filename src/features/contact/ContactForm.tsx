@@ -108,12 +108,15 @@ export function ContactForm() {
         ref={successRef}
         tabIndex={-1}
         role="status"
-        className="border border-pm-success/30 bg-pm-success/5 rounded-xl p-8 focus:outline-none"
+        className="border border-pm-success/30 bg-pm-success/5 rounded-xl p-8 focus:outline-none animate-fade-up"
       >
-        <span className="font-mono text-label uppercase text-pm-success">
+        <span className="font-mono text-label uppercase text-pm-success animate-fade-in" style={{ animationDelay: '150ms' }}>
           Message received
         </span>
-        <p className="font-display uppercase text-[22px] leading-[1.1] tracking-[0.005em] mt-2 text-pm-black">
+        <p
+          className="font-display uppercase text-[22px] leading-[1.1] tracking-[0.005em] mt-2 text-pm-black animate-fade-in"
+          style={{ animationDelay: '250ms' }}
+        >
           We'll be in touch soon.
         </p>
       </div>

@@ -59,6 +59,10 @@ export default {
           '0%':   { backgroundPosition: '-200% 0' },
           '100%': { backgroundPosition: '200% 0' },
         },
+        slideIn: {
+          '0%':   { opacity: '0', transform: 'translateX(calc(var(--dir, 1) * 12px))' },
+          '100%': { opacity: '1', transform: 'translateX(0)' },
+        },
       },
       animation: {
         'fade-up':      'fadeUp 0.5s ease-out both',
@@ -66,6 +70,7 @@ export default {
         'fade-in-fast': 'fadeInFast 0.2s ease-out both',
         'ticker':       'ticker 24s linear infinite',
         'shimmer':      'shimmer 1.6s ease-in-out infinite',
+        'slide-in':     'slideIn 0.2s ease-out both',
       },
     },
   },
