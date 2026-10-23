@@ -1,4 +1,3 @@
-import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { PageLayout } from '@/components/layout/PageLayout';
 import { Diamond } from '@/components/layout/DiamondMark';
@@ -78,9 +77,9 @@ export function HomePage() {
             <ButtonLink to="/events" size="xl">
               View events
             </ButtonLink>
-            <Link to="/apparel" className="font-display uppercase text-[18px] tracking-[0.04em] bg-transparent text-white px-7 h-12 inline-flex items-center justify-center hover:bg-white/10 transition-[colors,transform] duration-150 active:scale-[0.97] border-b-2 border-white/30 hover:border-white/60 rounded-xl">
+            <ButtonLink to="/apparel" variant="ghost" size="xl">
               Shop apparel
-            </Link>
+            </ButtonLink>
           </div>
         </Container>{/* end hero content */}
 

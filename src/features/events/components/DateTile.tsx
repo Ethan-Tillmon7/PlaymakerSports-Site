@@ -9,7 +9,7 @@ export function DateTile({ parts, live = false }: { parts: EventDateParts | null
     <div className={`${tone} w-16 sm:w-[72px] aspect-square flex flex-col items-center justify-center leading-none border-b-2 rounded-lg shrink-0`}>
       {parts ? (
         <>
-          <span className="font-mono text-[9px] tracking-[0.12em] uppercase">{parts.month}</span>
+          <span className="font-mono text-label-sm uppercase">{parts.month}</span>
           <span
             className={`font-display tabular-nums mt-1 ${
               parts.days.includes('–') ? 'text-[20px] sm:text-[23px]' : 'text-[26px] sm:text-[30px]'
@@ -19,7 +19,7 @@ export function DateTile({ parts, live = false }: { parts: EventDateParts | null
           </span>
         </>
       ) : (
-        <span className="font-mono text-[9px] tracking-[0.1em] uppercase text-center">Date TBA</span>
+        <span className="font-mono text-label-sm uppercase text-center">Date TBA</span>
       )}
     </div>
   );

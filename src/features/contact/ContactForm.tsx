@@ -32,14 +32,14 @@ function Field({
     <div>
       <label
         htmlFor={htmlFor}
-        className="block font-mono text-[11px] tracking-[0.1em] uppercase text-pm-muted mb-1.5"
+        className="block font-mono text-label uppercase text-pm-muted mb-1.5"
       >
         {label}
         {required && <span className="text-pm-error ml-1" aria-hidden="true">*</span>}
       </label>
       {children}
       {error && (
-        <p id={`${htmlFor}-error`} className="mt-1 text-[12px] text-pm-error">
+        <p id={`${htmlFor}-error`} className="mt-1 text-[13px] text-pm-error">
           {error}
         </p>
       )}
@@ -104,7 +104,7 @@ export function ContactForm() {
         role="status"
         className="border border-pm-success/30 bg-pm-success/5 rounded-xl p-8 focus:outline-none"
       >
-        <span className="font-mono text-[11px] tracking-[0.1em] uppercase text-pm-success">
+        <span className="font-mono text-label uppercase text-pm-success">
           Message received
         </span>
         <p className="font-display uppercase text-[22px] leading-[1.1] tracking-[0.005em] mt-2 text-pm-black">

@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react';
 import { useDismiss } from '@/hooks/useDismiss';
+import { Container } from '@/components/ui/Container';
 import { ACCESSORY_GROUP_ORDER, inStockCategories, type AccessoryCategory } from '../catalog/accessories';
 
 export type ApparelSection = 'accessories' | 'jerseys';
@@ -14,8 +15,8 @@ interface FilterProps {
 }
 
 const subItemClass = (active: boolean) =>
-  `w-full text-left px-3 py-2.5 lg:py-2 font-display uppercase text-[13px] tracking-[0.04em] rounded-lg transition-colors duration-150 ${
-    active ? 'bg-pm-black text-white' : 'text-pm-ink hover:bg-pm-paper-2'
+  `w-full text-left px-3 py-2.5 lg:py-2 font-display uppercase text-[13px] tracking-[0.04em] rounded-lg transition-[background-color,color] duration-150 ${
+    active ? 'bg-pm-black text-white' : 'text-pm-ink hover:bg-pm-paper-2 active:bg-pm-paper-2'
   }`;
 
 /** Phone/tablet filter bar (< lg): a category pill with a floating menu, plus the Jerseys tab. */
@@ -27,7 +28,7 @@ export function MobileApparelFilters({
   onSelectJerseys,
 }: FilterProps & { activeCategory: AccessoryCategory | null }) {
   const [open, setOpen] = useState(false);
-  const barRef = useRef<HTMLDivElement>(null);
+  const barRef = useRef<HTMLElement>(null);
   useDismiss(barRef, open, () => setOpen(false));
 
   const pickAccessories = (filter: AccessoryFilter) => {
@@ -40,14 +41,14 @@ export function MobileApparelFilters({
   };
 
   return (
-    <section className="lg:hidden border-b border-pm-rule bg-white sticky top-[74px] z-20">
-      <div ref={barRef} className="relative max-w-[1480px] mx-auto px-6 h-14 flex items-center gap-2">
+    <section ref={barRef} className="lg:hidden border-b border-pm-rule bg-white sticky top-[74px] z-20">
+      <Container className="relative h-14 flex items-center gap-2">
         <button
           type="button"
           onClick={() => setOpen((o) => !o)}
           aria-expanded={open}
           aria-controls="apparel-filter-menu"
-          className={`shrink-0 px-4 h-10 inline-flex items-center gap-2 font-display uppercase text-[13px] tracking-[0.04em] rounded-lg transition-colors duration-150 ${
+          className={`shrink-0 px-4 h-11 inline-flex items-center gap-2 font-display uppercase text-[13px] tracking-[0.04em] rounded-lg transition-[background-color,color,transform] duration-150 active:scale-[0.97] ${
             section === 'accessories' ? 'bg-pm-black text-white' : 'text-pm-ink hover:bg-pm-paper-2'
           }`}
         >
@@ -59,7 +60,7 @@ export function MobileApparelFilters({
         <button
           type="button"
           onClick={pickJerseys}
-          className={`shrink-0 px-4 h-10 inline-flex items-center font-display uppercase text-[13px] tracking-[0.04em] rounded-lg transition-colors duration-150 ${
+          className={`shrink-0 px-4 h-11 inline-flex items-center font-display uppercase text-[13px] tracking-[0.04em] rounded-lg transition-[background-color,color,transform] duration-150 active:scale-[0.97] ${
             section === 'jerseys' ? 'bg-pm-black text-white' : 'text-pm-ink hover:bg-pm-paper-2'
           }`}
         >
@@ -69,7 +70,7 @@ export function MobileApparelFilters({
         {/* Filter dropdown — absolute overlay so it floats over content instead of pushing it down */}
         <div
           id="apparel-filter-menu"
-          className={`absolute top-full inset-x-6 mt-2 origin-top z-30 transition-[opacity,transform,visibility] duration-200 ease-out ${
+          className={`absolute top-full inset-x-6 sm:inset-x-10 mt-2 origin-top z-30 transition-[opacity,transform,visibility] duration-200 ease-out ${
             open ? 'visible opacity-100 scale-y-100 pointer-events-auto' : 'invisible opacity-0 scale-y-95 pointer-events-none'
           }`}
         >
@@ -86,7 +87,7 @@ export function MobileApparelFilters({
               if (cards.length === 0) return null;
               return (
                 <div key={group} className="mt-2">
-                  <span className="block px-3 pb-1 font-mono text-[9px] tracking-[0.14em] uppercase text-pm-muted">
+                  <span className="block px-3 pb-1 font-mono text-label-sm uppercase text-pm-muted">
                     {group}
                   </span>
                   {cards.map((c) => (
@@ -104,7 +105,7 @@ export function MobileApparelFilters({
             })}
           </div>
         </div>
-      </div>
+      </Container>
     </section>
   );
 }
@@ -114,7 +115,7 @@ export function ApparelSidebar({ section, accessoryFilter, onSelectAccessories, 
   const [expanded, setExpanded] = useState(true);
 
   return (
-    <aside className="hidden lg:flex flex-col w-[220px] shrink-0 sticky top-20 self-start border-r border-pm-rule py-6 pr-4 min-h-[calc(100dvh-80px)]">
+    <aside className="hidden lg:flex flex-col w-[220px] shrink-0 sticky top-20 self-start border-r border-pm-rule py-10 pr-4 min-h-[calc(100svh-80px)]">
       {/* Accessories dropdown */}
       <button
         type="button"
@@ -122,7 +123,7 @@ export function ApparelSidebar({ section, accessoryFilter, onSelectAccessories, 
           setExpanded((o) => !o);
           onSelectAccessories('all');
         }}
-        className={`w-full flex items-center justify-between px-3 py-2 font-display uppercase text-[14px] tracking-[0.04em] rounded-lg transition-colors duration-150 ${
+        className={`w-full flex items-center justify-between px-3 py-2 font-display uppercase text-[14px] tracking-[0.04em] rounded-lg transition-[background-color,color] duration-150 ${
           section === 'accessories' ? 'text-pm-black' : 'text-pm-ink hover:bg-pm-paper-2'
         }`}
       >
@@ -144,7 +145,7 @@ export function ApparelSidebar({ section, accessoryFilter, onSelectAccessories, 
             if (cards.length === 0) return null;
             return (
               <div key={group} className="mt-2">
-                <span className="block px-3 pb-1 font-mono text-[9px] tracking-[0.14em] uppercase text-pm-muted">
+                <span className="block px-3 pb-1 font-mono text-label-sm uppercase text-pm-muted">
                   {group}
                 </span>
                 {cards.map((c) => (
@@ -169,12 +170,12 @@ export function ApparelSidebar({ section, accessoryFilter, onSelectAccessories, 
       <button
         type="button"
         onClick={onSelectJerseys}
-        className={`w-full flex items-center justify-between px-3 py-2 font-display uppercase text-[14px] tracking-[0.04em] rounded-lg transition-colors duration-150 ${
+        className={`w-full flex items-center justify-between px-3 py-2 font-display uppercase text-[14px] tracking-[0.04em] rounded-lg transition-[background-color,color] duration-150 ${
           section === 'jerseys' ? 'bg-pm-black text-white' : 'text-pm-muted hover:bg-pm-paper-2'
         }`}
       >
         <span>Jerseys</span>
-        <span className="font-mono text-[9px] tracking-[0.12em]">Soon</span>
+        <span className="font-mono text-label-sm">Soon</span>
       </button>
     </aside>
   );

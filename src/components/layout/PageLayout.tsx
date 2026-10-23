@@ -60,7 +60,7 @@ export function PageLayout({ children, breadcrumb, announcement, breadcrumbTone 
   return (
     // Full-height column so the footer sits at the bottom on short pages
     // (FAQ, 404) instead of floating with bare paper beneath it.
-    <div className="min-h-[100dvh] flex flex-col">
+    <div className="min-h-[100svh] flex flex-col">
       <a
         href="#main"
         className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:bg-pm-yellow focus:text-pm-black focus:font-display focus:uppercase focus:text-[14px] focus:tracking-[0.04em] focus:px-4 focus:h-10 focus:inline-flex focus:items-center focus:rounded-xl focus:border-b-2 focus:border-pm-yellow-deep"

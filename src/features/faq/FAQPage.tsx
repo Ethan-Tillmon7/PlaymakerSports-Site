@@ -76,10 +76,10 @@ function FAQItem({ question, answer, index, listInView }: {
         aria-controls={panelId}
         className="w-full flex items-center justify-between gap-6 py-5 text-left group"
       >
-        <span className="font-display uppercase text-[16px] lg:text-[17px] tracking-[0.02em] text-pm-black group-hover:text-pm-yellow-ink transition-colors duration-150">
+        <span className="font-display uppercase text-[16px] lg:text-[17px] tracking-[0.02em] text-pm-black group-hover:text-pm-yellow-ink group-active:text-pm-yellow-ink transition-colors duration-150">
           {question}
         </span>
-        <span className={`shrink-0 w-6 h-6 flex items-center justify-center border-2 border-pm-rule rounded-lg transition-colors duration-150 ${open ? 'bg-pm-yellow border-pm-yellow-deep' : 'group-hover:border-pm-ink'}`}>
+        <span className={`shrink-0 w-6 h-6 flex items-center justify-center border-2 border-pm-rule rounded-lg transition-colors duration-150 ${open ? 'bg-pm-yellow border-pm-yellow-deep' : 'group-hover:border-pm-ink group-active:border-pm-ink'}`}>
           <svg
             className={`w-3 h-3 text-pm-black transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
             fill="none"
@@ -98,7 +98,7 @@ function FAQItem({ question, answer, index, listInView }: {
         className={`grid transition-[grid-template-rows] duration-200 ${open ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'}`}
       >
         <div className="overflow-hidden">
-          <p className="pb-5 text-[14px] leading-[1.65] text-pm-ink">
+          <p className="pb-5 text-[15px] md:text-[14px] leading-[1.65] text-pm-ink">
             {answer}
           </p>
         </div>
@@ -135,7 +135,7 @@ export function FAQPage() {
       }} />
       <PageHeader eyebrow="Common questions" title="FAQ" />
 
-      <Container as="section" className="py-14 lg:py-16">
+      <Container as="section" className="py-12 lg:py-16">
         <div ref={faqRef} className="grid grid-cols-1 md:grid-cols-2 gap-x-10 lg:gap-x-16 gap-y-14">
           {faqGroups.map((group, gi) => {
             const indexOffset = faqGroups.slice(0, gi).reduce((sum, g) => sum + g.faqs.length, 0);

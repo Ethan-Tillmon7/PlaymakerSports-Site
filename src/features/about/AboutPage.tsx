@@ -24,6 +24,12 @@ const prefersReducedMotion =
   typeof window !== 'undefined' &&
   window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+// A scroll-linked blur re-rasterizes the full-viewport photo every frame, which
+// drops frames on phones. Touch devices keep the zoom and skip the blur.
+const coarsePointer =
+  typeof window !== 'undefined' &&
+  window.matchMedia('(pointer: coarse)').matches;
+
 export function AboutPage() {
   // Zoom + blur the photo as the hero scrolls away. Written straight to the
   // element once per frame, so scrolling doesn't re-render the page.
@@ -32,7 +38,7 @@ export function AboutPage() {
     const bg = bgRef.current;
     if (!bg || prefersReducedMotion) return;
     bg.style.transform = `scale(${1 + progress * 0.1})`;
-    bg.style.filter = progress > 0 ? `blur(${progress * 7}px)` : '';
+    bg.style.filter = progress > 0 && !coarsePointer ? `blur(${progress * 7}px)` : '';
   });
   const [valuesRef, valuesInView] = useInView();
 
@@ -73,7 +79,7 @@ export function AboutPage() {
         <div className="relative z-[2] max-w-[1100px] mx-auto px-6 sm:px-10 py-24 w-full text-center animate-fade-up">
 
           {/* ── Heading + story ── */}
-          <div className="max-w-[640px] mx-auto">
+          <div className="max-w-[560px] mx-auto">
           <span className="font-mono text-[11px] tracking-[0.16em] uppercase text-pm-yellow">
             Our backstory
           </span>
@@ -100,7 +106,7 @@ export function AboutPage() {
                 <div className="font-display uppercase text-[clamp(32px,4vw,56px)] leading-none tracking-[0.005em] text-white">
                   {i === 0 ? countedYear : v.stat}
                 </div>
-                <div className="font-mono text-[11px] tracking-[0.1em] uppercase text-pm-yellow mt-2">
+                <div className="font-mono text-label uppercase text-pm-yellow mt-2">
                   {v.label}
                 </div>
               </div>
@@ -109,7 +115,7 @@ export function AboutPage() {
 
           {/* ── CTA ── */}
           <div className="mt-16 sm:mt-20">
-            <span className="font-mono text-[11px] tracking-[0.1em] uppercase text-white/50">
+            <span className="font-mono text-label uppercase text-white/50">
               Get in touch
             </span>
             <h2 className="font-display uppercase text-[clamp(36px,5vw,72px)] leading-[0.90] tracking-[0.005em] text-white mt-3">
@@ -127,7 +133,7 @@ export function AboutPage() {
               {contact.phone && (
                 <a
                   href={`tel:${contact.phone}`}
-                  className="font-display uppercase text-[16px] tracking-[0.04em] bg-white/10 text-white px-6 h-11 inline-flex items-center justify-center border border-white/25 hover:bg-white/20 transition-[colors,transform] duration-150 active:scale-[0.97] rounded-xl"
+                  className={buttonClass({ variant: 'ghost' })}
                 >
                   {contact.phone}
                 </a>

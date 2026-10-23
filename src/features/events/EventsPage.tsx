@@ -64,7 +64,7 @@ export function EventsPage() {
                         >
                           {group.label}
                         </h2>
-                        <span className="font-mono text-[11px] tracking-[0.1em] uppercase text-pm-muted shrink-0">
+                        <span className="font-mono text-label uppercase text-pm-muted shrink-0">
                           {group.events.length} {group.events.length === 1 ? 'event' : 'events'}
                         </span>
                       </div>
@@ -89,7 +89,7 @@ export function EventsPage() {
 
             {pastEvents.length > 0 && (
               <details className="mt-14 pt-6 border-t border-pm-rule group">
-                <summary className="cursor-pointer inline-flex items-center gap-2 min-h-10 list-none [&::-webkit-details-marker]:hidden">
+                <summary className="cursor-pointer inline-flex items-center gap-2 min-h-11 list-none [&::-webkit-details-marker]:hidden">
                   <svg
                     className="w-3.5 h-3.5 text-pm-muted transition-transform duration-150 group-open:rotate-90 shrink-0"
                     fill="none"

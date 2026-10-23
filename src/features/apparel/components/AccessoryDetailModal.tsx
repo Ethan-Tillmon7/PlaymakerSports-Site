@@ -51,7 +51,7 @@ export function AccessoryDetailModal({ category, initialVariantIndex = 0, onClos
     if (closing.current) return;
     closing.current = true;
     setVisible(false);
-    setTimeout(onClose, 120);
+    setTimeout(onClose, 150);
   }, [onClose]);
 
   const navigate = useCallback(
@@ -114,7 +114,7 @@ export function AccessoryDetailModal({ category, initialVariantIndex = 0, onClos
 
   return createPortal(
     <div
-      className={`fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-8 transition-opacity duration-150 ${visible ? 'opacity-100' : 'opacity-0'}`}
+      className={`fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-8 transition-opacity duration-150 ease-out ${visible ? 'opacity-100' : 'opacity-0'}`}
       style={{ background: 'rgba(17,17,17,0.65)' }}
       onClick={handleClose}
     >
@@ -123,7 +123,7 @@ export function AccessoryDetailModal({ category, initialVariantIndex = 0, onClos
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
-        className={`relative bg-white rounded-2xl border-2 border-pm-black w-full max-w-[900px] max-h-[90dvh] overflow-hidden flex flex-col transition-[opacity,transform] duration-150 ${visible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}
+        className={`relative bg-white rounded-2xl border-2 border-pm-black w-full max-w-[900px] max-h-[90dvh] overflow-hidden flex flex-col transition-[opacity,transform] duration-150 ease-out ${visible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
@@ -134,19 +134,19 @@ export function AccessoryDetailModal({ category, initialVariantIndex = 0, onClos
                 <button
                   type="button"
                   onClick={() => navigate(-1)}
-                  className="w-10 h-10 border border-pm-rule rounded-lg flex items-center justify-center hover:border-pm-black hover:bg-pm-paper-2 transition-colors duration-150"
+                  className="w-11 h-11 border border-pm-rule rounded-lg flex items-center justify-center hover:border-pm-black hover:bg-pm-paper-2 active:scale-[0.95] transition-[background-color,border-color,transform] duration-150 ease-out"
                   aria-label="Previous design"
                 >
                   ‹
                 </button>
-                <span className="font-mono text-[11px] tracking-[0.1em] uppercase text-pm-muted tabular-nums" aria-live="polite" aria-atomic="true">
+                <span className="font-mono text-label uppercase text-pm-muted tabular-nums" aria-live="polite" aria-atomic="true">
                   <span className="sr-only">Design </span>
                   {index + 1} / {variants.length}
                 </span>
                 <button
                   type="button"
                   onClick={() => navigate(1)}
-                  className="w-10 h-10 border border-pm-rule rounded-lg flex items-center justify-center hover:border-pm-black hover:bg-pm-paper-2 transition-colors duration-150"
+                  className="w-11 h-11 border border-pm-rule rounded-lg flex items-center justify-center hover:border-pm-black hover:bg-pm-paper-2 active:scale-[0.95] transition-[background-color,border-color,transform] duration-150 ease-out"
                   aria-label="Next design"
                 >
                   ›
@@ -158,7 +158,7 @@ export function AccessoryDetailModal({ category, initialVariantIndex = 0, onClos
             ref={closeRef}
             type="button"
             onClick={handleClose}
-            className="w-10 h-10 bg-pm-black text-white rounded-full flex items-center justify-center hover:bg-pm-ink transition-colors duration-150 text-[13px]"
+            className="w-11 h-11 bg-pm-black text-white rounded-full flex items-center justify-center hover:bg-pm-ink active:scale-[0.95] transition-[background-color,transform] duration-150 ease-out text-[13px]"
             aria-label="Close"
           >
             ✕
@@ -185,19 +185,19 @@ export function AccessoryDetailModal({ category, initialVariantIndex = 0, onClos
               />
             )}
             {selected?.label && (
-              <span className="absolute bottom-3 left-3 max-w-[calc(100%-1.5rem)] truncate font-mono text-[9px] tracking-[0.1em] uppercase text-pm-muted bg-white/70 px-2 py-1 rounded">
+              <span className="absolute bottom-3 left-3 max-w-[calc(100%-1.5rem)] truncate font-mono text-label-sm uppercase text-pm-muted bg-white/70 px-2 py-1 rounded">
                 {selected.label}
               </span>
             )}
             {variants.length > 1 && (
-              <span className="md:hidden absolute bottom-3 right-3 font-mono text-[9px] tracking-[0.1em] uppercase text-pm-muted bg-white/70 px-2 py-1 rounded">
+              <span className="md:hidden absolute bottom-3 right-3 font-mono text-label-sm uppercase text-pm-muted bg-white/70 px-2 py-1 rounded">
                 Swipe to browse
               </span>
             )}
           </div>
 
           {/* Info column */}
-          <div className="flex flex-col flex-1 overflow-y-auto p-6 gap-5">
+          <div className="flex flex-col flex-1 overflow-y-auto overscroll-contain p-6 gap-5">
             <div>
               <span className="font-mono text-[10px] tracking-[0.14em] uppercase text-pm-muted">Accessory</span>
               <h2 id={titleId} className="font-display uppercase text-[clamp(28px,3.5vw,42px)] leading-[0.95] tracking-[0.005em] text-pm-black mt-1 break-words">

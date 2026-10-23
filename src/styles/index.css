@@ -12,6 +12,24 @@
     font-feature-settings: 'ss01', 'cv11';
   }
 
+  /* Feels installed, not embedded: no gray tap flash (controls carry their own
+     :active state), no font inflation in landscape. */
+  html {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  /* Controls fire click on touch-up with no double-tap delay, and a long press
+     never selects their label. Inline links in prose stay selectable content. */
+  button, a, [role='button'], summary {
+    touch-action: manipulation;
+  }
+  button, [role='button'], summary {
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+  }
+
   /* Keyboard focus ring: a black ring with a paper gap, so it reads on paper,
      white, yellow, and the black hero/footer alike. Mouse and touch never see it. */
   :focus-visible {

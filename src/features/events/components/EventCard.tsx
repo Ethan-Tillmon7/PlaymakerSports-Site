@@ -40,7 +40,7 @@ export function EventCard({
           {place}
         </p>
         {meta && (
-          <p className="font-mono text-[11px] tracking-[0.1em] uppercase text-pm-muted mt-1.5">{meta}</p>
+          <p className="font-mono text-label uppercase text-pm-muted mt-1.5">{meta}</p>
         )}
       </div>
     </li>
