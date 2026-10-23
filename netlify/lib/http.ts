@@ -39,3 +39,47 @@ export function readJsonBody<S extends z.ZodType>(
   }
   return { ok: true, data: parsed.data };
 }
+
+// ── v2 (Request/Response) functions ──
+// Same contract as above for functions written as `export default async (req: Request)`.
+
+/** A JSON `Response`. Content-Type is always set; extra headers are merged in. */
+export function jsonResponse(status: number, body: unknown, headers: Record<string, string> = {}): Response {
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: { 'Content-Type': 'application/json', ...headers },
+  });
+}
+
+export type RequestBodyResult<T> = { ok: true; data: T } | { ok: false; response: Response };
+
+/**
+ * Read a POSTed JSON body from a v2 `Request` and validate it. Failures come
+ * back as ready-made responses: 405 (not POST), 413 (too large), 400 (bad JSON /
+ * schema). The body is read in full before the size check, so `maxBytes` caps
+ * what gets parsed, not what gets received.
+ */
+export async function readJsonRequest<S extends z.ZodType>(
+  req: Request,
+  schema: S,
+  { maxBytes }: { maxBytes: number },
+): Promise<RequestBodyResult<z.output<S>>> {
+  if (req.method !== 'POST') {
+    return { ok: false, response: new Response('Method Not Allowed', { status: 405 }) };
+  }
+  const text = await req.text();
+  if (text.length > maxBytes) {
+    return { ok: false, response: jsonResponse(413, { error: 'Submission too large' }) };
+  }
+  let body: unknown;
+  try {
+    body = JSON.parse(text || '{}');
+  } catch {
+    return { ok: false, response: jsonResponse(400, { error: 'Invalid JSON' }) };
+  }
+  const parsed = schema.safeParse(body);
+  if (!parsed.success) {
+    return { ok: false, response: jsonResponse(400, { error: 'Validation failed', issues: parsed.error.issues }) };
+  }
+  return { ok: true, data: parsed.data };
+}

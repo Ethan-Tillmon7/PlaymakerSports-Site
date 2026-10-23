@@ -7,19 +7,12 @@
   NODE_VERSION = "20"
 
 # Live endpoints. Paths are also listed in shared/api.ts (client side).
+# /api/submit-contact has no redirect: it's a v2 function that declares its own
+# `path` and `rateLimit` in netlify/functions/submit-contact.ts.
 [[redirects]]
   from = "/api/get-events"
   to = "/.netlify/functions/get-events"
   status = 200
-
-[[redirects]]
-  from = "/api/submit-contact"
-  to = "/.netlify/functions/submit-contact"
-  status = 200
-  [redirects.rate_limit]
-    window_limit = 5
-    window_size = 60
-    aggregate_by = ["ip", "domain"]
 
 # Legacy (parked) endpoints — no caller in src/; see src/legacy/jersey-orders/README.md.
 [[redirects]]

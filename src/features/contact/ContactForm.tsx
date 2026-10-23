@@ -6,13 +6,14 @@ import { classifyFailure, fetchWithTimeout, type RequestFailure } from '@/lib/ht
 import { API } from '@shared/api';
 import { CONTACT_LIMITS, contactSchema, type ContactSubmission } from '@shared/contact';
 
-type SubmitError = RequestFailure | 'invalid';
+type SubmitError = RequestFailure | 'invalid' | 'rate_limited';
 
 const submitErrorCopy: Record<SubmitError, string> = {
   offline: "You're offline. Your message is still here, so send it once you have signal.",
   timeout: "This is taking too long, probably a weak connection. Your message is still here, so try sending it again.",
   server: "We couldn't send your message just now. It's still here, so try again in a minute.",
   invalid: "Something in the form didn't go through. Check each field and send it again.",
+  rate_limited: "Too many tries in a row. Wait a minute, then send it again. Your message is still here.",
 };
 
 function Field({
@@ -85,6 +86,11 @@ export function ContactForm() {
       });
       if (res.status === 400 || res.status === 413) {
         setSubmitError('invalid');
+        return;
+      }
+      if (res.status === 429) {
+        // Netlify's rate limit on submit-contact: 5 sends per minute per IP.
+        setSubmitError('rate_limited');
         return;
       }
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
