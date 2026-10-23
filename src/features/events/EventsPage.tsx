@@ -170,7 +170,7 @@ export function EventsPage() {
         )}
 
         {result.status === 'error' && (
-          <div role="alert" className="border border-pm-rule rounded-xl p-10 text-center max-w-[640px] mx-auto">
+          <div role="alert" className="border border-pm-rule rounded-xl p-10 text-center max-w-[640px] mx-auto animate-fade-up">
             <span className="font-mono text-[11px] tracking-[0.16em] uppercase text-pm-muted">
               Couldn't load schedule
             </span>
