@@ -102,7 +102,7 @@ export function ApparelPage() {
           <ApparelSidebar {...filterProps} />
 
           {/* Main content */}
-          <div className="flex-1 min-w-0 pb-6 lg:pb-10 pt-6 lg:pt-10">
+          <div className="flex-1 min-w-0 pt-10 pb-12 lg:pt-12 lg:pb-16">
             {section === 'jerseys' && (
               <section className="animate-fade-in-fast flex justify-center pt-4">
                 <ComingSoonJerseys onBrowseAccessories={() => selectAccessories('all')} />

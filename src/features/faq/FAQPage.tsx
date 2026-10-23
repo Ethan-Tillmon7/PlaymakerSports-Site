@@ -135,7 +135,7 @@ export function FAQPage() {
       }} />
       <PageHeader eyebrow="Common questions" title="FAQ" />
 
-      <Container as="section" className="py-14 lg:py-16">
+      <Container as="section" className="py-12 lg:py-16">
         <div ref={faqRef} className="grid grid-cols-1 md:grid-cols-2 gap-x-10 lg:gap-x-16 gap-y-14">
           {faqGroups.map((group, gi) => {
             const indexOffset = faqGroups.slice(0, gi).reduce((sum, g) => sum + g.faqs.length, 0);
