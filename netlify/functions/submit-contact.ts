@@ -1,7 +1,7 @@
-import type { Handler } from '@netlify/functions';
+import type { Config } from '@netlify/functions';
 import { Resend } from 'resend';
 import { contactSchema } from '../../shared/contact';
-import { json, readJsonBody } from '../lib/http';
+import { jsonResponse, readJsonRequest } from '../lib/http';
 import { appendRows, safecell } from '../lib/sheets';
 
 const esc = (s: string) =>
@@ -29,14 +29,22 @@ const AUTOREPLY_HTML = `
   <p>Playmaker Sports</p>
 `;
 
-export const handler: Handler = async (event) => {
-  const body = readJsonBody(event, contactSchema, { maxBytes: MAX_BODY_BYTES });
+// v2 function: `path` replaces the netlify.toml redirect, and `rateLimit` runs on
+// the function itself (5 submissions per 60 s per IP + domain → 429), so it holds
+// however the function is reached. netlify dev does not enforce rateLimit.
+export const config: Config = {
+  path: '/api/submit-contact',
+  rateLimit: { windowLimit: 5, windowSize: 60, aggregateBy: ['ip', 'domain'] },
+};
+
+export default async (req: Request) => {
+  const body = await readJsonRequest(req, contactSchema, { maxBytes: MAX_BODY_BYTES });
   if (!body.ok) return body.response;
   const data = body.data;
 
   if (data.company) {
     // Honeypot filled: answer like a success so the bot moves on; save nothing and email no one.
-    return json(200, { success: true });
+    return jsonResponse(200, { success: true });
   }
   const timestamp = new Date().toISOString();
 
@@ -52,7 +60,7 @@ export const handler: Handler = async (event) => {
     ]]);
   } catch (err) {
     console.error('submit-contact sheets error:', err);
-    return json(500, { error: 'Failed to save submission' });
+    return jsonResponse(500, { error: 'Failed to save submission' });
   }
 
   // Resend's sandbox sender only delivers to the Resend account owner's address.
@@ -108,5 +116,5 @@ export const handler: Handler = async (event) => {
     console.error('submit-contact autoreply error:', err);
   }
 
-  return json(200, { success: true });
+  return jsonResponse(200, { success: true });
 };
