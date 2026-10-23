@@ -34,7 +34,7 @@ export function CardRail({
   return (
     <div className="relative">
       <div
-        className={`flex gap-x-4 overflow-x-auto snap-x snap-mandatory pb-2 [&::-webkit-scrollbar]:hidden [scrollbar-width:none] lg:grid lg:overflow-visible lg:pb-0 ${gridClassName}`}
+        className={`flex gap-x-4 overflow-x-auto overscroll-x-contain snap-x snap-mandatory pb-2 [&::-webkit-scrollbar]:hidden [scrollbar-width:none] lg:grid lg:overflow-visible lg:pb-0 ${gridClassName}`}
       >
         {Children.map(children, (child) => (
           <div className={`snap-start shrink-0 ${itemClassName} lg:basis-auto lg:w-auto`}>

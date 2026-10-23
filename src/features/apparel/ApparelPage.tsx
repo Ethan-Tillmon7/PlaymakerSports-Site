@@ -134,7 +134,7 @@ export function ApparelPage() {
                           type="button"
                           onClick={() => toggleGroup(group)}
                           aria-expanded={isExpanded}
-                          className="shrink-0 ml-4 -mr-2 px-2 min-h-10 inline-flex items-center font-mono text-[10px] tracking-[0.12em] uppercase text-pm-muted hover:text-pm-ink transition-colors duration-150"
+                          className="shrink-0 ml-4 -mr-2 px-2 min-h-11 inline-flex items-center font-mono text-[10px] tracking-[0.12em] uppercase text-pm-muted hover:text-pm-ink transition-colors duration-150"
                         >
                           {isExpanded ? 'Show less' : 'See all →'}
                         </button>

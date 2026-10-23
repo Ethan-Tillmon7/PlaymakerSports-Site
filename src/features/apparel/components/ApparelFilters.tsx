@@ -48,7 +48,7 @@ export function MobileApparelFilters({
           onClick={() => setOpen((o) => !o)}
           aria-expanded={open}
           aria-controls="apparel-filter-menu"
-          className={`shrink-0 px-4 h-10 inline-flex items-center gap-2 font-display uppercase text-[13px] tracking-[0.04em] rounded-lg transition-colors duration-150 ${
+          className={`shrink-0 px-4 h-11 inline-flex items-center gap-2 font-display uppercase text-[13px] tracking-[0.04em] rounded-lg transition-colors duration-150 ${
             section === 'accessories' ? 'bg-pm-black text-white' : 'text-pm-ink hover:bg-pm-paper-2'
           }`}
         >
@@ -60,7 +60,7 @@ export function MobileApparelFilters({
         <button
           type="button"
           onClick={pickJerseys}
-          className={`shrink-0 px-4 h-10 inline-flex items-center font-display uppercase text-[13px] tracking-[0.04em] rounded-lg transition-colors duration-150 ${
+          className={`shrink-0 px-4 h-11 inline-flex items-center font-display uppercase text-[13px] tracking-[0.04em] rounded-lg transition-colors duration-150 ${
             section === 'jerseys' ? 'bg-pm-black text-white' : 'text-pm-ink hover:bg-pm-paper-2'
           }`}
         >
@@ -115,7 +115,7 @@ export function ApparelSidebar({ section, accessoryFilter, onSelectAccessories, 
   const [expanded, setExpanded] = useState(true);
 
   return (
-    <aside className="hidden lg:flex flex-col w-[220px] shrink-0 sticky top-20 self-start border-r border-pm-rule py-10 pr-4 min-h-[calc(100dvh-80px)]">
+    <aside className="hidden lg:flex flex-col w-[220px] shrink-0 sticky top-20 self-start border-r border-pm-rule py-10 pr-4 min-h-[calc(100svh-80px)]">
       {/* Accessories dropdown */}
       <button
         type="button"

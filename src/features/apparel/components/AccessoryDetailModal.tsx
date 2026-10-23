@@ -134,7 +134,7 @@ export function AccessoryDetailModal({ category, initialVariantIndex = 0, onClos
                 <button
                   type="button"
                   onClick={() => navigate(-1)}
-                  className="w-10 h-10 border border-pm-rule rounded-lg flex items-center justify-center hover:border-pm-black hover:bg-pm-paper-2 transition-colors duration-150"
+                  className="w-11 h-11 border border-pm-rule rounded-lg flex items-center justify-center hover:border-pm-black hover:bg-pm-paper-2 transition-colors duration-150"
                   aria-label="Previous design"
                 >
                   ‹
@@ -146,7 +146,7 @@ export function AccessoryDetailModal({ category, initialVariantIndex = 0, onClos
                 <button
                   type="button"
                   onClick={() => navigate(1)}
-                  className="w-10 h-10 border border-pm-rule rounded-lg flex items-center justify-center hover:border-pm-black hover:bg-pm-paper-2 transition-colors duration-150"
+                  className="w-11 h-11 border border-pm-rule rounded-lg flex items-center justify-center hover:border-pm-black hover:bg-pm-paper-2 transition-colors duration-150"
                   aria-label="Next design"
                 >
                   ›
@@ -158,7 +158,7 @@ export function AccessoryDetailModal({ category, initialVariantIndex = 0, onClos
             ref={closeRef}
             type="button"
             onClick={handleClose}
-            className="w-10 h-10 bg-pm-black text-white rounded-full flex items-center justify-center hover:bg-pm-ink transition-colors duration-150 text-[13px]"
+            className="w-11 h-11 bg-pm-black text-white rounded-full flex items-center justify-center hover:bg-pm-ink transition-colors duration-150 text-[13px]"
             aria-label="Close"
           >
             ✕
@@ -197,7 +197,7 @@ export function AccessoryDetailModal({ category, initialVariantIndex = 0, onClos
           </div>
 
           {/* Info column */}
-          <div className="flex flex-col flex-1 overflow-y-auto p-6 gap-5">
+          <div className="flex flex-col flex-1 overflow-y-auto overscroll-contain p-6 gap-5">
             <div>
               <span className="font-mono text-[10px] tracking-[0.14em] uppercase text-pm-muted">Accessory</span>
               <h2 id={titleId} className="font-display uppercase text-[clamp(28px,3.5vw,42px)] leading-[0.95] tracking-[0.005em] text-pm-black mt-1 break-words">

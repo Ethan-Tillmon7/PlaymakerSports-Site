@@ -49,7 +49,7 @@ export function Nav() {
                   <Link
                     to={to}
                     aria-current={active ? 'page' : undefined}
-                    className={`px-3 py-1.5 rounded-lg transition-[colors,background-color] duration-200 inline-block ${
+                    className={`px-3 py-3 rounded-lg select-none transition-[colors,background-color] duration-200 inline-block ${
                       active
                         ? 'text-pm-black bg-pm-paper-2'
                         : 'text-pm-ink hover:text-pm-black hover:bg-pm-paper-2'
@@ -64,7 +64,7 @@ export function Nav() {
         </div>
 
         {/* Center — logo */}
-        <Link to="/" aria-label="Playmaker Sports home" className="shrink-0 mx-4 lg:mx-6">
+        <Link to="/" aria-label="Playmaker Sports home" className="shrink-0 mx-4 lg:mx-6 py-2 inline-flex items-center select-none">
           <span className="bg-pm-yellow inline-flex items-baseline gap-1 px-2 py-1 font-display text-[20px] lg:text-[22px] leading-none uppercase tracking-[0.005em] rounded-lg">
             <span className="text-white">PLAY</span><span className="text-pm-black">MAKER</span>
           </span>
@@ -97,7 +97,7 @@ export function Nav() {
                   to={to}
                   aria-current={active ? 'page' : undefined}
                   onClick={() => setMobileOpen(false)}
-                  className={`block px-3 py-2.5 rounded-lg transition-[colors,background-color] duration-200 ${
+                  className={`block px-3 py-3 rounded-lg select-none transition-[colors,background-color] duration-200 ${
                     active
                       ? 'text-pm-black bg-pm-paper-2'
                       : 'text-pm-ink hover:text-pm-black hover:bg-pm-paper-2'

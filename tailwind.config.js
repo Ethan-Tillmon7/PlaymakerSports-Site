@@ -1,5 +1,8 @@
 /** @type {import('tailwindcss').Config} */
 export default {
+  // Touch has no hover: without this every hover: rule sticks after a tap on
+  // phones (lifted cards, tinted links). Gates them behind @media (hover: hover).
+  future: { hoverOnlyWhenSupported: true },
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {
@@ -20,6 +23,10 @@ export default {
         'pm-muted':       '#6B6B66',
         'pm-error':       '#A03A1A',
         'pm-success':     '#2F6F3E',
+      },
+      spacing: {
+        // Bottom safe-area inset (home indicator). index.html sets viewport-fit=cover.
+        'safe-b': 'env(safe-area-inset-bottom, 0px)',
       },
       fontSize: {
         // Mono label ramp (DESIGN.md → Typography). 10px is the floor; nothing smaller ships.
