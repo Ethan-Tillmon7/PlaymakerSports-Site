@@ -16,6 +16,10 @@
   from = "/api/submit-contact"
   to = "/.netlify/functions/submit-contact"
   status = 200
+  [redirects.rate_limit]
+    window_limit = 5
+    window_size = 60
+    aggregate_by = ["ip", "domain"]
 
 # Legacy (parked) endpoints — no caller in src/; see src/legacy/jersey-orders/README.md.
 [[redirects]]
