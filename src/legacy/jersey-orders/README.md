@@ -31,6 +31,6 @@ It is kept, not deleted, for when jerseys return.
 
 1. Route a component from `src/features/apparel/`, moving what's needed into that feature.
 2. Re-check the `Catalog` tab and the `SalesOrders` / `Archive` / `CustomerContacts` column
-   layouts against `docs/md/sheets-schema.md`, because functions map columns by index.
+   layouts against `docs/reference/sheets-schema.md`, because functions map columns by index.
 3. Move the request/response shapes into `shared/`, as `contact.ts` does.
 4. Delete this folder once nothing is left in it.
