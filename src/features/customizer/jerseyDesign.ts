@@ -149,7 +149,7 @@ export interface JerseyDesign {
 
 // ─── A sensible starting design ─────────────────────────────────────────────
 // Used as the initial Zustand state. Mirrors a "Lafayette navy pinstripe"
-// aesthetic from page 1 of the LaffyLittleLeagueFINALOptions deck.
+// aesthetic from page 1 of the laffy-little-league-jersey-options deck.
 export const INITIAL_DESIGN: JerseyDesign = {
   id: 'design-001',
   teamName: 'Lafayette',

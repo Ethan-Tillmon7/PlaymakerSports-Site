@@ -7,23 +7,26 @@ Using Claude Code or another AI assistant? Have it read this file before making 
 The marketing site for Playmaker Sports: Home, Events, Apparel, About, FAQ and Contact. `/customizer` is an early jersey proof of concept and not a public page.
 
 - **Front end:** React 19 + TypeScript + Vite, styled with Tailwind. Every public page is prerendered to static HTML at build time, so it loads fast and search engines can read it.
-- **Back end:** Netlify Functions. The Events page reads tournaments from a Google Sheet, and the Contact form writes to that same spreadsheet and sends email through Resend. The contact endpoint is rate limited (5 submissions per minute per IP); past that it answers 429 and the form shows a "too many tries" message.
+- **Back end:** Netlify Functions. The Events page reads tournaments from a Google Sheet, or from the Playmaker dashboard (Supabase) when `EVENTS_SOURCE=supabase`. The Contact form writes to that same spreadsheet and sends email through Resend. The contact endpoint is rate limited (5 submissions per minute per IP); past that it answers 429 and the form shows a "too many tries" message.
 - **Hosting:** Netlify. Every PR gets a deploy preview, and `main` is the live site.
 
 ## Where things live
 
 | Path | What's there |
 | --- | --- |
-| `src/features/<page>/` | One folder per page: `<Name>Page.tsx` plus the components and helpers only that page uses |
+| `src/features/<page>/` | One folder per page: `<Name>Page.tsx` at the root, its components in `components/`, files only it imports in `assets/`, and its helpers |
 | `src/components/` | UI shared across pages (`layout/`, `ui/`, `seo/`). No page-specific logic |
-| `src/hooks/`, `src/lib/`, `src/config/` | Shared hooks, utilities, site config and per-page meta tags |
+| `src/hooks/`, `src/lib/`, `src/stores/`, `src/config/` | Shared hooks, utilities, Zustand stores, site config and per-page meta tags |
+| `src/assets/images/` | Photos. `inventory/<category>/` feeds the Apparel catalog: folder names must match `accessories.ts` exactly |
 | `netlify/functions/` | One file per endpoint. File names are public URLs, so never rename them. `submit-contact.ts` is a Netlify **v2** function (`export default async (req: Request)`) that declares its own `path` and `rateLimit` in an exported `config`; the others are **v1** handlers reached through `/api/*` redirects in `netlify.toml` |
-| `netlify/lib/` | Function helpers: `sheets.ts` (Google Sheets client, `appendRows`, `safecell`) and `http.ts` (JSON responses and body parsing, with a v1 `event` flavour and a v2 `Request` flavour) |
+| `netlify/lib/` | Function helpers: `sheets.ts` (Google Sheets client, `appendRows`, `safecell`) `http.ts` (JSON responses and body parsing, with a v1 `event` flavour and a v2 `Request` flavour) and `supabase.ts` (one-fetch RPC call to the dashboard) |
 | `shared/` | Types and zod validation shared by the site and the functions, e.g. the contact form schema |
 | `public/` | Static files served as-is (favicons, `robots.txt`, `sitemap.xml`) |
 | `src/legacy/` | Parked code that is kept but not used. Leave it alone |
 
 Import rules are enforced by ESLint. Inside a feature, use relative imports. Across folders, use `@/…` (and `@shared/…` for `shared/`). One page can import from another page's folder only through its `index.ts`. If `npm run lint` flags an import, move the code; don't silence the rule.
+
+**Naming:** components `PascalCase.tsx`, hooks `useThing.ts`, other modules `camelCase.ts`, and folders and asset files `kebab-case` (lowercase, no spaces).
 
 ## Running it
 
@@ -46,6 +49,8 @@ The functions run under `netlify dev` (`netlify dev --offline --port 8888`, no N
 - `RESEND_API_KEY`
 - `CONTACT_EMAIL`
 - `CONTACT_FROM_EMAIL`
+- `EVENTS_SOURCE` (optional: `sheet`, the default, or `supabase`)
+- `SUPABASE_URL` and `SUPABASE_ANON_KEY` (only with `EVENTS_SOURCE=supabase`)
 
 Ask Ethan for these values instead of guessing them. They point at the **live** spreadsheet and send **real** email, so don't submit the contact form locally unless Ethan has given you a test setup. Never commit `.env` or any key file.
 

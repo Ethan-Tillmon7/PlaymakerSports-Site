@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { useJerseyStore } from '../jerseyStore';
-import jerseyFrontUrl from '../jersey-front.svg?raw';
+import jerseyFrontUrl from '../assets/jersey-front.svg?raw';
 import type { JerseyDesign, PlacementSlot } from '../jerseyDesign';
 
 /**
