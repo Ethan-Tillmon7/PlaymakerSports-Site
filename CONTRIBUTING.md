@@ -7,7 +7,7 @@ Using Claude Code or another AI assistant? Have it read this file before making 
 The marketing site for Playmaker Sports: Home, Events, Apparel, About, FAQ and Contact. `/customizer` is an early jersey proof of concept and not a public page.
 
 - **Front end:** React 19 + TypeScript + Vite, styled with Tailwind. Every public page is prerendered to static HTML at build time, so it loads fast and search engines can read it.
-- **Back end:** Netlify Functions. The Events page reads tournaments from a Google Sheet, or from the Playmaker dashboard (Supabase) when `EVENTS_SOURCE=supabase`. The Contact form writes to that same spreadsheet and sends email through Resend. The contact endpoint is rate limited (5 submissions per minute per IP); past that it answers 429 and the form shows a "too many tries" message.
+- **Back end:** Netlify Functions. The Events page reads tournaments from a Google Sheet, or from the Playmaker dashboard (Supabase) when `EVENTS_SOURCE=supabase`. The Contact form writes to that same spreadsheet and sends email through Resend. The contact endpoint is rate limited (5 submissions per minute per IP and domain); past that it answers 429 and the form shows a "too many tries" message.
 - **Hosting:** Netlify. Every PR gets a deploy preview, and `main` is the live site.
 
 ## Where things live
@@ -64,15 +64,15 @@ Ask Ethan for these values instead of guessing them. They point at the **live** 
 
 ## House rules
 
-- **Sheets writes** go through `appendRows()` in `netlify/lib/sheets.ts`, with `safecell()` on every user-entered string. Never call `values.append` directly; without the right options, a write can overwrite existing rows.
+- **Sheets writes** go through `appendRows()` in `netlify/lib/sheets.ts`, with `safecell()` on every user-entered string. Never call `values.append` directly; without the right options, a write can overwrite existing rows. The parked `submit-order` and `submit-purchase` functions still do, with the right options; don't copy them.
 - **New endpoints are v2 functions.** Copy the shape of `submit-contact.ts`: `export default async (req: Request)`, `jsonResponse`/`readJsonRequest` from `netlify/lib/http.ts`, and `export const config: Config = { path: '/api/<name>' }`. A v2 function with a `path` must not also get a `netlify.toml` redirect; a v1 function must. Leave the `rateLimit` on `submit-contact` as it is.
 - **The Sheet is mapped by column position.** Never reorder, rename or insert columns in the middle of a tab the functions read or write.
 - **User input in email HTML** goes through `esc()`.
 - **Resend doesn't throw on failure.** It returns `{ error }`. Check it and log it.
 - **Don't touch `src/legacy/`.**
-- **Custom jerseys stay off the site.** Don't add jersey ordering, pricing or "custom jersey" copy to public pages.
+- **Online jersey ordering stays parked.** Don't add a jersey ordering flow or pricing to public pages. Existing custom jersey and uniform copy is approved, so leave it as written.
 - **Keep each page's meta tags and JSON-LD intact** (the `src/config/pageMeta.ts` entries and the `src/components/seo/` components). Don't add new pages without checking with Ethan first. A new route also needs prerender, sitemap and meta entries, or it ships as an empty page.
-- **Design:** no drop shadows (elevation is a darker bottom border), and Anton headings are always uppercase. Yellow is for calls to action and highlights, not whole sections. Match what's already there.
+- **Design:** no drop shadows (elevation is a darker bottom border; only the floating nav pill and its overlay dropdowns may carry a soft shadow), and Anton headings are always uppercase. Yellow is for calls to action and highlights, not whole sections. Match what's already there.
 - **Buttons** come from `<Button>` / `<ButtonLink>` in `src/components/ui/` (or `buttonClass()` for a plain `<a>`): variants `primary`, `secondary` and `ghost` (the transparent one for black backgrounds), sizes `sm`/`md`/`lg`/`xl`. Pair one yellow primary with a ghost, never two yellows.
-- **Mono labels** use the `text-label` (11px) and `text-label-sm` (10px) tokens from `tailwind.config.js`, uppercase and tracked. 10px is the floor for the whole site and Inter body copy never goes under 13px; don't add smaller arbitrary sizes.
+- **Mono labels** use the `text-label` (11px) and `text-label-sm` (10px) tokens from `tailwind.config.js`, uppercase and tracked. 10px is the floor for text across the whole site (the event ticker's decorative ◆ is the one exception) and Inter body copy never goes under 13px; don't add smaller arbitrary sizes.
 - **Touch:** every tap target is at least 44px (`h-11` / `min-h-11`), hover styles only apply on devices that hover, and every control has an `active:` state. Transitions name real CSS properties (`transition-colors`, `transition-[background-color,transform]`), never `transition-all`.
