@@ -1,6 +1,6 @@
 import { Helmet } from 'react-helmet-async';
+import { NightGround } from '@/components/layout/NightGround';
 import { PageLayout } from '@/components/layout/PageLayout';
-import { Diamond } from '@/components/layout/DiamondMark';
 import { ButtonLink } from '@/components/ui/Button';
 import { Container } from '@/components/ui/Container';
 
@@ -11,18 +11,18 @@ export function NotFoundPage() {
         <title>Page not found · Playmaker Sports</title>
         <meta name="robots" content="noindex" />
       </Helmet>
-      <Container as="section" className="py-24 flex flex-col items-center text-center gap-6">
-        <Diamond className="w-10 h-10 text-pm-yellow" />
-        <h1 className="font-display uppercase text-[clamp(72px,14vw,160px)] leading-none text-pm-black">
-          <span className="sr-only">Page not found · </span>404
-        </h1>
-        <p className="text-[16px] leading-[1.6] text-pm-ink max-w-[420px]">
-          This page doesn't exist. Head back to the homepage and try again.
-        </p>
-        <ButtonLink to="/" size="lg">
-          Back to home
-        </ButtonLink>
-      </Container>
+      <NightGround variant="page" labelledBy="page-title">
+        <Container className="relative pt-8 pb-16 lg:pt-12 lg:pb-24">
+          <h1 id="page-title" className="page-h1 enter">
+            <span className="sr-only">Page not found · </span>404
+          </h1>
+          <p className="page-lede mt-5 enter enter-2">This page doesn't exist. Head back to the homepage and try again.</p>
+          <ButtonLink to="/" size="lg" arrow className="mt-8 enter enter-2">
+            Back to home
+          </ButtonLink>
+        </Container>
+      </NightGround>
+      <div className="awning" aria-hidden="true" />
     </PageLayout>
   );
 }

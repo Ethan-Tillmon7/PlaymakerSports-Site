@@ -1,76 +1,96 @@
-import { Link } from 'react-router-dom';
-import { contact } from '@/config/site';
-import { FadeIn } from '@/components/ui/FadeIn';
+import { useMemo } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { ButtonLink } from '@/components/ui/Button';
 import { Container } from '@/components/ui/Container';
+import { ArrowIcon } from '@/components/ui/icons';
+import { contact } from '@/config/site';
+import { useInView } from '@/hooks/useInView';
+import { nightGroundRef } from '@/hooks/useNightGround';
+import { contactTo } from '@/lib/contactLink';
+import { Brand } from './Brand';
 
+/**
+ * Sign-off and footer in one black ground. The tagline is set to the full
+ * width of the page column (`.signoff`, components.css) and ends every page
+ * with the same line and the same way to reach out.
+ */
 export function Footer() {
+  const { pathname } = useLocation();
+  const [signoffRef, signoffInView] = useInView({ threshold: 0.25, rootMargin: '0px' });
+  const reachOut = useMemo(() => contactTo(pathname), [pathname]);
+
   return (
-    <footer className="bg-pm-black text-white pt-12 pb-safe-b">
-      <FadeIn>
-        <Container>
+    <footer
+      ref={nightGroundRef}
+      data-night
+      className="bg-pm-black text-white on-night overflow-hidden pb-[max(20px,env(safe-area-inset-bottom))]"
+    >
+      <Container>
+        <div className="signoff-wrap pt-14 lg:pt-20 pb-10 lg:pb-14 border-b border-white/15">
+          <p ref={signoffRef} className={signoffInView ? 'signoff in' : 'signoff'}>
+            <span className="l1">Made for the</span>{' '}
+            <span className="l2">
+              <mark>moment.</mark>
+            </span>
+          </p>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-5 mt-9 lg:mt-12">
+            <p className="text-[clamp(16px,1.25vw,18px)] leading-[1.55] text-white/75 max-w-[44ch]">
+              Tell us what you need and the Playmaker Sports team takes it from there.
+            </p>
+            <ButtonLink to={reachOut} size="lg" arrow className="self-start sm:self-auto">
+              Reach out
+            </ButtonLink>
+          </div>
+        </div>
 
-        {/* Row 1 — Brand + Nav */}
-        <div className="flex flex-col lg:flex-row items-start justify-between gap-8 pb-6 border-b border-white/15">
-
-          {/* Brand */}
+        <div className="flex flex-col lg:flex-row items-start justify-between gap-8 py-9 border-b border-white/15">
           <div className="shrink-0">
-            <div className="bg-pm-yellow hidden sm:inline-flex items-baseline gap-1 px-3 py-1.5 font-display text-[28px] leading-none uppercase tracking-[0.005em] rounded-xl">
-              <span className="text-white">PLAY</span><span className="text-pm-black">MAKER</span>
-            </div>
-            <p className="font-mono text-[10.5px] tracking-[0.14em] uppercase text-pm-yellow/70 mt-2">
-              Made for the Moment
-            </p>
-            <p className="text-[13px] leading-[1.5] text-white/60 mt-2 max-w-[220px]">
-              Sports merch and custom apparel for athletes and families across the US.
+            <Link to="/" aria-label="Playmaker Sports home" className="inline-block">
+              <Brand sizeClass="text-[40px] sm:text-[48px]" large />
+            </Link>
+            <p className="text-[14px] leading-[1.55] text-white/65 mt-5 max-w-[300px]">
+              Custom team uniforms and game-day accessories, from the tent at the tournament. Lafayette, LA.
             </p>
           </div>
-
-          {/* Nav — collapsed wrapping flex */}
-          <div className="flex flex-wrap gap-x-10 gap-y-5">
+          <div className="flex flex-wrap gap-x-14 gap-y-6">
             <div>
-              <h4 className="font-display uppercase text-[12px] tracking-[0.04em] text-pm-yellow mb-1">Events</h4>
-              <ul className="flex flex-col font-mono text-[12px] tracking-[0.04em] text-white/70 uppercase">
-                <li><Link to="/events" className="inline-flex items-center min-h-11 select-none hover:text-white active:text-white transition-colors duration-150">Schedule</Link></li>
+              <h2 className="foot-h">Events</h2>
+              <ul>
+                <li><Link to="/events" className="foot-link">Schedule</Link></li>
               </ul>
             </div>
             <div>
-              <h4 className="font-display uppercase text-[12px] tracking-[0.04em] text-pm-yellow mb-1">Apparel</h4>
-              <ul className="flex flex-col font-mono text-[12px] tracking-[0.04em] text-white/70 uppercase">
-                <li><Link to="/apparel" className="inline-flex items-center min-h-11 select-none hover:text-white active:text-white transition-colors duration-150">Custom jerseys</Link></li>
-                <li><Link to="/apparel" className="inline-flex items-center min-h-11 select-none hover:text-white active:text-white transition-colors duration-150">Accessories</Link></li>
-                <li><Link to="/apparel" className="inline-flex items-center min-h-11 select-none hover:text-white active:text-white transition-colors duration-150">Player cards</Link></li>
+              <h2 className="foot-h">Apparel</h2>
+              <ul>
+                <li><Link to="/apparel#uniforms" className="foot-link">Custom jerseys</Link></li>
+                <li><Link to="/apparel#accessories" className="foot-link">Accessories</Link></li>
               </ul>
             </div>
             <div>
-              <h4 className="font-display uppercase text-[12px] tracking-[0.04em] text-pm-yellow mb-1">Company</h4>
-              <ul className="flex flex-col font-mono text-[12px] tracking-[0.04em] text-white/70 uppercase">
-                <li><Link to="/about" className="inline-flex items-center min-h-11 select-none hover:text-white active:text-white transition-colors duration-150">About</Link></li>
-                <li><Link to="/contact" className="inline-flex items-center min-h-11 select-none hover:text-white active:text-white transition-colors duration-150">Contact</Link></li>
-                <li><Link to="/faq" className="inline-flex items-center min-h-11 select-none hover:text-white active:text-white transition-colors duration-150">FAQ</Link></li>
+              <h2 className="foot-h">Company</h2>
+              <ul>
+                <li><Link to="/about" className="foot-link">About</Link></li>
+                <li><Link to={reachOut} className="foot-link">Contact</Link></li>
+                <li><Link to="/faq" className="foot-link">FAQ</Link></li>
               </ul>
             </div>
           </div>
         </div>
 
-        {/* Row 2 — Copyright (inside footer, no separate element) */}
-        <div className="flex flex-wrap items-center justify-between gap-4 py-5 font-mono text-[10.5px] tracking-[0.1em] uppercase text-white/45">
+        <div className="flex flex-wrap items-center justify-between gap-4 py-4 text-[13px] text-white/60">
           <div>© 2026 Playmaker Sports LLC · Lafayette, LA</div>
-          <div className="flex gap-6">
-            {contact.instagram && (
-              <a
-                href={`https://www.instagram.com/${contact.instagram}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:text-white active:text-white transition-colors duration-150"
-              >
-                Instagram ↗
-              </a>
-            )}
-          </div>
+          {contact.instagram && (
+            <a
+              href={`https://www.instagram.com/${contact.instagram}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 min-h-11 hover:text-white active:text-white transition-colors duration-150"
+            >
+              Instagram <ArrowIcon className="w-3.5 h-3.5 -rotate-45" />
+            </a>
+          )}
         </div>
-
-        </Container>
-      </FadeIn>
+      </Container>
     </footer>
   );
 }

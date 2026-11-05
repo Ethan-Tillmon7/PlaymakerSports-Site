@@ -1,11 +1,8 @@
-import { Link } from 'react-router-dom';
 import { Nav } from './Nav';
 import { Footer } from './Footer';
 import { DiamondMarkSymbol } from './DiamondMark';
-import { AnnouncementBar } from './AnnouncementBar';
 import { JsonLd } from '@/components/seo/JsonLd';
 import { SITE_URL, contact } from '@/config/site';
-import { Container } from '@/components/ui/Container';
 
 const BREADCRUMB_PATHS: Record<string, string> = {
   Events: '/events',
@@ -32,17 +29,11 @@ const orgSchema = {
 
 interface PageLayoutProps {
   children: React.ReactNode;
+  /** The page's name, for the breadcrumb JSON-LD. PageHeader shows the visible breadcrumb. */
   breadcrumb?: string;
-  announcement?: string;
-  /** 'onDark' when the page pulls a dark hero up under the nav (About), so the breadcrumb stays legible. */
-  breadcrumbTone?: 'onPaper' | 'onDark';
-  /** Ground under the page. 'night' for all-dark pages (Home, About), so a short
-   *  page on a tall screen doesn't show a paper band above the black footer. */
-  ground?: 'paper' | 'night';
 }
 
-export function PageLayout({ children, breadcrumb, announcement, breadcrumbTone = 'onPaper', ground = 'paper' }: PageLayoutProps) {
-  const onDark = breadcrumbTone === 'onDark';
+export function PageLayout({ children, breadcrumb }: PageLayoutProps) {
   const breadcrumbSchema = breadcrumb ? {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
@@ -63,29 +54,18 @@ export function PageLayout({ children, breadcrumb, announcement, breadcrumbTone 
     <div className="min-h-[100svh] flex flex-col">
       <a
         href="#main"
-        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:bg-pm-yellow focus:text-pm-black focus:font-display focus:uppercase focus:text-[14px] focus:tracking-[0.04em] focus:px-4 focus:h-10 focus:inline-flex focus:items-center focus:rounded-xl focus:border-b-2 focus:border-pm-yellow-deep"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 btn btn-primary btn-sm"
       >
         Skip to content
       </a>
       <DiamondMarkSymbol />
       <JsonLd data={orgSchema} />
       {breadcrumbSchema && <JsonLd data={breadcrumbSchema} />}
-      {announcement && <AnnouncementBar message={announcement} />}
-      {breadcrumb && (
-        <div className="hidden xl:block relative h-0 overflow-visible z-20 pointer-events-none">
-          <Container className="absolute top-[10px] left-0 right-0 h-16 flex items-center">
-            <div className={`flex-1 flex items-center gap-1 font-mono text-[10.5px] tracking-[0.1em] uppercase pointer-events-auto ${onDark ? 'text-white/60' : 'text-pm-muted'}`}>
-              <Link to="/" className={`transition-colors duration-150 ${onDark ? 'hover:text-white' : 'hover:text-pm-ink'}`}>Home</Link>
-              <span className="mx-1">/</span>
-              <span className={onDark ? 'text-white' : 'text-pm-ink'}>{breadcrumb}</span>
-            </div>
-            <div className="w-[calc(100%-20px)] max-w-[800px] shrink-0" />
-            <div className="flex-1" />
-          </Container>
-        </div>
-      )}
       <Nav />
-      <main id="main" tabIndex={-1} className={`flex-1 focus:outline-none ${ground === 'night' ? 'bg-pm-black' : ''}`}>
+      {/* Every page opens on a night ground (the home hero, PageHeader) that
+          slides up under the floating nav: the 58px the bar takes in flow. Its
+          10px gap from the top is sticky offset, which takes no space. */}
+      <main id="main" tabIndex={-1} className="flex-1 -mt-[58px] focus:outline-none">
         {children}
       </main>
       <Footer />
