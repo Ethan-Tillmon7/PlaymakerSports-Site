@@ -5,7 +5,7 @@ export function useInView(options?: IntersectionObserverInit) {
   const observerRef = useRef<IntersectionObserver | null>(null);
 
   const ref = useCallback(
-    (el: HTMLDivElement | null) => {
+    (el: HTMLElement | null) => {
       observerRef.current?.disconnect();
       observerRef.current = null;
       if (!el) return;
