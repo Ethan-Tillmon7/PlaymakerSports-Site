@@ -1,97 +1,47 @@
+import { useState, type CSSProperties } from 'react';
 import { Helmet } from 'react-helmet-async';
-import type { PublicEvent } from '@shared/events';
+import { Diamond } from '@/components/layout/DiamondMark';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { PageLayout } from '@/components/layout/PageLayout';
 import { Button, ButtonLink } from '@/components/ui/Button';
 import { Container } from '@/components/ui/Container';
+import { ChevronIcon } from '@/components/ui/icons';
+import { Tabs } from '@/components/ui/Tabs';
 import { PAGE_META } from '@/config/pageMeta';
 import { SITE_URL } from '@/config/site';
+import { OUR_STORY_PARTNERS } from '@/features/about';
 import { useInView } from '@/hooks/useInView';
+import { askTo } from '@/lib/contactLink';
 import { localISODate } from '@/lib/dates';
-import type { RequestFailure } from '@/lib/http';
 import { EventCard } from './components/EventCard';
-import { EventSkeleton } from './components/EventSkeleton';
-import { NoUpcomingEvents } from './components/NoUpcomingEvents';
+import { NextStopPanel, NextStopSkeleton } from './components/UpcomingEvents';
 import { eventStatus, groupByMonth } from './eventDates';
-import { eventGridClass, groupBySport, hasSports } from './eventGrid';
+import { bySport, failureCopy, SPORT_LABELS, sportTabs, upcomingOf, type SportFilter } from './eventView';
 import { useEvents } from './useEvents';
 
-const failureCopy: Record<RequestFailure, string> = {
-  offline: "You're offline. Once you have signal again, try reloading the schedule.",
-  timeout: 'The schedule is taking too long to load. The connection may be weak, so give it another try.',
-  server: "We couldn't load the schedule just now. Try again in a moment.",
-};
+const PANEL_ID = 'schedule-panel';
+const TAB_PREFIX = 'schedule-tab';
 
-const monthHeadingClass = {
-  // Top-level month headers (Sheet feed, no sports): the section title.
-  section: 'font-display uppercase text-[clamp(24px,2.5vw,36px)] leading-[0.95] tracking-[0.005em] text-pm-black',
-  // Month labels inside a sport section: a mono eyebrow, so the sport stays the headline.
-  sub: 'font-mono text-label uppercase text-pm-yellow-ink',
-} as const;
-
-/** A run of month groups for one list of events, each month a card grid. */
-function MonthGroups({
-  events,
-  level,
-  animated,
-  today,
-  delayOf,
-}: {
-  events: PublicEvent[];
-  level: keyof typeof monthHeadingClass;
-  animated: boolean;
-  today: string;
-  delayOf: (t: PublicEvent) => number;
-}) {
-  const Heading = level === 'section' ? 'h2' : 'h3';
-  return (
-    <>
-      {groupByMonth(events).map((group) => {
-        const id = `month-${events[0]?.sport ?? 'all'}-${group.key}`;
-        return (
-          <section key={group.key} aria-labelledby={id}>
-            {level === 'section' ? (
-              <div className="flex items-baseline justify-between gap-4 mb-5 pb-3 border-b-2 border-pm-black">
-                <Heading id={id} className={monthHeadingClass.section}>
-                  {group.label}
-                </Heading>
-                <span className="font-mono text-label uppercase text-pm-muted shrink-0">
-                  {group.events.length} {group.events.length === 1 ? 'event' : 'events'}
-                </span>
-              </div>
-            ) : (
-              <Heading id={id} className={`${monthHeadingClass.sub} mb-3`}>
-                {group.label}
-              </Heading>
-            )}
-            <ul className={eventGridClass}>
-              {group.events.map((t) => (
-                <EventCard key={t.id} t={t} animated={animated} delay={delayOf(t)} status={eventStatus(t, today)} />
-              ))}
-            </ul>
-          </section>
-        );
-      })}
-    </>
-  );
-}
+const stateTitleClass = 'text-[22px] font-semibold leading-[1.2] tracking-[-0.02em] text-pm-black';
 
 export function EventsPage() {
   const result = useEvents({ showLoadingBar: true });
-  const [listRef, listInView] = useInView();
+  const [panelRef, inView] = useInView({ threshold: 0.25, rootMargin: '0px' });
+  const [sport, setSport] = useState<SportFilter>('all');
+  // Set by the first tab change: from then on new dates slide in from the side the tab moved toward.
+  const [direction, setDirection] = useState<1 | -1 | null>(null);
 
   const today = localISODate();
   const allEvents = result.status === 'success' ? result.events : [];
-  const upcomingEvents = allEvents.filter((t) => t.endDate >= today);
-  const pastEvents = [...allEvents].filter((t) => t.endDate < today).reverse();
+  const upcoming = upcomingOf(allEvents, today);
+  const pastEvents = allEvents.filter((t) => t.endDate < today).reverse();
 
-  // The dashboard feed carries a sport on every event, so the page leads with
-  // Baseball / Softball / Soccer sections and months inside them. The Sheet
-  // feed has no sport, and keeps the month-only layout.
-  const sportGroups = hasSports(upcomingEvents) ? groupBySport(upcomingEvents) : null;
-  // Stagger cards in the order they appear on screen, not feed order.
-  const rendered = sportGroups ? sportGroups.flatMap((g) => g.events) : upcomingEvents;
-  const delayOf = (t: PublicEvent) => Math.min(rendered.indexOf(t), 10) * 50;
+  // The dashboard feed carries a sport on every event, so the list can be
+  // filtered by it. The Sheet feed has none, and the page shows no tabs.
+  const tabs = sportTabs(upcoming);
+  const filter = tabs?.some((tab) => tab.value === sport) ? sport : 'all';
+  const [next, ...later] = bySport(upcoming, filter);
+  const swap = direction ? ({ '--dir': direction } as CSSProperties) : undefined;
 
   return (
     <PageLayout breadcrumb="Events">
@@ -105,87 +55,178 @@ export function EventsPage() {
         <meta property="og:type" content="website" />
       </Helmet>
 
-      <PageHeader eyebrow="Tournaments · Where to find us" title="Events & Tournaments" />
+      <PageHeader
+        breadcrumb="Events"
+        title="Events & tournaments"
+        lede="Upcoming tournaments where you can find the Playmaker Sports tent."
+      />
 
-      <Container className="py-12 lg:py-16">
-        {result.status === 'loading' && <EventSkeleton />}
-
-        {result.status === 'success' && allEvents.length === 0 && <NoUpcomingEvents />}
-
-        {result.status === 'success' && allEvents.length > 0 && (
-          <>
-            {upcomingEvents.length > 0 ? (
-              <div ref={listRef} className="flex flex-col gap-12 lg:gap-14">
-                {sportGroups ? (
-                  sportGroups.map((group) => (
-                    <section key={group.key} aria-labelledby={`sport-${group.key}`}>
-                      <div className="flex items-baseline justify-between gap-4 mb-6 pb-3 border-b-2 border-pm-black">
-                        <h2
-                          id={`sport-${group.key}`}
-                          className="font-display uppercase text-[clamp(28px,3vw,44px)] leading-[0.95] tracking-[0.005em] text-pm-black"
-                        >
-                          {group.label}
-                        </h2>
-                        <span className="font-mono text-label uppercase text-pm-muted shrink-0">
-                          {group.events.length} {group.events.length === 1 ? 'event' : 'events'}
-                        </span>
-                      </div>
-                      <div className="flex flex-col gap-8">
-                        <MonthGroups events={group.events} level="sub" animated={listInView} today={today} delayOf={delayOf} />
-                      </div>
-                    </section>
-                  ))
-                ) : (
-                  <MonthGroups events={upcomingEvents} level="section" animated={listInView} today={today} delayOf={delayOf} />
-                )}
-              </div>
-            ) : (
-              <NoUpcomingEvents />
+      <section aria-labelledby="sched-title">
+        <Container className="sec-y">
+          <div className="sec-head">
+            <h2 id="sched-title" className="h-section">
+              Where the tent is next
+            </h2>
+            {tabs && (
+              <Tabs
+                items={tabs}
+                value={filter}
+                onChange={(value, dir) => {
+                  setSport(value);
+                  setDirection(dir);
+                }}
+                label="Filter by sport"
+                idPrefix={TAB_PREFIX}
+                controls={PANEL_ID}
+                className="self-start md:self-auto"
+              />
             )}
+          </div>
 
-            {pastEvents.length > 0 && (
-              <details className="mt-14 pt-6 border-t border-pm-rule group">
-                <summary className="cursor-pointer inline-flex items-center gap-2 min-h-11 list-none [&::-webkit-details-marker]:hidden">
-                  <svg
-                    className="w-3.5 h-3.5 text-pm-muted transition-transform duration-150 group-open:rotate-90 shrink-0"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    aria-hidden="true"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
-                  <span className="font-mono text-[11px] tracking-[0.16em] uppercase text-pm-muted">
-                    Past events ({pastEvents.length})
-                  </span>
-                </summary>
-                <ul className={`mt-6 ${eventGridClass}`}>
-                  {pastEvents.map((t) => (
-                    <EventCard key={t.id} t={t} past />
+          {/* Loading: the same shape as the dates, so nothing jumps when they arrive. */}
+          {result.status === 'loading' && (
+            <div role="status" aria-label="Loading the schedule">
+              <div className="card board next-panel in">
+                <NextStopSkeleton />
+                <div className="p-6 sm:p-8 lg:p-10 lg:w-[400px] flex flex-col justify-center gap-3 border-t border-pm-rule lg:border-t-0" aria-hidden="true">
+                  <span className="sk sk-line" />
+                  <span className="sk sk-line" style={{ width: '80%' }} />
+                  <span className="sk mt-2" style={{ width: 120, height: 36 }} />
+                </div>
+              </div>
+              <div className="mt-10 lg:mt-12" aria-hidden="true">
+                <div className="month-head">
+                  <span className="sk" style={{ width: 160, height: 22 }} />
+                  <span className="sk sk-line" style={{ width: 56 }} />
+                </div>
+                <ul className="ev-grid">
+                  {[0, 1].map((i) => (
+                    <li key={i} className="ev">
+                      <span className="sk" style={{ width: 68, height: 68, borderRadius: 10, flex: 'none' }} />
+                      <div className="flex-1">
+                        <span className="sk" style={{ width: '55%', height: 24 }} />
+                        <span className="sk sk-line mt-2.5" style={{ width: '40%' }} />
+                      </div>
+                    </li>
                   ))}
                 </ul>
-              </details>
-            )}
-          </>
-        )}
+              </div>
+            </div>
+          )}
 
-        {result.status === 'error' && (
-          <div role="alert" className="border border-pm-rule rounded-xl p-10 text-center max-w-[640px] mx-auto animate-fade-up">
-            <span className="font-mono text-[11px] tracking-[0.16em] uppercase text-pm-muted">
-              Couldn't load schedule
-            </span>
-            <p className="text-[15px] leading-[1.6] text-pm-ink mt-4">{failureCopy[result.reason]}</p>
-            <div className="mt-7 flex flex-wrap items-center justify-center gap-2">
-              <Button size="md" onClick={result.retry}>
-                Try again
-              </Button>
-              <ButtonLink to="/contact" variant="secondary" size="md">
+          {/* Loaded: the next stop leads, then every date after it, by month. */}
+          {result.status === 'success' && next && (
+            <div
+              // Keyed by tab, so the dates remount and the slide plays on every change.
+              key={filter}
+              id={PANEL_ID}
+              role={tabs ? 'tabpanel' : undefined}
+              aria-labelledby={tabs ? `${TAB_PREFIX}-${filter}` : undefined}
+            >
+              <div
+                ref={panelRef}
+                className={['card board next-panel', inView ? 'in' : '', direction ? 'swapped' : ''].filter(Boolean).join(' ')}
+                style={swap}
+              >
+                <NextStopPanel t={next} today={today} />
+                <div className="p-6 sm:p-8 lg:p-10 lg:w-[400px] flex flex-col justify-center items-start gap-4 border-t border-pm-rule lg:border-t-0">
+                  <p className="text-[16px] leading-[1.55] text-pm-muted">
+                    Game-day accessories are sold on site at every event. See something you like? Ask and we'll set it aside.
+                  </p>
+                  <ButtonLink to="/apparel#accessories" variant="secondary" size="sm" arrow>
+                    All apparel
+                  </ButtonLink>
+                </div>
+              </div>
+
+              <div className={`flex flex-col gap-10 mt-10 lg:mt-12 ${direction ? 'swapped' : ''}`} style={swap}>
+                {groupByMonth(later).map((group) => (
+                  <section key={group.key} aria-labelledby={`month-${group.key}`}>
+                    <div className="month-head">
+                      <h3 id={`month-${group.key}`}>{group.label}</h3>
+                      <span className="small">
+                        {group.events.length} {group.events.length === 1 ? 'event' : 'events'}
+                      </span>
+                    </div>
+                    <ul className="ev-grid">
+                      {group.events.map((t) => (
+                        <EventCard key={t.id} t={t} status={eventStatus(t, today)} />
+                      ))}
+                    </ul>
+                  </section>
+                ))}
+                {later.length === 0 && (
+                  <p className="small">
+                    {filter === 'all' ? 'No more dates posted yet.' : `No more ${SPORT_LABELS[filter].toLowerCase()} dates posted yet.`}
+                  </p>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Nothing upcoming (the feed may still hold past events) */}
+          {result.status === 'success' && !next && (
+            <div className="card state-in px-6 py-14 sm:py-20 flex flex-col items-center text-center">
+              <Diamond className="w-9 h-9 text-pm-yellow-ink" />
+              <p className={`${stateTitleClass} mt-5`}>Schedule posts soon</p>
+              <p className="small mt-2 max-w-[40ch]">The next dates are being confirmed.</p>
+              <ButtonLink to="/contact" variant="secondary" size="sm" className="mt-6">
                 Ask us where we'll be
               </ButtonLink>
             </div>
+          )}
+
+          {result.status === 'error' && (
+            <div role="alert" className="card state-in px-6 py-14 sm:py-20 flex flex-col items-center text-center">
+              <p className={stateTitleClass}>Couldn't load the schedule</p>
+              <p className="small mt-2 max-w-[40ch]">{failureCopy[result.reason]}</p>
+              <div className="flex flex-wrap items-center justify-center gap-2 mt-6">
+                <Button variant="dark" size="sm" onClick={result.retry}>
+                  Try again
+                </Button>
+                <ButtonLink to="/contact" variant="secondary" size="sm">
+                  Ask us where we'll be
+                </ButtonLink>
+              </div>
+            </div>
+          )}
+
+          {/* Past events: kept, but out of the way. */}
+          {pastEvents.length > 0 && (
+            <details className="mt-12 pt-4 border-t border-pm-rule">
+              <summary className="past-toggle">
+                Past events <span className="tab-n !ml-0">{pastEvents.length}</span>
+                <ChevronIcon />
+              </summary>
+              <ul className="ev-grid mt-3 pb-2">
+                {pastEvents.map((t) => (
+                  <EventCard key={t.id} t={t} past />
+                ))}
+              </ul>
+            </details>
+          )}
+        </Container>
+      </section>
+
+      {/* For tournament directors */}
+      <section className="sec-warm border-t border-pm-rule" aria-labelledby="host-title">
+        <Container className="py-12 lg:py-16 flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div className="min-w-0">
+            <h2 id="host-title" className="h-section">
+              Running a tournament?
+            </h2>
+            <p className="lead mt-3">{OUR_STORY_PARTNERS}</p>
           </div>
-        )}
-      </Container>
+          <ButtonLink
+            to={askTo('bringing the Playmaker tent to our tournament', 'Event Organizer')}
+            size="lg"
+            arrow
+            className="self-start md:self-auto"
+          >
+            Ask about bringing the tent
+          </ButtonLink>
+        </Container>
+      </section>
     </PageLayout>
   );
 }
