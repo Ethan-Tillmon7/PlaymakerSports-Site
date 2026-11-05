@@ -41,6 +41,9 @@ const MISSING: Record<RequiredField, string> = {
 };
 const EMAIL_INVALID = 'That email looks off. Check it for a typo.';
 
+/** The typing order. Return moves down this list, it doesn't send a half-filled form. */
+const FIELD_ORDER = ['name', 'email', 'phone', 'event_name', 'message'] as const;
+
 function requiredError(field: RequiredField, error: FieldError | undefined, value: string | undefined): string | undefined {
   if (!error) return undefined;
   if (!value?.trim()) return MISSING[field];
@@ -70,7 +73,7 @@ const errorProps = (id: string, error?: string) =>
   error ? { 'aria-invalid': true as const, 'aria-describedby': `${id}-err` } : {};
 
 /**
- * The contact form: the intro line, the fields, and the sent state. It posts
+ * The contact form: the fields and the sent state. It posts
  * to /api/submit-contact with the shared/contact.ts schema. An "ask" link
  * (askTo in lib/contactLink) arrives as ?role=…&ask=… and starts the message.
  */
@@ -98,7 +101,11 @@ export function ContactForm() {
   const hint = ROLES.find((role) => role.value === values.role)?.hint ?? ROLES[0].hint;
 
   useEffect(() => {
-    if (sentTo) sentRef.current?.focus({ preventScroll: true });
+    if (!sentTo) return;
+    sentRef.current?.focus({ preventScroll: true });
+    // The form just collapsed, so on a short phone the confirmation can end up
+    // under the nav. `nearest` only moves the page when it has to.
+    sentRef.current?.closest('section')?.scrollIntoView({ block: 'nearest' });
   }, [sentTo]);
 
   // An "ask" link starts the message and picks the role. It never replaces
@@ -207,157 +214,171 @@ export function ContactForm() {
   const emailError = requiredError('email', errors.email, values.email);
   const messageError = requiredError('message', errors.message, values.message);
 
+  // noValidate: zod owns validation so every error shows in the same place and style.
   return (
-    <>
-      <p className="small mt-1.5">Tell us what you're after and we'll follow up. The more specific, the better.</p>
-
-      {/* noValidate: zod owns validation so every error shows in the same place and style. */}
-      <form
-        onSubmit={(e) => {
-          // The busy button ignores clicks, but Enter in a field would still send a second copy.
-          if (isSubmitting) e.preventDefault();
-          else void handleSubmit(onSubmit)(e);
-        }}
-        noValidate
-        className="mt-5 space-y-4"
-      >
-        <fieldset className="fld">
-          <legend className="fld-legend">
-            <span>
-              I am a<span className="req" aria-hidden="true">*</span>
-            </span>
-          </legend>
-          <div className="toggles">
-            {ROLES.map((role) => (
-              <label key={role.value} className="toggle">
-                <input {...register('role')} type="radio" value={role.value} className="sr-only" />
-                <span>{role.label}</span>
-              </label>
-            ))}
-          </div>
-          <FieldErrorText id="cf-role-err" error={errors.role?.message} />
-        </fieldset>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className="fld">
-            <label htmlFor="cf-name">
-              <span>
-                Name<span className="req" aria-hidden="true">*</span>
-              </span>
+    <form
+      onSubmit={(e) => {
+        // The busy button ignores clicks, but Enter on it would still send a second copy.
+        if (isSubmitting) e.preventDefault();
+        else void handleSubmit(onSubmit)(e);
+      }}
+      onKeyDown={(e) => {
+        if (e.key !== 'Enter' || e.nativeEvent.isComposing || !(e.target instanceof HTMLInputElement)) return;
+        e.preventDefault();
+        // A role toggle isn't in the list, so it moves on to the first field.
+        const next = FIELD_ORDER[(FIELD_ORDER as readonly string[]).indexOf(e.target.name) + 1];
+        if (next) setFocus(next);
+      }}
+      noValidate
+      className="mt-5 space-y-4"
+    >
+      <fieldset className="fld">
+        <legend className="fld-legend">
+          <span>
+            I am a<span className="req" aria-hidden="true">*</span>
+          </span>
+        </legend>
+        <div className="toggles">
+          {ROLES.map((role) => (
+            <label key={role.value} className="toggle">
+              <input {...register('role')} type="radio" value={role.value} className="sr-only" />
+              <span>{role.label}</span>
             </label>
-            <input
-              {...live('name')}
-              id="cf-name"
-              autoComplete="name"
-              maxLength={CONTACT_LIMITS.name}
-              aria-required="true"
-              className="input"
-              placeholder="Full name"
-              {...errorProps('cf-name', nameError)}
-            />
-            <FieldErrorText id="cf-name-err" error={nameError} />
-          </div>
-          <div className="fld">
-            <label htmlFor="cf-email">
-              <span>
-                Email<span className="req" aria-hidden="true">*</span>
-              </span>
-            </label>
-            <input
-              {...live('email')}
-              id="cf-email"
-              type="email"
-              autoComplete="email"
-              inputMode="email"
-              spellCheck={false}
-              maxLength={CONTACT_LIMITS.email}
-              aria-required="true"
-              className="input"
-              placeholder="you@email.com"
-              {...errorProps('cf-email', emailError)}
-            />
-            <FieldErrorText id="cf-email-err" error={emailError} />
-          </div>
+          ))}
         </div>
+        <FieldErrorText id="cf-role-err" error={errors.role?.message} />
+      </fieldset>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className="fld">
-            <label htmlFor="cf-phone">
-              Phone <span className="opt">Optional</span>
-            </label>
-            <input
-              {...register('phone')}
-              id="cf-phone"
-              type="tel"
-              autoComplete="tel"
-              maxLength={CONTACT_LIMITS.phone}
-              className="input"
-              placeholder="(337) 555-0100"
-              {...errorProps('cf-phone', errors.phone?.message)}
-            />
-            <FieldErrorText id="cf-phone-err" error={errors.phone?.message} />
-          </div>
-          <div className="fld">
-            <label htmlFor="cf-event" className="whitespace-nowrap">
-              Tournament or event <span className="opt">Optional</span>
-            </label>
-            <input
-              {...register('event_name')}
-              id="cf-event"
-              maxLength={CONTACT_LIMITS.event_name}
-              className="input"
-              {...errorProps('cf-event', errors.event_name?.message)}
-            />
-            <FieldErrorText id="cf-event-err" error={errors.event_name?.message} />
-          </div>
-        </div>
-
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div className="fld">
-          <label htmlFor="cf-message">
+          <label htmlFor="cf-name">
             <span>
-              Message<span className="req" aria-hidden="true">*</span>
+              Name<span className="req" aria-hidden="true">*</span>
             </span>
           </label>
-          <textarea
-            {...live('message')}
-            id="cf-message"
-            rows={4}
-            maxLength={CONTACT_LIMITS.message}
+          <input
+            {...live('name')}
+            id="cf-name"
+            autoComplete="name"
+            autoCapitalize="words"
+            autoCorrect="off"
+            enterKeyHint="next"
+            maxLength={CONTACT_LIMITS.name}
             aria-required="true"
             className="input"
-            placeholder={hint}
-            {...errorProps('cf-message', messageError)}
+            placeholder="Full name"
+            {...errorProps('cf-name', nameError)}
           />
-          <FieldErrorText id="cf-message-err" error={messageError} />
-          {messageLength > CONTACT_LIMITS.message * 0.8 && (
-            <p className="caption mt-1.5 text-right tabular-nums" aria-live="polite">
-              {messageLength.toLocaleString('en-US')} / {CONTACT_LIMITS.message.toLocaleString('en-US')}
-            </p>
-          )}
+          <FieldErrorText id="cf-name-err" error={nameError} />
         </div>
-
-        {/* Honeypot. Off-screen and out of the tab order, so only bots fill it in. */}
-        <div aria-hidden="true" className="absolute -left-[9999px] w-px h-px overflow-hidden">
-          <label htmlFor="cf-company">Company</label>
-          <input {...register('company')} id="cf-company" type="text" tabIndex={-1} autoComplete="off" />
+        <div className="fld">
+          <label htmlFor="cf-email">
+            <span>
+              Email<span className="req" aria-hidden="true">*</span>
+            </span>
+          </label>
+          <input
+            {...live('email')}
+            id="cf-email"
+            type="email"
+            autoComplete="email"
+            inputMode="email"
+            autoCapitalize="none"
+            autoCorrect="off"
+            enterKeyHint="next"
+            spellCheck={false}
+            maxLength={CONTACT_LIMITS.email}
+            aria-required="true"
+            className="input"
+            placeholder="you@email.com"
+            {...errorProps('cf-email', emailError)}
+          />
+          <FieldErrorText id="cf-email-err" error={emailError} />
         </div>
+      </div>
 
-        {submitError && (
-          <p role="alert" className="err">
-            <AlertIcon />
-            <span>{submitErrorCopy[submitError]}</span>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="fld">
+          <label htmlFor="cf-phone">
+            Phone <span className="opt">Optional</span>
+          </label>
+          <input
+            {...register('phone')}
+            id="cf-phone"
+            type="tel"
+            autoComplete="tel"
+            enterKeyHint="next"
+            maxLength={CONTACT_LIMITS.phone}
+            className="input"
+            placeholder="(337) 555-0100"
+            {...errorProps('cf-phone', errors.phone?.message)}
+          />
+          <FieldErrorText id="cf-phone-err" error={errors.phone?.message} />
+        </div>
+        <div className="fld">
+          <label htmlFor="cf-event" className="whitespace-nowrap">
+            Tournament or event <span className="opt">Optional</span>
+          </label>
+          <input
+            {...register('event_name')}
+            id="cf-event"
+            autoCapitalize="words"
+            enterKeyHint="next"
+            maxLength={CONTACT_LIMITS.event_name}
+            className="input"
+            {...errorProps('cf-event', errors.event_name?.message)}
+          />
+          <FieldErrorText id="cf-event-err" error={errors.event_name?.message} />
+        </div>
+      </div>
+
+      <div className="fld">
+        <label htmlFor="cf-message">
+          <span>
+            Message<span className="req" aria-hidden="true">*</span>
+          </span>
+        </label>
+        <textarea
+          {...live('message')}
+          id="cf-message"
+          rows={4}
+          maxLength={CONTACT_LIMITS.message}
+          aria-required="true"
+          className="input"
+          placeholder={hint}
+          {...errorProps('cf-message', messageError)}
+        />
+        <FieldErrorText id="cf-message-err" error={messageError} />
+        {messageLength > CONTACT_LIMITS.message * 0.8 && (
+          <p className="caption mt-1.5 text-right tabular-nums" aria-live="polite">
+            {messageLength.toLocaleString('en-US')} / {CONTACT_LIMITS.message.toLocaleString('en-US')}
           </p>
         )}
+      </div>
 
-        {/* aria-busy, not disabled: the button keeps its width, its place in the
-            tab order and its label for screen readers while it works. */}
+      {/* Honeypot. Off-screen and out of the tab order, so only bots fill it in. */}
+      <div aria-hidden="true" className="absolute -left-[9999px] w-px h-px overflow-hidden">
+        <label htmlFor="cf-company">Company</label>
+        <input {...register('company')} id="cf-company" type="text" tabIndex={-1} autoComplete="off" />
+      </div>
+
+      {submitError && (
+        <p role="alert" className="err">
+          <AlertIcon />
+          <span>{submitErrorCopy[submitError]}</span>
+        </p>
+      )}
+
+      {/* aria-busy, not disabled: the button keeps its width, its place in the
+          tab order and its label for screen readers while it works. */}
+      <div className="pt-2">
         <button type="submit" data-submit aria-busy={isSubmitting || undefined} className="btn btn-primary btn-lg w-full">
           <svg className="spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" aria-hidden="true">
             <path d="M12 3a9 9 0 1 0 9 9" />
           </svg>
           <span>{isSubmitting ? 'Sending' : 'Send message'}</span>
         </button>
-      </form>
-    </>
+      </div>
+    </form>
   );
 }
