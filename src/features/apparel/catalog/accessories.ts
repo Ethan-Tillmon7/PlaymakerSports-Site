@@ -1,4 +1,4 @@
-import { COLOR_MAP, colorLabel, parseVariantName } from './parseVariantName';
+import { parseVariantName } from './parseVariantName';
 import { toResponsive, type ImageMetadata, type ResponsiveImageData } from '@/lib/responsiveImage';
 
 // Product-type groupings for the All Accessories view, in display order.
@@ -32,27 +32,32 @@ interface CategoryDef {
   folder: string;
   prefix: string;
   group: AccessoryGroup;
+  /**
+   * File name (no extension) of the photo that fronts the category. Without
+   * one the cover is the "-package" shot, or else the first design by name.
+   */
+  cover?: string;
 }
 
 const IN_STOCK: CategoryDef[] = [
   // Jewelry
-  { id: 'chains', name: 'Chains', desc: 'Gold and silver rope chains with baseball medallions.', folder: 'chains', prefix: 'chain-', group: 'Jewelry' },
-  { id: 'cubans', name: 'Cubans', desc: 'Classic Cuban link chains — bold look for the field.', folder: 'cubans', prefix: 'cuban-', group: 'Jewelry' },
-  { id: 'bead-necklaces', name: 'Bead Necklaces', desc: 'Colorful bead necklaces to rep your team colors.', folder: 'bead-necklaces', prefix: 'beadNecklace-', group: 'Jewelry' },
+  { id: 'chains', name: 'Chains', desc: 'Gold and silver rope chains with baseball medallions.', folder: 'chains', prefix: 'chain-', group: 'Jewelry', cover: 'chain-gold-batter-medallion' },
+  { id: 'cubans', name: 'Cubans', desc: 'Classic Cuban link chains — bold look for the field.', folder: 'cubans', prefix: 'cuban-', group: 'Jewelry', cover: 'cuban-gold' },
+  { id: 'bead-necklaces', name: 'Bead necklaces', desc: 'Colorful bead necklaces to rep your team colors.', folder: 'bead-necklaces', prefix: 'beadNecklace-', group: 'Jewelry', cover: 'beadNecklace-gold-black' },
   // Wearables
-  { id: 'arm-sleeves', name: 'Arm Sleeves', desc: 'Compression arm sleeves in every colorway.', folder: 'arm-sleeves', prefix: 'armsleeve-', group: 'Wearables' },
-  { id: 'sliding-mitts', name: 'Sliding Mitts', desc: 'Protective sliding mitts in a stack of custom designs.', folder: 'sliding-mitts', prefix: 'slidingMitt-', group: 'Wearables' },
-  { id: 'eye-black', name: 'Eye Black', desc: 'Anti-glare eye black for game day.', folder: 'eye-black', prefix: 'eyeblack-', group: 'Wearables' },
-  { id: 'wrist-tape', name: 'Wrist Tape', desc: 'Self-adhesive grip tape in bright game-day colors.', folder: 'wrist-tape', prefix: 'wristTape-', group: 'Wearables' },
+  { id: 'arm-sleeves', name: 'Arm sleeves', desc: 'Compression arm sleeves in every colorway.', folder: 'arm-sleeves', prefix: 'armsleeve-', group: 'Wearables', cover: 'armsleeve-blue-red-white-digitalcamo' },
+  { id: 'sliding-mitts', name: 'Sliding mitts', desc: 'Protective sliding mitts in a stack of custom designs.', folder: 'sliding-mitts', prefix: 'slidingMitt-', group: 'Wearables', cover: 'slidingMitt-blue-white-red-stars' },
+  { id: 'eye-black', name: 'Eye black', desc: 'Anti-glare eye black for game day.', folder: 'eye-black', prefix: 'eyeblack-', group: 'Wearables', cover: 'eyeblack-1' },
+  { id: 'wrist-tape', name: 'Wrist tape', desc: 'Self-adhesive grip tape in bright game-day colors.', folder: 'wrist-tape', prefix: 'wristTape-', group: 'Wearables', cover: 'wristTape-hotPink' },
   // Gear
-  { id: 'ball-on-string', name: 'Ball on String', desc: 'Ball-on-a-string charms — a dugout staple.', folder: 'ball-on-string', prefix: 'ballString-', group: 'Gear' },
-  { id: 'cooling-towels', name: 'Cooling Towels', desc: 'Stay-cool towels for the sideline and dugout.', folder: 'cooling-towels', prefix: 'coolingTowel-', group: 'Gear' },
-  { id: 'squishy-toys', name: 'Squishy Toys', desc: 'Fidget squishies in fruit, animal, and treat shapes.', folder: 'squishy-toys', prefix: 'squishyToys-', group: 'Gear' },
+  { id: 'ball-on-string', name: 'Ball on string', desc: 'Ball-on-a-string charms — a dugout staple.', folder: 'ball-on-string', prefix: 'ballString-', group: 'Gear', cover: 'ballString-baseball-yellow' },
+  { id: 'cooling-towels', name: 'Cooling towels', desc: 'Stay-cool towels for the sideline and dugout.', folder: 'cooling-towels', prefix: 'coolingTowel-', group: 'Gear' },
+  { id: 'squishy-toys', name: 'Squishy toys', desc: 'Fidget squishies in fruit, animal, and treat shapes.', folder: 'squishy-toys', prefix: 'squishyToys-', group: 'Gear', cover: 'squishyToys-assorted' },
 ];
 
 const COMING_SOON: CategoryDef[] = [
   { id: 'hats', name: 'Hats', desc: 'Custom Playmaker hat designs — arriving soon.', folder: '', prefix: '', group: 'Coming Soon' },
-  { id: 'batting-gloves', name: 'Batting Gloves', desc: 'Custom batting gloves — arriving soon.', folder: '', prefix: '', group: 'Coming Soon' },
+  { id: 'batting-gloves', name: 'Batting gloves', desc: 'Custom batting gloves — arriving soon.', folder: '', prefix: '', group: 'Coming Soon' },
   { id: 'sunglasses', name: 'Sunglasses', desc: 'UV-protection sport frames — arriving soon.', folder: '', prefix: '', group: 'Coming Soon' },
 ];
 
@@ -96,6 +101,13 @@ function buildVariants(def: CategoryDef): { variants: AccessoryVariant[]; coverI
     variants.push({ id, label: parsed.label, image, colors: parsed.colors });
   }
 
+  if (def.cover) {
+    // A hand-picked cover is still one of the designs. A renamed photo fails the
+    // build here instead of quietly falling back to a different cover.
+    const picked = files.find((f) => f.base === def.cover);
+    if (!picked) throw new Error(`accessories: no photo named "${def.cover}" in inventory/${def.folder}/`);
+    coverImage = picked.image;
+  }
   if (!coverImage && variants.length > 0) coverImage = variants[0].image;
   return { variants, coverImage };
 }
@@ -110,11 +122,3 @@ export const accessoryCategories: AccessoryCategory[] = [
 
 /** Categories with at least one photo, i.e. everything not "Coming Soon". */
 export const inStockCategories = accessoryCategories.filter((c) => !c.comingSoon);
-
-export function paletteFor(category: AccessoryCategory): { token: string; hex: string; name: string }[] {
-  const present = new Set<string>();
-  for (const v of category.variants) for (const c of v.colors) present.add(c);
-  return Object.keys(COLOR_MAP)
-    .filter((token) => present.has(token))
-    .map((token) => ({ token, hex: COLOR_MAP[token], name: colorLabel(token) }));
-}
