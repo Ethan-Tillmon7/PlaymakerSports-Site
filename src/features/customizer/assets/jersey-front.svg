@@ -5,7 +5,7 @@
     Laffy mockups (or sourced from a vector designer).
 
     Naming contract (do not break):
-      id="region-{key}"  → recolored from design.colors[key]
+      id="region-*"     → recolored by applyDesign() in JerseyCanvas.tsx
       id="slot-{slot}"   → text/image inserted from design.placements[slot]
                             using the rect's x/y/width/height as bounds.
 

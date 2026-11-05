@@ -6,9 +6,9 @@
  * (via structured <design_update> JSON), and the PDF export all read from
  * and write to the same JerseyDesign object held in the Zustand store.
  *
- * Adding a new customization axis means: (1) add the field here, (2) the
- * compiler will tell you everywhere it needs to be handled, (3) add an SVG
- * region or text overlay to support it. That's the discipline.
+ * Adding a new customization axis means: (1) add the field here, (2) handle it
+ * in applyDesign() by hand, because the compiler won't flag a missing case, (3) add
+ * an SVG region or text overlay to support it. That's the discipline.
  */
 
 // ─── Color ──────────────────────────────────────────────────────────────────
@@ -95,9 +95,9 @@ export interface PlacementContent {
 }
 
 // ─── Color slots ────────────────────────────────────────────────────────────
-// These map 1:1 to named regions in the SVG templates. The SVG file has
-// elements with id="region-base", id="region-accent", etc., and the
-// renderer recolors them by id from this object.
+// applyDesign() maps these onto SVG ids by hand, not 1:1: base → region-base,
+// accent → region-collar (plus the sleeves in 'contrast' mode). There is no
+// region-accent; outline and text only color placement content.
 export interface ColorScheme {
   base: HexColor;        // primary garment color
   accent: HexColor;      // sleeves, stripes, secondary

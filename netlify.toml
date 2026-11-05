@@ -14,7 +14,7 @@
   to = "/.netlify/functions/get-events"
   status = 200
 
-# Legacy (parked) endpoints — no caller in src/; see src/legacy/jersey-orders/README.md.
+# Legacy (parked) endpoints — only unrouted code in src/legacy/ calls them; see its README.md.
 [[redirects]]
   from = "/api/submit-order"
   to = "/.netlify/functions/submit-order"
@@ -58,8 +58,8 @@
 # structured data on every page. style-src needs it too — the pages use inline
 # style={{...}} props for scroll/parallax transforms. Tightening either to a
 # nonce or hash requires build-pipeline changes, not just a header edit.
-# img-src allows any https host because catalog image URLs come from the
-# Google Sheet and are not restricted to a known CDN.
+# img-src allows any https host for the parked catalog, whose image URLs come
+# from the Google Sheet. Nothing live loads external images today.
 [[headers]]
   for = "/*"
   [headers.values]
