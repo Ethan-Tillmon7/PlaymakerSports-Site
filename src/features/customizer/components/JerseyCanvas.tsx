@@ -14,8 +14,8 @@ import type { JerseyDesign, PlacementSlot } from '../jerseyDesign';
  * placement content. For now, the SVG IS the canvas, and we mutate it
  * by id. This is simpler, faster, and zero-risk for proving the loop.
  *
- * Naming contract enforced here (must match the SVG):
- *   id="region-{base|accent|collar|sleeve-left|sleeve-right}"
+ * Naming contract used here (must match the SVG; a missing id is a silent no-op):
+ *   id="region-{base|collar|sleeve-left|sleeve-right}"
  *   id="overlay-pinstripe"
  *   id="slot-{PlacementSlot}"
  */
