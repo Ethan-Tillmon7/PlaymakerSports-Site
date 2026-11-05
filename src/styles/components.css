@@ -94,15 +94,17 @@ input, textarea { caret-color: var(--pm-blue); accent-color: var(--pm-blue); }
 .btn svg { width: 16px; height: 16px; transition: transform .15s ease-out; }
 @media (hover: hover) { .btn:hover svg.arrow { transform: translateX(3px); } }
 .btn-primary { background: var(--pm-yellow); color: var(--pm-black); border-color: var(--pm-yellow-deep); }
-.btn-primary:hover, .btn-primary:active { background: var(--pm-yellow-deep); }
+.btn-primary:active { background: var(--pm-yellow-deep); }
+@media (hover: hover) { .btn-primary:hover { background: var(--pm-yellow-deep); } }
 .btn-dark { background: var(--pm-black); color: #fff; }
-.btn-dark:hover, .btn-dark:active { background: #2A2A2A; }
+.btn-dark:active { background: #2A2A2A; }
+@media (hover: hover) { .btn-dark:hover { background: #2A2A2A; } }
 .btn-outline { background: #fff; color: var(--pm-black); border-color: var(--border); }
-.btn-outline:hover { background: var(--pm-paper-2); border-color: #CFCCBF; }
+@media (hover: hover) { .btn-outline:hover { background: var(--pm-paper-2); border-color: #CFCCBF; } }
 .btn-outline:active { background: var(--pm-paper-2); }
 /* The secondary button on a black ground: clear, with a white hairline */
 .btn-ghost { background: rgba(255,255,255,.06); color: #fff; border-color: rgba(255,255,255,.22); box-shadow: none; }
-.btn-ghost:hover { background: rgba(255,255,255,.12); border-color: rgba(255,255,255,.4); }
+@media (hover: hover) { .btn-ghost:hover { background: rgba(255,255,255,.12); border-color: rgba(255,255,255,.4); } }
 .btn-ghost:active { background: rgba(255,255,255,.16); }
 .btn-sm { height: 36px; padding: 0 12px; }
 .btn-lg { height: 44px; padding: 0 20px; font-size: 15px; }
