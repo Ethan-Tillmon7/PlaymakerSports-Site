@@ -167,18 +167,29 @@ input, textarea { caret-color: var(--pm-blue); accent-color: var(--pm-blue); }
 .nav-pill.night > nav .nav-link[aria-current='page'] { background: rgba(255,255,255,.14); }
 .nav-pill.night > nav .nav-link:active { background: rgba(255,255,255,.16); }
 @media (hover: hover) { .nav-pill.night > nav .nav-link:hover { background: rgba(255,255,255,.1); color: #fff; } }
-.nav-pill.night [data-nav-toggle]:hover, .nav-pill.night [data-nav-toggle]:active { background: rgba(255,255,255,.1); }
+.nav-pill.night [data-nav-toggle]:active { background: rgba(255,255,255,.1); }
+@media (hover: hover) { .nav-pill.night [data-nav-toggle]:hover { background: rgba(255,255,255,.1); } }
 .nav-pill.night .btn-dark { background: #fff; color: var(--pm-black); }
+/* Below lg the Contact button stands level with the logo: 36px to see, with even
+   space around it. On touch an invisible layer keeps the 44px target. */
+@media (max-width: 1023px) { .nav-pill .btn { margin-right: 4px; } }
+@media (max-width: 1023px) and (pointer: coarse) {
+  .nav-pill .btn { position: relative; min-height: 36px; }
+  .nav-pill .btn::after { content: ''; position: absolute; inset: -5px; }
+}
 .nav-pill.night :focus-visible { outline-color: var(--pm-yellow); box-shadow: 0 0 0 2px var(--pm-black); }
 [data-nav-toggle] svg { transition: transform .1s ease-out; }
 [data-nav-toggle]:active svg { transform: scale(.9); }
 
 /* The menu arrives from the button that opened it, and leaves the same way */
-#mobile-nav { transform-origin: 28px 0; transition: opacity .22s var(--ease-out), transform .28s var(--ease-out), filter .22s var(--ease-out), visibility .28s; }
+#mobile-nav { transform-origin: 29px 0; transition: opacity .22s var(--ease-out), transform .28s var(--ease-out), filter .22s var(--ease-out), visibility .28s; }
 #mobile-nav[hidden] { display: block; visibility: hidden; opacity: 0; transform: scale(.94); filter: blur(6px); pointer-events: none; }
-#mobile-nav .nav-link { padding: 12px; }
+/* 14px side padding puts the labels under the menu button's bars. */
+#mobile-nav .nav-link { padding: 11px 14px; font-size: 16px; }
+/* Solid on purpose: .nav-pill's backdrop-filter makes it a backdrop root, so a
+   filter here can't reach the page and the headline shows through sharp. */
 #mobile-nav .card {
-  background: rgba(255,255,255,.88); backdrop-filter: blur(20px) saturate(180%); -webkit-backdrop-filter: blur(20px) saturate(180%);
+  background: #fff; border-radius: 16px;
   box-shadow: 0 18px 40px -18px rgba(17,17,17,.35);
 }
 
@@ -704,13 +715,14 @@ details[open] > .past-toggle svg { transform: rotate(180deg); }
 }
 /* Less transparency: solid surfaces. More contrast: borders you can't miss. */
 @media (prefers-reduced-transparency: reduce) {
-  .nav-pill, #mobile-nav .card { background: #fff; backdrop-filter: none; -webkit-backdrop-filter: none; }
+  .nav-pill { background: #fff; backdrop-filter: none; -webkit-backdrop-filter: none; }
   .nav-pill.night { background: #1E1E1E; }
   .story-photo figcaption { background: #111; backdrop-filter: none; -webkit-backdrop-filter: none; }
 }
 @media (prefers-contrast: more) {
   :root { --border: #8A887F; --input: #55534B; --pm-muted: #4A4A45; }
-  .nav-pill, #mobile-nav .card { background: #fff; backdrop-filter: none; -webkit-backdrop-filter: none; border-color: var(--pm-black); }
+  .nav-pill { background: #fff; backdrop-filter: none; -webkit-backdrop-filter: none; border-color: var(--pm-black); }
+  #mobile-nav .card { border-color: var(--pm-black); }
   .nav-pill.night { background: #111; border-color: #fff; }
   .lead, .small { color: var(--pm-ink); }
   .page-lede, .story-body, .asks dd { color: #fff; }

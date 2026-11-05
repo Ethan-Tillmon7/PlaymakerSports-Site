@@ -37,7 +37,7 @@ export function Nav() {
 
   return (
     <div ref={rootRef} className={night ? 'nav-pill night' : 'nav-pill'}>
-      <nav className="h-14 flex items-center px-3 sm:px-4" aria-label="Primary">
+      <nav className="h-14 flex items-center px-1.5 lg:px-4" aria-label="Primary">
         {/* Left: links on desktop, the menu button below lg */}
         <div className="flex-1 flex items-center">
           <button
@@ -96,7 +96,7 @@ export function Nav() {
 
       {/* An overlay, so it never pushes the page down. `hidden` keeps it out of
           the tab order; components.css turns that into a fade from the button. */}
-      <div id="mobile-nav" hidden={!mobileOpen} className="lg:hidden absolute top-full inset-x-0 mt-2">
+      <div id="mobile-nav" hidden={!mobileOpen} className="lg:hidden absolute top-full -inset-x-px mt-2">
         <ul className="card flex flex-col p-1.5 gap-0.5">
           {navLinks.map(({ label, to }) => (
             <li key={to}>
