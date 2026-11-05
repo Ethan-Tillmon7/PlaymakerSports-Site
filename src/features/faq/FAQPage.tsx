@@ -1,115 +1,17 @@
-import { useId, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { PageLayout } from '@/components/layout/PageLayout';
 import { PageHeader } from '@/components/layout/PageHeader';
+import { PageLayout } from '@/components/layout/PageLayout';
+import { JsonLd } from '@/components/seo/JsonLd';
+import { ButtonLink } from '@/components/ui/Button';
+import { Container } from '@/components/ui/Container';
 import { PAGE_META } from '@/config/pageMeta';
 import { SITE_URL } from '@/config/site';
-import { JsonLd } from '@/components/seo/JsonLd';
-import { useInView } from '@/hooks/useInView';
-import { Container } from '@/components/ui/Container';
+import { FAQItem } from './components/FAQItem';
+import { allFaqs, faqGroups } from './faqs';
 
-const faqGroups = [
-  {
-    topic: 'Events',
-    faqs: [
-      {
-        question: 'What happens if there is severe weather at a tournament?',
-        answer: 'If there is severe weather or heavy rain during the tournament weekend, there is a possibility we may not be able to attend. Outside of weather-related circumstances, we fully plan on being at every event we commit to.',
-      },
-      {
-        question: 'What is your refund policy?',
-        answer: 'Card purchases are refunded directly through the Square app. Cash purchases can be refunded in cash, Venmo, Zelle, or Cash App.',
-      },
-      {
-        question: 'What payment methods do you accept?',
-        answer: 'Square is our preferred option. We also accept cash, Cash App, Venmo, and Zelle.',
-      },
-    ],
-  },
-  {
-    topic: 'Apparel',
-    faqs: [
-      {
-        question: 'What does Playmaker Sports sell?',
-        answer: 'We carry jerseys, sliding mitts, arm sleeves, sunglasses, chains and necklaces, eye black, cooling towels, hats, batting gloves and other sport accessories.',
-      },
-      {
-        question: 'Can you make custom jerseys for my team?',
-        answer: "Yes — we are capable of filling custom jersey orders. If you can dream it we can create it. Send us your inspiration photos or mockups and we'll work with you from there.",
-      },
-      {
-        question: 'How do I place an apparel order?',
-        answer: 'Browse the catalog on our Apparel page and reach out through the contact form. We send a digital proof same-day.',
-      },
-      {
-        question: 'Can I upload my own logo or artwork?',
-        answer: "Absolutely. We accept AI, EPS, PDF, or high-res PNG files. If you only have a phone photo, we'll work with it.",
-      },
-      {
-        question: 'Do you offer free shipping?',
-        answer: 'Shipping is free on orders over $100; customers pay shipping under that.',
-      },
-    ],
-  },
-];
-
-const allFaqs = faqGroups.flatMap((g) => g.faqs);
-
-function FAQItem({ question, answer, index, listInView }: {
-  question: string;
-  answer: string;
-  index: number;
-  listInView: boolean;
-}) {
-  const [open, setOpen] = useState(false);
-  const panelId = useId();
-
-  return (
-    <li
-      className={`border-b border-pm-rule last:border-b-0 ${listInView ? 'animate-fade-up' : 'opacity-0'}`}
-      style={{ animationDelay: `${index * 60}ms` }}
-    >
-      <button
-        type="button"
-        onClick={() => setOpen(o => !o)}
-        aria-expanded={open}
-        aria-controls={panelId}
-        className="w-full flex items-center justify-between gap-6 py-5 text-left group"
-      >
-        <span className="font-display uppercase text-[16px] lg:text-[17px] tracking-[0.02em] text-pm-black group-hover:text-pm-yellow-ink group-active:text-pm-yellow-ink transition-colors duration-150">
-          {question}
-        </span>
-        <span className={`shrink-0 w-6 h-6 flex items-center justify-center border-2 border-pm-rule rounded-lg transition-colors duration-150 ${open ? 'bg-pm-yellow border-pm-yellow-deep' : 'group-hover:border-pm-ink group-active:border-pm-ink'}`}>
-          <svg
-            className={`w-3 h-3 text-pm-black transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            aria-hidden="true"
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
-          </svg>
-        </span>
-      </button>
-      {/* inert while collapsed, so screen readers don't read an answer that isn't shown. */}
-      <div
-        id={panelId}
-        inert={!open}
-        className={`grid transition-[grid-template-rows] duration-200 ${open ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'}`}
-      >
-        <div className="overflow-hidden">
-          <p className="pb-5 text-[15px] md:text-[14px] leading-[1.65] text-pm-ink">
-            {answer}
-          </p>
-        </div>
-      </div>
-    </li>
-  );
-}
+const topicId = (topic: string) => `faq-${topic.toLowerCase().replace(/\s+/g, '-')}`;
 
 export function FAQPage() {
-  const [faqRef, faqInView] = useInView();
-
   return (
     <PageLayout breadcrumb="FAQ">
       <Helmet>
@@ -133,36 +35,50 @@ export function FAQPage() {
           },
         })),
       }} />
-      <PageHeader eyebrow="Common questions" title="FAQ" />
+      <PageHeader
+        breadcrumb="FAQ"
+        title="Good questions"
+        lede="The ones coaches and parents ask most, with refunds, payment and shipping covered too."
+      />
 
-      <Container as="section" className="py-12 lg:py-16">
-        <div ref={faqRef} className="grid grid-cols-1 md:grid-cols-2 gap-x-10 lg:gap-x-16 gap-y-14">
-          {faqGroups.map((group, gi) => {
-            const indexOffset = faqGroups.slice(0, gi).reduce((sum, g) => sum + g.faqs.length, 0);
-            return (
-              <div key={group.topic}>
-                <div className="mb-5 pb-4 border-b-2 border-pm-black">
-                  <h2 className="font-display uppercase text-[clamp(22px,2.5vw,32px)] leading-[0.95] tracking-[0.005em] text-pm-black">
-                    {group.topic}
-                  </h2>
-                </div>
-                <ul>
-                  {group.faqs.map((faq, i) => (
-                    <FAQItem
-                      key={faq.question}
-                      question={faq.question}
-                      answer={faq.answer}
-                      index={indexOffset + i}
-                      listInView={faqInView}
-                    />
-                  ))}
-                </ul>
-              </div>
-            );
-          })}
-        </div>
+      {/* Topics on the left stay in view while the answers scroll. On phones
+          "Didn't find yours?" moves below the answers. */}
+      <section aria-label="Questions and answers">
+        <Container className="sec-y grid gap-10 lg:gap-16 lg:grid-cols-[minmax(0,3fr)_minmax(0,8fr)]">
+          <aside className="contents lg:block lg:sticky lg:top-24 lg:self-start">
+            <nav className="topics" aria-label="Topics">
+              {faqGroups.map((group) => (
+                <a key={group.topic} href={`#${topicId(group.topic)}`}>
+                  {group.topic}{' '}
+                  <span>
+                    {group.faqs.length} {group.faqs.length === 1 ? 'question' : 'questions'}
+                  </span>
+                </a>
+              ))}
+            </nav>
+            <div className="order-3 lg:order-none pt-6 lg:mt-6 border-t border-pm-rule">
+              <p className="title">Didn't find yours?</p>
+              <p className="small mt-1">Tell us what you need and we'll follow up.</p>
+              <ButtonLink to="/contact" variant="secondary" size="sm" arrow className="mt-4">
+                Ask us directly
+              </ButtonLink>
+            </div>
+          </aside>
 
-      </Container>
+          <div className="order-2 lg:order-none min-w-0 flex flex-col gap-14 lg:gap-16">
+            {faqGroups.map((group, gi) => (
+              <section key={group.topic} id={topicId(group.topic)} className="scroll-mt-24" aria-labelledby={`${topicId(group.topic)}-title`}>
+                <h2 id={`${topicId(group.topic)}-title`} className="h-section mb-6">
+                  {group.topic}
+                </h2>
+                {group.faqs.map((faq, i) => (
+                  <FAQItem key={faq.question} question={faq.question} answer={faq.answer} defaultOpen={gi === 0 && i === 0} />
+                ))}
+              </section>
+            ))}
+          </div>
+        </Container>
+      </section>
     </PageLayout>
   );
 }
