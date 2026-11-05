@@ -17,6 +17,15 @@
   html {
     -webkit-tap-highlight-color: transparent;
     -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+  }
+  /* clip, not hidden: the sticky nav keeps working, and the header's oversized
+     chalk infield can't open a sideways scroll. */
+  body {
+    overflow-x: clip;
+  }
+  p {
+    text-wrap: pretty;
   }
 
   /* Controls fire click on touch-up with no double-tap delay, and a long press
@@ -30,51 +39,12 @@
     -webkit-touch-callout: none;
   }
 
-  /* Keyboard focus ring: a black ring with a paper gap, so it reads on paper,
-     white, yellow, and the black hero/footer alike. Mouse and touch never see it. */
-  :focus-visible {
-    outline: 2px solid #111111;
-    outline-offset: 2px;
-    box-shadow: 0 0 0 2px #FAFAF7;
-  }
-
-  ::selection {
-    background: #FBE9A8;
-    color: #111111;
-  }
-
-  @keyframes breathe {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.45; }
-  }
+  /* The focus ring, selection and caret colours live in components.css, where
+     they switch between day and night grounds. */
 }
 
 @layer utilities {
-  .img-stripe {
-    background-image:
-      repeating-linear-gradient(
-        135deg,
-        rgba(17,17,17,0.06) 0px,
-        rgba(17,17,17,0.06) 1px,
-        transparent 1px,
-        transparent 9px
-      ),
-      linear-gradient(180deg, #F2F1EB 0%, #E8E6DC 100%);
-  }
-
-  .img-stripe-warm {
-    background-image:
-      repeating-linear-gradient(
-        135deg,
-        rgba(229,183,46,0.18) 0px,
-        rgba(229,183,46,0.18) 1px,
-        transparent 1px,
-        transparent 9px
-      ),
-      linear-gradient(180deg, #FBE9A8 0%, #F5C842 100%);
-  }
-
-  /* Soft radial product stage backdrops (Apparel page) */
+  /* Soft radial product stage backdrops. Only the parked jersey stack (src/legacy/) still uses these and bg-shimmer. */
   .stage-cream {
     background: radial-gradient(ellipse 80% 60% at 50% 35%, #FBF7EC 0%, #F2EEDF 70%, #ECE6D2 100%);
   }
@@ -100,10 +70,19 @@
   }
 }
 
+/* Reduced motion: cross-fades stay, travel goes. components.css does the same
+   for its own keyframes; these are Tailwind's (tailwind.config.js), redefined
+   after the utilities so they win. */
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+  html {
+    scroll-behavior: auto;
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  .animate-shimmer,
+  .animate-pulse {
+    animation: none;
   }
 }

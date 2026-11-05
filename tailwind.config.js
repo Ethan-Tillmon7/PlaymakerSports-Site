@@ -16,6 +16,10 @@ export default {
         'pm-black':       '#111111',
         'pm-ink':         '#1A1A1A',
         'pm-navy':        '#1A2B5C',
+        // The tent canopy, matched by eye from the tent photo. Things you can
+        // follow: links, focus rings, dates, the awning stripe.
+        'pm-blue':        '#1F4BB8',
+        'pm-blue-deep':   '#183C96',
         'pm-cream':       '#E8D89A',
         'pm-paper':       '#FAFAF7',
         'pm-paper-2':     '#F2F1EB',
@@ -24,14 +28,13 @@ export default {
         'pm-error':       '#A03A1A',
         'pm-success':     '#2F6F3E',
       },
+      maxWidth: {
+        // The content column (Container).
+        pm: '1480px',
+      },
       spacing: {
         // Bottom safe-area inset (home indicator). index.html sets viewport-fit=cover.
         'safe-b': 'env(safe-area-inset-bottom, 0px)',
-      },
-      fontSize: {
-        // Mono label ramp (DESIGN.md → Typography). 10px is the floor; nothing smaller ships.
-        label:      ['11px', { lineHeight: '1.5', letterSpacing: '0.1em' }],
-        'label-sm': ['10px', { lineHeight: '1.5', letterSpacing: '0.12em' }],
       },
       fontFamily: {
         display: ['Anton', 'sans-serif'],
@@ -51,26 +54,16 @@ export default {
           '0%':   { opacity: '0' },
           '100%': { opacity: '1' },
         },
-        ticker: {
-          '0%':   { transform: 'translateX(0)' },
-          '100%': { transform: 'translateX(-50%)' },
-        },
         shimmer: {
           '0%':   { backgroundPosition: '-200% 0' },
           '100%': { backgroundPosition: '200% 0' },
-        },
-        slideIn: {
-          '0%':   { opacity: '0', transform: 'translateX(calc(var(--dir, 1) * 12px))' },
-          '100%': { opacity: '1', transform: 'translateX(0)' },
         },
       },
       animation: {
         'fade-up':      'fadeUp 0.5s ease-out both',
         'fade-in':      'fadeIn 0.4s ease-out both',
         'fade-in-fast': 'fadeInFast 0.2s ease-out both',
-        'ticker':       'ticker 24s linear infinite',
         'shimmer':      'shimmer 1.6s ease-in-out infinite',
-        'slide-in':     'slideIn 0.2s ease-out both',
       },
     },
   },

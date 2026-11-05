@@ -4,12 +4,15 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="theme-color" content="#FAFAF7" />
+    <meta name="theme-color" content="#111111" />
     <link rel="manifest" href="/site.webmanifest" />
     <!-- Self-hosted fonts (@fontsource, imported in main.tsx). Preload the two
          latin faces every page paints first; the rest load on demand. -->
     <link rel="preload" href="./node_modules/@fontsource/anton/files/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="./node_modules/@fontsource/inter/files/inter-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin />
+    <!-- Marks the page as scripted before first paint, so in-view reveals
+         (components.css, under html.js) never flash visible then hide. -->
+    <script>document.documentElement.classList.add('js')</script>
     <!--app-head-->
   </head>
   <body>
