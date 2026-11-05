@@ -1,10 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
-import { useForm, useWatch, type Resolver } from 'react-hook-form';
+import { useForm, useWatch, type FieldError, type Resolver } from 'react-hook-form';
+import { useSearchParams } from 'react-router-dom';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/Button';
+import { AlertIcon } from '@/components/ui/icons';
+import type { ContactRole } from '@/lib/contactLink';
 import { classifyFailure, fetchWithTimeout, type RequestFailure } from '@/lib/http';
 import { API } from '@shared/api';
-import { CONTACT_LIMITS, contactSchema, type ContactSubmission } from '@shared/contact';
+import { CONTACT_LIMITS, CONTACT_ROLES, contactSchema, type ContactSubmission } from '@shared/contact';
 
 type SubmitError = RequestFailure | 'invalid' | 'rate_limited';
 
@@ -16,50 +19,66 @@ const submitErrorCopy: Record<SubmitError, string> = {
   rate_limited: "Too many tries in a row. Wait a minute, then send it again. Your message is still here.",
 };
 
-function Field({
-  label,
-  required,
-  error,
-  children,
-  htmlFor,
-}: {
-  label: string;
-  required?: boolean;
-  error?: string;
-  children: React.ReactNode;
-  htmlFor: string;
-}) {
+// The role toggles, in the order they're shown. The message hint follows the
+// role: a coach, a parent and a tournament director are each asked for the
+// details their request needs.
+const ROLES: { value: ContactRole; label: string; hint: string }[] = [
+  { value: 'Coach', label: 'Coach', hint: 'Tell us what you need, how many, and when.' },
+  { value: 'Parent', label: 'Parent', hint: "Tell us what you saw at the tent, or what you're looking for." },
+  { value: 'Player', label: 'Player', hint: "Tell us what you saw at the tent, or what you're looking for." },
+  { value: 'Event Organizer', label: 'Event organizer', hint: 'Tell us about your tournament: where, when, and how many teams.' },
+];
+
+type RequiredField = 'name' | 'email' | 'message';
+
+// What the form says when a required field is empty or the email is malformed.
+// The schema's own messages (shared/contact.ts) still cover everything else,
+// such as the length limits.
+const MISSING: Record<RequiredField, string> = {
+  name: 'Add your name so we know who to reply to.',
+  email: 'Add an email so we can write back.',
+  message: 'Tell us what you need. A line or two is plenty.',
+};
+const EMAIL_INVALID = 'That email looks off. Check it for a typo.';
+
+function requiredError(field: RequiredField, error: FieldError | undefined, value: string | undefined): string | undefined {
+  if (!error) return undefined;
+  if (!value?.trim()) return MISSING[field];
+  if (field === 'email' && error.type !== 'too_big') return EMAIL_INVALID;
+  return error.message;
+}
+
+/** A started message is one line; anything longer in the URL is cut. */
+const ASK_LIMIT = 160;
+
+function isRole(value: string | null): value is ContactRole {
+  return (CONTACT_ROLES as readonly string[]).includes(value ?? '');
+}
+
+function FieldErrorText({ id, error }: { id: string; error?: string }) {
+  if (!error) return null;
   return (
-    <div>
-      <label
-        htmlFor={htmlFor}
-        className="block font-mono text-label uppercase text-pm-muted mb-1.5"
-      >
-        {label}
-        {required && <span className="text-pm-error ml-1" aria-hidden="true">*</span>}
-      </label>
-      {children}
-      {error && (
-        <p id={`${htmlFor}-error`} className="mt-1 text-[13px] text-pm-error">
-          {error}
-        </p>
-      )}
-    </div>
+    <p id={id} className="err">
+      <AlertIcon />
+      <span>{error}</span>
+    </p>
   );
 }
 
 /** aria wiring so screen readers announce a field's error with the field. */
 const errorProps = (id: string, error?: string) =>
-  error ? { 'aria-invalid': true as const, 'aria-describedby': `${id}-error` } : {};
+  error ? { 'aria-invalid': true as const, 'aria-describedby': `${id}-err` } : {};
 
-// 16px, not 15px: iOS Safari zooms the whole page when a field under 16px gets focus.
-const inputClass =
-  'w-full border border-pm-rule rounded-xl px-4 h-11 text-[16px] text-pm-ink bg-white focus:outline-none focus:border-pm-black aria-[invalid=true]:border-pm-error transition-colors duration-150';
-
+/**
+ * The contact form: the intro line, the fields, and the sent state. It posts
+ * to /api/submit-contact with the shared/contact.ts schema. An "ask" link
+ * (askTo in lib/contactLink) arrives as ?role=…&ask=… and starts the message.
+ */
 export function ContactForm() {
-  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success'>('idle');
+  const [sentTo, setSentTo] = useState<string | null>(null);
   const [submitError, setSubmitError] = useState<SubmitError | null>(null);
-  const successRef = useRef<HTMLDivElement>(null);
+  const sentRef = useRef<HTMLParagraphElement>(null);
+  const [searchParams] = useSearchParams();
 
   const {
     register,
@@ -67,21 +86,72 @@ export function ContactForm() {
     control,
     formState: { errors, isSubmitting },
     reset,
+    getValues,
+    setValue,
+    setFocus,
+    trigger,
+    clearErrors,
   } = useForm<ContactSubmission>({ resolver: zodResolver(contactSchema) as Resolver<ContactSubmission>, defaultValues: { role: 'Coach' } });
 
-  const messageLength = useWatch({ control, name: 'message' })?.length ?? 0;
+  const values = useWatch({ control });
+  const messageLength = values.message?.length ?? 0;
+  const hint = ROLES.find((role) => role.value === values.role)?.hint ?? ROLES[0].hint;
 
   useEffect(() => {
-    if (submitStatus === 'success') successRef.current?.focus();
-  }, [submitStatus]);
+    if (sentTo) sentRef.current?.focus({ preventScroll: true });
+  }, [sentTo]);
 
-  const onSubmit = async (values: ContactSubmission) => {
+  // An "ask" link starts the message and picks the role. It never replaces
+  // something the person has already typed.
+  const ask = searchParams.get('ask')?.trim().slice(0, ASK_LIMIT);
+  const askRole = searchParams.get('role');
+  // A new ask while the sent state is showing brings the form back first.
+  const [seenAsk, setSeenAsk] = useState(ask);
+  if (ask !== seenAsk) {
+    setSeenAsk(ask);
+    if (ask) setSentTo(null);
+  }
+  useEffect(() => {
+    if (!ask || getValues('message')?.trim()) return;
+    setValue('message', `I'm interested in ${ask}. `);
+    // An earlier empty submit may have flagged the box.
+    clearErrors('message');
+    if (isRole(askRole)) setValue('role', askRole);
+    // Next frame, once the form is on screen.
+    const frame = requestAnimationFrame(() => {
+      const box = document.getElementById('cf-message') as HTMLTextAreaElement | null;
+      box?.focus({ preventScroll: true });
+      box?.setSelectionRange(box.value.length, box.value.length);
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [ask, askRole, getValues, setValue, clearErrors]);
+
+  /**
+   * A required field checks itself when it's left with something in it, and
+   * once flagged it clears as soon as it's right, not on the next submit.
+   */
+  const live = (field: RequiredField) => {
+    const props = register(field);
+    return {
+      ...props,
+      onBlur: (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        void props.onBlur(e);
+        if (e.target.value.trim()) void trigger(field);
+      },
+      onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        void props.onChange(e);
+        if (errors[field]) void trigger(field);
+      },
+    };
+  };
+
+  const onSubmit = async (submission: ContactSubmission) => {
     setSubmitError(null);
     try {
       const res = await fetchWithTimeout(API.contact, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(values),
+        body: JSON.stringify(submission),
         timeoutMs: 20000,
       });
       if (res.status === 400 || res.status === 413) {
@@ -94,7 +164,8 @@ export function ContactForm() {
         return;
       }
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      setSubmitStatus('success');
+      // Echo the address back, so a typo is caught now and not after a week of silence.
+      setSentTo(submission.email.trim());
       reset();
     } catch (err) {
       // react-hook-form keeps every value on failure; nothing the person typed is lost.
@@ -102,137 +173,191 @@ export function ContactForm() {
     }
   };
 
-  if (submitStatus === 'success') {
+  if (sentTo) {
     return (
-      <div
-        ref={successRef}
-        tabIndex={-1}
-        role="status"
-        className="border border-pm-success/30 bg-pm-success/5 rounded-xl p-8 focus:outline-none animate-fade-up"
-      >
-        <span className="font-mono text-label uppercase text-pm-success animate-fade-in" style={{ animationDelay: '150ms' }}>
-          Message received
+      <div data-sent role="status" className="py-8 sm:py-10 flex flex-col items-start">
+        <span className="sent-check">
+          <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="#111" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="M5 12.5l4.5 4.5L19 7.5" />
+          </svg>
         </span>
-        <p
-          className="font-display uppercase text-[22px] leading-[1.1] tracking-[0.005em] mt-2 text-pm-black animate-fade-in"
-          style={{ animationDelay: '250ms' }}
-        >
-          We'll be in touch soon.
-        </p>
+        <div className="sent-copy">
+          <p ref={sentRef} tabIndex={-1} className="text-[22px] font-semibold leading-[1.2] tracking-[-0.02em] text-pm-black mt-5 outline-none">
+            Message sent
+          </p>
+          <p className="small mt-1.5">We'll be in touch soon. We'll reply to {sentTo}.</p>
+          <Button
+            variant="secondary"
+            size="sm"
+            className="mt-6"
+            onClick={() => {
+              setSentTo(null);
+              // Once the form is back on screen.
+              requestAnimationFrame(() => setFocus('name'));
+            }}
+          >
+            Send another
+          </Button>
+        </div>
       </div>
     );
   }
 
+  const nameError = requiredError('name', errors.name, values.name);
+  const emailError = requiredError('email', errors.email, values.email);
+  const messageError = requiredError('message', errors.message, values.message);
+
   return (
-    // noValidate: zod owns validation so every error shows in the same place and style.
-    <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-5">
-      <Field label="I am a" required error={errors.role?.message} htmlFor="cf-role">
-        <select {...register('role')} id="cf-role" className={inputClass} {...errorProps('cf-role', errors.role?.message)}>
-          <option value="Event Organizer">Event Organizer</option>
-          <option value="Player">Player</option>
-          <option value="Parent">Parent</option>
-          <option value="Coach">Coach</option>
-        </select>
-      </Field>
+    <>
+      <p className="small mt-1.5">Tell us what you're after and we'll follow up. The more specific, the better.</p>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-        <Field label="Name" required error={errors.name?.message} htmlFor="cf-name">
-          <input
-            {...register('name')}
-            id="cf-name"
-            autoComplete="name"
-            maxLength={CONTACT_LIMITS.name}
+      {/* noValidate: zod owns validation so every error shows in the same place and style. */}
+      <form
+        onSubmit={(e) => {
+          // The busy button ignores clicks, but Enter in a field would still send a second copy.
+          if (isSubmitting) e.preventDefault();
+          else void handleSubmit(onSubmit)(e);
+        }}
+        noValidate
+        className="mt-5 space-y-4"
+      >
+        <fieldset className="fld">
+          <legend className="fld-legend">
+            <span>
+              I am a<span className="req" aria-hidden="true">*</span>
+            </span>
+          </legend>
+          <div className="toggles">
+            {ROLES.map((role) => (
+              <label key={role.value} className="toggle">
+                <input {...register('role')} type="radio" value={role.value} className="sr-only" />
+                <span>{role.label}</span>
+              </label>
+            ))}
+          </div>
+          <FieldErrorText id="cf-role-err" error={errors.role?.message} />
+        </fieldset>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="fld">
+            <label htmlFor="cf-name">
+              <span>
+                Name<span className="req" aria-hidden="true">*</span>
+              </span>
+            </label>
+            <input
+              {...live('name')}
+              id="cf-name"
+              autoComplete="name"
+              maxLength={CONTACT_LIMITS.name}
+              aria-required="true"
+              className="input"
+              placeholder="Full name"
+              {...errorProps('cf-name', nameError)}
+            />
+            <FieldErrorText id="cf-name-err" error={nameError} />
+          </div>
+          <div className="fld">
+            <label htmlFor="cf-email">
+              <span>
+                Email<span className="req" aria-hidden="true">*</span>
+              </span>
+            </label>
+            <input
+              {...live('email')}
+              id="cf-email"
+              type="email"
+              autoComplete="email"
+              inputMode="email"
+              spellCheck={false}
+              maxLength={CONTACT_LIMITS.email}
+              aria-required="true"
+              className="input"
+              placeholder="you@email.com"
+              {...errorProps('cf-email', emailError)}
+            />
+            <FieldErrorText id="cf-email-err" error={emailError} />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="fld">
+            <label htmlFor="cf-phone">
+              Phone <span className="opt">Optional</span>
+            </label>
+            <input
+              {...register('phone')}
+              id="cf-phone"
+              type="tel"
+              autoComplete="tel"
+              maxLength={CONTACT_LIMITS.phone}
+              className="input"
+              placeholder="(337) 555-0100"
+              {...errorProps('cf-phone', errors.phone?.message)}
+            />
+            <FieldErrorText id="cf-phone-err" error={errors.phone?.message} />
+          </div>
+          <div className="fld">
+            <label htmlFor="cf-event" className="whitespace-nowrap">
+              Tournament or event <span className="opt">Optional</span>
+            </label>
+            <input
+              {...register('event_name')}
+              id="cf-event"
+              maxLength={CONTACT_LIMITS.event_name}
+              className="input"
+              {...errorProps('cf-event', errors.event_name?.message)}
+            />
+            <FieldErrorText id="cf-event-err" error={errors.event_name?.message} />
+          </div>
+        </div>
+
+        <div className="fld">
+          <label htmlFor="cf-message">
+            <span>
+              Message<span className="req" aria-hidden="true">*</span>
+            </span>
+          </label>
+          <textarea
+            {...live('message')}
+            id="cf-message"
+            rows={4}
+            maxLength={CONTACT_LIMITS.message}
             aria-required="true"
-            className={inputClass}
-            placeholder="Full name"
-            {...errorProps('cf-name', errors.name?.message)}
+            className="input"
+            placeholder={hint}
+            {...errorProps('cf-message', messageError)}
           />
-        </Field>
-        <Field label="Email" required error={errors.email?.message} htmlFor="cf-email">
-          <input
-            {...register('email')}
-            id="cf-email"
-            type="email"
-            autoComplete="email"
-            inputMode="email"
-            spellCheck={false}
-            maxLength={CONTACT_LIMITS.email}
-            aria-required="true"
-            className={inputClass}
-            placeholder="you@email.com"
-            {...errorProps('cf-email', errors.email?.message)}
-          />
-        </Field>
-      </div>
+          <FieldErrorText id="cf-message-err" error={messageError} />
+          {messageLength > CONTACT_LIMITS.message * 0.8 && (
+            <p className="caption mt-1.5 text-right tabular-nums" aria-live="polite">
+              {messageLength.toLocaleString('en-US')} / {CONTACT_LIMITS.message.toLocaleString('en-US')}
+            </p>
+          )}
+        </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-        <Field label="Phone" error={errors.phone?.message} htmlFor="cf-phone">
-          <input
-            {...register('phone')}
-            id="cf-phone"
-            type="tel"
-            autoComplete="tel"
-            maxLength={CONTACT_LIMITS.phone}
-            className={inputClass}
-            placeholder="(337) 555-0100"
-            {...errorProps('cf-phone', errors.phone?.message)}
-          />
-        </Field>
-        <Field label="Tournament or event" error={errors.event_name?.message} htmlFor="cf-event">
-          <input
-            {...register('event_name')}
-            id="cf-event"
-            maxLength={CONTACT_LIMITS.event_name}
-            className={inputClass}
-            placeholder="Optional"
-            {...errorProps('cf-event', errors.event_name?.message)}
-          />
-        </Field>
-      </div>
+        {/* Honeypot. Off-screen and out of the tab order, so only bots fill it in. */}
+        <div aria-hidden="true" className="absolute -left-[9999px] w-px h-px overflow-hidden">
+          <label htmlFor="cf-company">Company</label>
+          <input {...register('company')} id="cf-company" type="text" tabIndex={-1} autoComplete="off" />
+        </div>
 
-      <Field label="Message" required error={errors.message?.message} htmlFor="cf-message">
-        <textarea
-          {...register('message')}
-          id="cf-message"
-          rows={5}
-          maxLength={CONTACT_LIMITS.message}
-          aria-required="true"
-          className="w-full border border-pm-rule rounded-xl px-4 py-3 text-[16px] text-pm-ink bg-white focus:outline-none focus:border-pm-black aria-[invalid=true]:border-pm-error transition-colors duration-150 resize-none"
-          placeholder="What can we help you with?"
-          {...errorProps('cf-message', errors.message?.message)}
-        />
-        {messageLength > CONTACT_LIMITS.message * 0.8 && (
-          <p className="mt-1 text-right font-mono text-[10px] tracking-[0.1em] uppercase text-pm-muted tabular-nums" aria-live="polite">
-            {messageLength.toLocaleString('en-US')} / {CONTACT_LIMITS.message.toLocaleString('en-US')}
+        {submitError && (
+          <p role="alert" className="err">
+            <AlertIcon />
+            <span>{submitErrorCopy[submitError]}</span>
           </p>
         )}
-      </Field>
 
-      {/* Honeypot. Off-screen and out of the tab order, so only bots fill it in. */}
-      <div aria-hidden="true" className="absolute -left-[9999px] w-px h-px overflow-hidden">
-        <label htmlFor="cf-company">Company</label>
-        <input {...register('company')} id="cf-company" type="text" tabIndex={-1} autoComplete="off" />
-      </div>
-
-      {submitError && (
-        <p role="alert" className="text-[13px] leading-[1.5] text-pm-error">
-          {submitErrorCopy[submitError]}
-        </p>
-      )}
-
-      <div className="flex">
-        <Button
-          type="submit"
-          size="lg"
-          disabled={isSubmitting}
-          aria-disabled={isSubmitting}
-          className="w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          <span className={isSubmitting ? 'animate-pulse' : ''}>
-            {isSubmitting ? 'Sending…' : 'Send Message'}
-          </span>
-        </Button>
-      </div>
-    </form>
+        {/* aria-busy, not disabled: the button keeps its width, its place in the
+            tab order and its label for screen readers while it works. */}
+        <button type="submit" data-submit aria-busy={isSubmitting || undefined} className="btn btn-primary btn-lg w-full">
+          <svg className="spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" aria-hidden="true">
+            <path d="M12 3a9 9 0 1 0 9 9" />
+          </svg>
+          <span>{isSubmitting ? 'Sending' : 'Send message'}</span>
+        </button>
+      </form>
+    </>
   );
 }

@@ -1,17 +1,26 @@
 import { Helmet } from 'react-helmet-async';
-import { PageLayout } from '@/components/layout/PageLayout';
+import { Link } from 'react-router-dom';
 import { PageHeader } from '@/components/layout/PageHeader';
-import { PAGE_META } from '@/config/pageMeta';
-import { SITE_URL } from '@/config/site';
-import { ContactForm } from './components/ContactForm';
-import { ResponsiveImage } from '@/components/ui/ResponsiveImage';
-import { toResponsive } from '@/lib/responsiveImage';
-import homeplateMeta from '@/assets/images/misc/homeplate.jpg?w=480;768;1120&format=webp&quality=72&as=meta:src;width;height;format';
+import { PageLayout } from '@/components/layout/PageLayout';
 import { Container } from '@/components/ui/Container';
+import { ArrowIcon } from '@/components/ui/icons';
+import { PAGE_META } from '@/config/pageMeta';
+import { SITE_URL, contact } from '@/config/site';
+import { stopDate, upcomingOf, useEvents } from '@/features/events';
+import { localISODate } from '@/lib/dates';
+import { ContactCard } from './components/ContactCard';
 
-const homeplate = toResponsive(homeplateMeta);
+// What to send, by who's asking. The same three asks as the form's message hints.
+const ASKS = [
+  { who: 'Coaches', what: 'What you need, how many, and when.' },
+  { who: 'Parents and players', what: "What you saw at the tent, or what you're looking for." },
+  { who: 'Event organizers', what: 'Your tournament: where, when, and how many teams.' },
+];
 
 export function ContactPage() {
+  const schedule = useEvents();
+  const next = schedule.status === 'success' ? upcomingOf(schedule.events, localISODate())[0] : undefined;
+
   return (
     <PageLayout breadcrumb="Contact">
       <Helmet>
@@ -24,23 +33,67 @@ export function ContactPage() {
         <meta property="og:type" content="website" />
       </Helmet>
 
-      <PageHeader eyebrow="Players · Parents · Coaches" title="Get in Touch" />
+      {/* The form is the one lit card: second on phones, the right column on desktop. */}
+      <PageHeader
+        breadcrumb="Contact"
+        title="Get in touch"
+        lede="Tell us what you need and the Playmaker Sports team takes it from there."
+        aside={<ContactCard />}
+        below={
+          <>
+            <h2 className="text-[15px] font-semibold leading-[1.4] tracking-[-0.01em] text-white mb-3">What to include</h2>
+            <dl className="asks">
+              {ASKS.map((ask) => (
+                <div key={ask.who}>
+                  <dt>{ask.who}</dt>
+                  <dd>{ask.what}</dd>
+                </div>
+              ))}
+            </dl>
+          </>
+        }
+      />
 
-      <Container className="py-12 lg:py-16 grid lg:grid-cols-[minmax(0,1fr)_480px] xl:grid-cols-[minmax(0,1fr)_560px] gap-12 lg:gap-16">
-        <div className="min-w-0 max-w-[760px] animate-fade-up">
-          <ContactForm />
-        </div>
-
-        {/* Decorative: fills the column to the form's height on desktop, dropped on phones where it would only push the footer down. */}
-        <div className="hidden lg:block relative min-h-[360px]">
-          <ResponsiveImage
-            image={homeplate}
-            alt="Home plate at a baseball field"
-            sizes="(min-width: 1280px) 560px, 480px"
-            className="absolute inset-0 w-full h-full object-cover rounded-xl"
-          />
-        </div>
-      </Container>
+      <section aria-labelledby="find-title">
+        <Container className="sec-y grid gap-8 lg:gap-16 lg:grid-cols-[minmax(0,4fr)_minmax(0,7fr)]">
+          <h2 id="find-title" className="h-section">
+            Or find us here
+          </h2>
+          <div className="min-w-0">
+            <Link to="/events" className="row-link">
+              <span className="min-w-0">
+                <span className="title block">At the tent</span>
+                {/* The next stop arrives with the schedule; until then (or without one) the line still reads whole. */}
+                <span className="small block mt-0.5">
+                  {next && `Next stop: ${stopDate(next)} in ${next.city}. `}See the full schedule.
+                </span>
+              </span>
+              <ArrowIcon className="go" />
+            </Link>
+            <Link to="/faq" className="row-link">
+              <span className="min-w-0">
+                <span className="title block">In the FAQ</span>
+                <span className="small block mt-0.5">Weather, refunds, payment, orders and shipping.</span>
+              </span>
+              <ArrowIcon className="go" />
+            </Link>
+            {contact.instagram && (
+              <a
+                href={`https://www.instagram.com/${contact.instagram}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="row-link"
+              >
+                <span className="min-w-0">
+                  <span className="title block">On Instagram</span>
+                  <span className="small block mt-0.5">Follow Playmaker Sports.</span>
+                </span>
+                <ArrowIcon className="go -rotate-45" />
+              </a>
+            )}
+          </div>
+        </Container>
+      </section>
     </PageLayout>
   );
 }
