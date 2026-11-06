@@ -26,4 +26,6 @@ jobs:
 
       - run: npm ci
       - run: npm run build
+      # `tsc -b` in the build skips netlify/ and scripts/; this covers them.
+      - run: npm run typecheck:functions
       - run: npm run lint

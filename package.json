@@ -7,6 +7,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build && vite build --ssr src/app/entry-server.tsx && tsx scripts/prerender.ts",
     "lint": "eslint .",
+    "typecheck:functions": "tsc -p tsconfig.functions.json",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -15,7 +16,6 @@
     "@fontsource/jetbrains-mono": "^5.3.0",
     "@hookform/resolvers": "^5.2.2",
     "@netlify/functions": "^5.2.0",
-    "fabric": "^7.3.1",
     "googleapis": "^171.4.0",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
@@ -28,7 +28,6 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "@types/fabric": "^5.3.11",
     "@types/node": "^24.12.2",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
