@@ -1,12 +1,12 @@
 export const PAGE_META = {
   home: {
     title: 'Playmaker Sports — Custom Jerseys & Tournament Apparel',
-    description: 'Premium apparel, accessories, and tournament merchandise for youth athletes and families across the US. Custom jerseys, player cards, and event merch.',
+    description: 'Custom team uniforms built to order, and game-day accessories sold from the Playmaker tent at youth baseball, softball and soccer tournaments.',
     path: '',
   },
   events: {
     title: 'Tournament Schedule · Playmaker Sports',
-    description: 'Upcoming youth baseball and softball tournaments where you can find the Playmaker Sports tent. Dates, locations, and division info for Summer 2026.',
+    description: 'Upcoming youth tournaments where you can find the Playmaker Sports tent, with dates and locations.',
     path: '/events',
   },
   apparel: {
@@ -16,7 +16,7 @@ export const PAGE_META = {
   },
   about: {
     title: 'About · Playmaker Sports',
-    description: 'Founded in 2025 to deliver premium apparel, accessories, and tournament merchandise to athletes and families across the US.',
+    description: 'Founded in 2025 in Lafayette, Louisiana. Custom team uniforms and game-day accessories, sold from the tent at the tournament.',
     path: '/about',
   },
   faq: {
@@ -26,7 +26,7 @@ export const PAGE_META = {
   },
   contact: {
     title: 'Contact · Playmaker Sports',
-    description: 'Get in touch with Playmaker Sports. Players, parents, and coaches welcome.',
+    description: 'Get in touch with Playmaker Sports. Players, parents, coaches and event organizers welcome.',
     path: '/contact',
   },
 } as const;
