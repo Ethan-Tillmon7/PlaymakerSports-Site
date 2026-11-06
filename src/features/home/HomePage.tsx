@@ -10,7 +10,7 @@ import { Facts } from '@/components/ui/Facts';
 import { ResponsiveImage } from '@/components/ui/ResponsiveImage';
 import { PAGE_META } from '@/config/pageMeta';
 import { SITE_URL } from '@/config/site';
-import { FACTS, OUR_STORY_INTRO, Reasons, STORY_STATEMENT } from '@/features/about';
+import { FACTS, OUR_STORY, Reasons } from '@/features/about';
 import { ContactCard } from '@/features/contact';
 import { NextStop, UpcomingEvents, useEvents } from '@/features/events';
 import { FaqTeaser } from '@/features/faq';
@@ -61,10 +61,14 @@ function StoryPanel() {
         <figcaption>The Playmaker tent, set up for the weekend</figcaption>
       </figure>
       <div className="story-copy">
-        <h2 id="story-title" className="statement">
-          {STORY_STATEMENT.lead} <em>{STORY_STATEMENT.lit}</em>
+        <h2 id="story-title" className="h-section">
+          Our story
         </h2>
-        <p className="story-body">{OUR_STORY_INTRO}</p>
+        <div className="story-body">
+          {OUR_STORY.map((paragraph) => (
+            <p key={paragraph}>{paragraph}</p>
+          ))}
+        </div>
         <Facts facts={FACTS} className="mt-7" />
         <ButtonLink to="/about" variant="secondary" arrow className="mt-8">
           About Playmaker
