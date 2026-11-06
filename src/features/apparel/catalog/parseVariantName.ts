@@ -1,6 +1,6 @@
 // Curated color token -> hex. Insertion order defines palette display order.
 // Only tokens present in the inventory filenames are included.
-export const COLOR_MAP: Record<string, string> = {
+const COLOR_MAP: Record<string, string> = {
   white: '#F4F1E8',
   cream: '#E8D89A',
   yellow: '#F5C842',
@@ -54,7 +54,7 @@ function titleCase(token: string): string {
   return token.charAt(0).toUpperCase() + token.slice(1).toLowerCase();
 }
 
-export function colorLabel(token: string): string {
+function colorLabel(token: string): string {
   return COLOR_LABEL_OVERRIDES[token] ?? titleCase(token);
 }
 

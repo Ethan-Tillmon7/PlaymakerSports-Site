@@ -32,10 +32,6 @@ export default {
         // The content column (Container).
         pm: '1480px',
       },
-      spacing: {
-        // Bottom safe-area inset (home indicator). index.html sets viewport-fit=cover.
-        'safe-b': 'env(safe-area-inset-bottom, 0px)',
-      },
       fontFamily: {
         display: ['Anton', 'sans-serif'],
         sans:    ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
