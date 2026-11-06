@@ -320,6 +320,11 @@ textarea.input { height: auto; min-height: 116px; max-height: 320px; field-sizin
 .err { display: flex; align-items: flex-start; gap: 6px; margin-top: 6px; font-size: 13px; line-height: 1.4; letter-spacing: .005em; color: var(--pm-error); }
 .err svg { flex: none; width: 14px; height: 14px; margin-top: 2px; }
 .err[hidden] { display: none; }
+/* Examples of a request, under the message box: one quiet run of text that wraps */
+.eg { margin-top: 8px; font-size: 13px; line-height: 1.5; letter-spacing: .005em; color: var(--pm-muted); }
+.eg ul, .eg li { display: inline; }
+.eg li::before { content: ' '; }
+.eg li + li::before { content: ' · '; }
 
 /* Role: a toggle group */
 .toggles { display: flex; flex-wrap: wrap; gap: 6px; }
@@ -411,8 +416,8 @@ textarea.input { height: auto; min-height: 116px; max-height: 320px; field-sizin
   content: ''; position: absolute; z-index: -1; right: -20%; bottom: -45%; width: 90%; aspect-ratio: 1; border-radius: 50%; pointer-events: none;
   background: radial-gradient(closest-side, rgba(245,200,66,.16) 0%, rgba(245,200,66,.05) 55%, rgba(245,200,66,0) 100%);
 }
-.story .statement { color: #fff; font-size: clamp(26px, 3.2vw, 46px); line-height: 1.1; letter-spacing: -0.03em; max-width: 18ch; }
-.story .statement em { font-style: normal; color: var(--pm-yellow); }
+.story .h-section { color: #fff; }
+.story-body p + p { margin-top: 1em; }
 .story-body { margin-top: 20px; font-size: clamp(16px, 1.2vw, 17px); line-height: 1.7; color: rgba(255,255,255,.78); max-width: 54ch; }
 @media (min-width: 640px) { .story-copy { padding: 16px 40px 44px; } }
 @media (min-width: 1024px) {

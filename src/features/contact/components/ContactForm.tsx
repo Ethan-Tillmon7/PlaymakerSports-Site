@@ -29,6 +29,13 @@ const ROLES: { value: ContactRole; label: string; hint: string }[] = [
   { value: 'Event Organizer', label: 'Event organizer', hint: 'Tell us about your tournament: where, when, and how many teams.' },
 ];
 
+// Jake's own examples of a request, shown under the message box for every role.
+const REQUEST_EXAMPLES = [
+  'Full team uniforms for 14 players by March',
+  '12 Squishy Dumplings',
+  'A merchandise booth at our World Series tournament',
+];
+
 type RequiredField = 'name' | 'email' | 'message';
 
 // What the form says when a required field is empty or the email is malformed.
@@ -347,8 +354,17 @@ export function ContactForm() {
           className="input"
           placeholder={hint}
           {...errorProps('cf-message', messageError)}
+          aria-describedby={messageError ? 'cf-message-err cf-message-eg' : 'cf-message-eg'}
         />
         <FieldErrorText id="cf-message-err" error={messageError} />
+        <div id="cf-message-eg" className="eg">
+          <span>For example:</span>
+          <ul>
+            {REQUEST_EXAMPLES.map((example) => (
+              <li key={example}>{example}</li>
+            ))}
+          </ul>
+        </div>
         {messageLength > CONTACT_LIMITS.message * 0.8 && (
           <p className="caption mt-1.5 text-right tabular-nums" aria-live="polite">
             {messageLength.toLocaleString('en-US')} / {CONTACT_LIMITS.message.toLocaleString('en-US')}
