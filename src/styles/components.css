@@ -606,6 +606,10 @@ details[open] > .past-toggle svg { transform: rotate(180deg); }
 @media (min-width: 768px) { .shelf { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 36px 24px; } }
 @media (min-width: 1100px) { .shelf { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
 .shelf .desc { display: block; margin-top: 6px; font-size: 14px; line-height: 1.5; color: var(--pm-muted); max-width: 34ch; }
+/* "Shop More": the card is the button, and this line says what pressing it does */
+.shop-more { display: inline-flex; align-items: center; gap: 6px; margin-top: 10px; font-size: 14px; font-weight: 600; line-height: 1.5; color: var(--pm-blue); }
+.gear .shop-more .go { color: currentColor; }
+.gear:active .shop-more { color: var(--pm-blue-deep); }
 .shelf-in { animation: rise .35s var(--ease-out) both; }
 /* Not on the table yet: an outline where the photo will go. The dash is decoration,
    not a control boundary, so it keeps the lighter grey instead of following --input. */
