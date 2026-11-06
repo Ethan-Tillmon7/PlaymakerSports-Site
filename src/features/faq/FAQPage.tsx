@@ -7,7 +7,7 @@ import { Container } from '@/components/ui/Container';
 import { PAGE_META } from '@/config/pageMeta';
 import { SITE_URL } from '@/config/site';
 import { FAQItem } from './components/FAQItem';
-import { allFaqs, faqGroups } from './faqs';
+import { ALL_FAQS, FAQ_GROUPS } from './faqs';
 
 const topicId = (topic: string) => `faq-${topic.toLowerCase().replace(/\s+/g, '-')}`;
 
@@ -26,7 +26,7 @@ export function FAQPage() {
       <JsonLd data={{
         '@context': 'https://schema.org',
         '@type': 'FAQPage',
-        mainEntity: allFaqs.map((faq) => ({
+        mainEntity: ALL_FAQS.map((faq) => ({
           '@type': 'Question',
           name: faq.question,
           acceptedAnswer: {
@@ -47,7 +47,7 @@ export function FAQPage() {
         <Container className="sec-y grid gap-10 lg:gap-16 lg:grid-cols-[minmax(0,3fr)_minmax(0,8fr)]">
           <aside className="contents lg:block lg:sticky lg:top-24 lg:self-start">
             <nav className="topics" aria-label="Topics">
-              {faqGroups.map((group) => (
+              {FAQ_GROUPS.map((group) => (
                 <a key={group.topic} href={`#${topicId(group.topic)}`}>
                   {group.topic}{' '}
                   <span>
@@ -66,7 +66,7 @@ export function FAQPage() {
           </aside>
 
           <div className="order-2 lg:order-none min-w-0 flex flex-col gap-14 lg:gap-16">
-            {faqGroups.map((group, gi) => (
+            {FAQ_GROUPS.map((group, gi) => (
               <section key={group.topic} id={topicId(group.topic)} className="scroll-mt-24" aria-labelledby={`${topicId(group.topic)}-title`}>
                 <h2 id={`${topicId(group.topic)}-title`} className="h-section mb-6">
                   {group.topic}

@@ -9,15 +9,13 @@ import { useInView } from '@/hooks/useInView';
 import { askTo } from '@/lib/contactLink';
 import { localISODate } from '@/lib/dates';
 import { eventDateParts, eventStatus } from '../eventDates';
-import { bySport, failureCopy, metaLine, splitCity, SPORT_LABELS, sportTabs, statusLabel, stopDate, upcomingOf, type SportFilter } from '../eventView';
+import { bySport, failureCopy, metaLine, splitCity, SPORT_LABELS, sportTabs, STATE_TITLE_CLASS, statusLabel, stopDate, upcomingOf, type SportFilter } from '../eventView';
 import type { EventsState } from '../useEvents';
 
 const PANEL_ID = 'board-panel';
 const TAB_PREFIX = 'board-tab';
 /** Rows listed after the next stop. The Events page has the rest. */
 const AFTER = 3;
-
-const stateTitleClass = 'text-[22px] font-semibold leading-[1.2] tracking-[-0.02em] text-pm-black';
 
 /** The next stop: the lead panel of the board, shared with the Events page. */
 export function NextStopPanel({ t, today }: { t: PublicEvent; today: string }) {
@@ -156,14 +154,14 @@ export function UpcomingEvents({ result, headingId }: { result: EventsState & { 
         {result.status === 'success' && !next && (
           <div className="state-in px-6 py-14 sm:py-16 flex flex-col items-center text-center">
             <Diamond className="w-9 h-9 text-pm-yellow-ink" />
-            <p className={`${stateTitleClass} mt-5`}>Schedule posts soon</p>
+            <p className={`${STATE_TITLE_CLASS} mt-5`}>Schedule posts soon</p>
             <p className="small mt-2 max-w-[40ch]">The next dates are being confirmed. Check the full schedule for the latest.</p>
           </div>
         )}
 
         {result.status === 'error' && (
           <div role="alert" className="state-in px-6 py-14 sm:py-16 flex flex-col items-center text-center">
-            <p className={stateTitleClass}>Couldn't load the schedule</p>
+            <p className={STATE_TITLE_CLASS}>Couldn't load the schedule</p>
             <p className="small mt-2 max-w-[40ch]">
               {result.reason === 'server'
                 ? "That's on our end, not the season. Try again, or open the full schedule."

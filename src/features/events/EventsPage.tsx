@@ -16,13 +16,11 @@ import { localISODate } from '@/lib/dates';
 import { EventCard } from './components/EventCard';
 import { NextStopPanel, NextStopSkeleton } from './components/UpcomingEvents';
 import { eventStatus, groupByMonth } from './eventDates';
-import { bySport, failureCopy, SPORT_LABELS, sportTabs, upcomingOf, type SportFilter } from './eventView';
+import { bySport, failureCopy, SPORT_LABELS, sportTabs, STATE_TITLE_CLASS, upcomingOf, type SportFilter } from './eventView';
 import { useEvents } from './useEvents';
 
 const PANEL_ID = 'schedule-panel';
 const TAB_PREFIX = 'schedule-tab';
-
-const stateTitleClass = 'text-[22px] font-semibold leading-[1.2] tracking-[-0.02em] text-pm-black';
 
 export function EventsPage() {
   const result = useEvents({ showLoadingBar: true });
@@ -168,7 +166,7 @@ export function EventsPage() {
           {result.status === 'success' && !next && (
             <div className="card state-in px-6 py-14 sm:py-20 flex flex-col items-center text-center">
               <Diamond className="w-9 h-9 text-pm-yellow-ink" />
-              <p className={`${stateTitleClass} mt-5`}>Schedule posts soon</p>
+              <p className={`${STATE_TITLE_CLASS} mt-5`}>Schedule posts soon</p>
               <p className="small mt-2 max-w-[40ch]">The next dates are being confirmed.</p>
               <ButtonLink to="/contact" variant="secondary" size="sm" className="mt-6">
                 Ask us where we'll be
@@ -178,7 +176,7 @@ export function EventsPage() {
 
           {result.status === 'error' && (
             <div role="alert" className="card state-in px-6 py-14 sm:py-20 flex flex-col items-center text-center">
-              <p className={stateTitleClass}>Couldn't load the schedule</p>
+              <p className={STATE_TITLE_CLASS}>Couldn't load the schedule</p>
               <p className="small mt-2 max-w-[40ch]">{failureCopy[result.reason]}</p>
               <div className="flex flex-wrap items-center justify-center gap-2 mt-6">
                 <Button variant="dark" size="sm" onClick={result.retry}>

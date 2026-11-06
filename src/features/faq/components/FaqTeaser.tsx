@@ -1,15 +1,15 @@
 import { Link } from 'react-router-dom';
-import { teaserFaqs } from '../faqs';
+import { TEASER_FAQS } from '../faqs';
 import { FAQItem } from './FAQItem';
 
 /**
  * The homepage's short FAQ list: same items and answers as /faq, the first one
  * open. The closing line points at the contact form on the home page.
  */
-export function FaqTeaser() {
+export function FAQTeaser() {
   return (
     <div>
-      {teaserFaqs.map((faq, i) => (
+      {TEASER_FAQS.map((faq, i) => (
         <FAQItem key={faq.question} question={faq.question} answer={faq.answer} defaultOpen={i === 0} />
       ))}
       <p className="small mt-5">

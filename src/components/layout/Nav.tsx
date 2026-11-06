@@ -6,7 +6,7 @@ import { useOverNight } from '@/hooks/useNightGround';
 import { contactTo } from '@/lib/contactLink';
 import { Brand } from './Brand';
 
-const navLinks = [
+const NAV_LINKS = [
   { label: 'About', to: '/about' },
   { label: 'Apparel', to: '/apparel' },
   { label: 'Events', to: '/events' },
@@ -73,7 +73,7 @@ export function Nav() {
           </button>
 
           <ul className="hidden lg:flex items-center gap-0.5">
-            {navLinks.map(({ label, to }) => (
+            {NAV_LINKS.map(({ label, to }) => (
               <li key={to}>
                 <Link to={to} aria-current={isCurrent(to) ? 'page' : undefined} className="nav-link">
                   {label}
@@ -98,7 +98,7 @@ export function Nav() {
           the tab order; components.css turns that into a fade from the button. */}
       <div id="mobile-nav" hidden={!mobileOpen} className="lg:hidden absolute top-full -inset-x-px mt-2">
         <ul className="card flex flex-col p-1.5 gap-0.5">
-          {navLinks.map(({ label, to }) => (
+          {NAV_LINKS.map(({ label, to }) => (
             <li key={to}>
               <Link
                 to={to}

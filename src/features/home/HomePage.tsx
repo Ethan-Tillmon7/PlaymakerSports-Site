@@ -13,7 +13,7 @@ import { SITE_URL } from '@/config/site';
 import { FACTS, OUR_STORY, Reasons } from '@/features/about';
 import { ContactCard } from '@/features/contact';
 import { NextStop, UpcomingEvents, useEvents } from '@/features/events';
-import { FaqTeaser } from '@/features/faq';
+import { FAQTeaser } from '@/features/faq';
 import { useInView } from '@/hooks/useInView';
 import { nightGroundRef } from '@/hooks/useNightGround';
 import { askTo } from '@/lib/contactLink';
@@ -201,7 +201,7 @@ export function HomePage() {
               Read the FAQ
             </ButtonLink>
           </div>
-          <FaqTeaser />
+          <FAQTeaser />
         </Container>
       </section>
     </PageLayout>
