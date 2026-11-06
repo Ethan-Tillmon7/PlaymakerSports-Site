@@ -50,10 +50,6 @@ export default {
           '0%':   { opacity: '0' },
           '100%': { opacity: '1' },
         },
-        fadeInFast: {
-          '0%':   { opacity: '0' },
-          '100%': { opacity: '1' },
-        },
         shimmer: {
           '0%':   { backgroundPosition: '-200% 0' },
           '100%': { backgroundPosition: '200% 0' },
@@ -62,7 +58,6 @@ export default {
       animation: {
         'fade-up':      'fadeUp 0.5s ease-out both',
         'fade-in':      'fadeIn 0.4s ease-out both',
-        'fade-in-fast': 'fadeInFast 0.2s ease-out both',
         'shimmer':      'shimmer 1.6s ease-in-out infinite',
       },
     },
