@@ -8,7 +8,7 @@
  * Both values are server-side env vars (never `VITE_`-prefixed), and the
  * site's CSP keeps the browser from calling Supabase directly anyway.
  */
-export function supabaseConfig(): { url: string; anonKey: string } {
+function supabaseConfig(): { url: string; anonKey: string } {
   const url = (process.env.SUPABASE_URL ?? '').trim().replace(/\/+$/, '');
   const anonKey = (process.env.SUPABASE_ANON_KEY ?? '').trim();
   if (!url || !anonKey) throw new Error('SUPABASE_URL or SUPABASE_ANON_KEY is not set');

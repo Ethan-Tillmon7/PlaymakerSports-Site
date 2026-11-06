@@ -68,7 +68,7 @@ export default defineConfig([
       ],
     },
   },
-  // ── Import boundaries (docs/superpowers/specs/2026-09-30-feature-structure-design.md) ──
+  // ── Import boundaries (rules: CONTRIBUTING.md; design: docs/_archive/pre-retainer/specs/2026-09-30-feature-structure-design.md) ──
   // Each file gets one merged pattern list: a later flat-config block's
   // no-restricted-imports replaces an earlier one's options instead of adding to them.
   ...boundaryConfigs(),

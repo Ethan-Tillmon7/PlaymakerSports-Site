@@ -1,4 +1,4 @@
-export const faqGroups = [
+export const FAQ_GROUPS = [
   {
     topic: 'Events',
     faqs: [
@@ -43,18 +43,18 @@ export const faqGroups = [
   },
 ];
 
-export const allFaqs = faqGroups.flatMap((g) => g.faqs);
+export const ALL_FAQS = FAQ_GROUPS.flatMap((g) => g.faqs);
 
 
 // The three the homepage shows, in this order. Looked up by question so the
 // answer text has one home; a reworded question fails the build here instead of
 // silently dropping off the homepage.
-export const teaserFaqs = [
+export const TEASER_FAQS = [
   'Can you make custom jerseys for my team?',
   'How do I place an apparel order?',
   'What happens if there is severe weather at a tournament?',
 ].map((question) => {
-  const faq = allFaqs.find((f) => f.question === question);
-  if (!faq) throw new Error(`teaserFaqs: no FAQ titled "${question}"`);
+  const faq = ALL_FAQS.find((f) => f.question === question);
+  if (!faq) throw new Error(`TEASER_FAQS: no FAQ titled "${question}"`);
   return faq;
 });

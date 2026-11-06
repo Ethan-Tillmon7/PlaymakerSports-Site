@@ -11,6 +11,9 @@ export const SPORT_LABELS: Record<Sport, string> = {
   soccer: 'Soccer',
 };
 
+/** Title of the empty and failed states, on the Events page and the home schedule board. */
+export const STATE_TITLE_CLASS = 'text-[22px] font-semibold leading-[1.2] tracking-[-0.02em] text-pm-black';
+
 const FMT_MONTH_DAY = new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' });
 const FMT_DAY = new Intl.DateTimeFormat('en-US', { day: 'numeric', timeZone: 'UTC' });
 

@@ -41,7 +41,7 @@ npm run lint      # ESLint. Must pass before you open a PR
 
 Most copy, image and styling work only needs `npm run dev`.
 
-The functions run under `netlify dev` (`netlify dev --offline --port 8888`, no Netlify login needed) and need these environment variables in a local `.env`. `netlify dev` does not enforce the contact rate limit; check that on a deploy preview.
+The functions run under `netlify dev` (`netlify dev --offline --port 8888`, no Netlify login needed) and need these environment variables in a local `.env` (copy `.env.example`). `netlify dev` does not enforce the contact rate limit; check that on a deploy preview.
 
 - `GOOGLE_SERVICE_ACCOUNT_EMAIL`
 - `GOOGLE_PRIVATE_KEY`

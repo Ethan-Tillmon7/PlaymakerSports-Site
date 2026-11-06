@@ -7,27 +7,6 @@ export const OUR_STORY = [
   "We believe the best brands are built through relationships. That's why we partner with tournament directors, coaches, and organizations to provide reliable service, quality products, and a booth that players and families look forward to visiting every weekend.",
 ] as const;
 
-/** Cuts `text` just before `marker`. A reworded paragraph fails the build here instead of shipping a broken excerpt. */
-function before(text: string, marker: string): string {
-  const at = text.indexOf(marker);
-  if (at === -1) throw new Error(`ourStory: "${marker}" is no longer in the Our Story copy`);
-  return text.slice(0, at).trim();
-}
-
-/** The home page's short version: the first paragraph without its closing "Today, …" sentence. */
-export const OUR_STORY_INTRO = before(OUR_STORY[0], 'Today, Playmaker Sports delivers');
-
-/**
- * The second paragraph's closing words, set large on the home page with the
- * last two lit yellow. Checked against the paragraph so the two can't drift.
- */
-const STATEMENT_TAIL = 'booth that players and families look forward to visiting every weekend.';
-if (!OUR_STORY[1].endsWith(STATEMENT_TAIL)) throw new Error('ourStory: the statement line is no longer in the Our Story copy');
-export const STORY_STATEMENT = {
-  lead: 'A booth that players and families look forward to visiting',
-  lit: 'every weekend.',
-} as const;
-
 /**
  * The partnership sentence on its own, for tournament directors on the Events
  * page: the second paragraph from "we partner" on, as a sentence of its own.
