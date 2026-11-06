@@ -18,6 +18,8 @@ const orgSchema = {
   name: 'Playmaker Sports',
   url: SITE_URL,
   logo: `${SITE_URL}/favicon.svg`,
+  foundingDate: '2025',
+  founder: { '@type': 'Person', name: 'Jake Johnson' },
   address: {
     '@type': 'PostalAddress',
     addressLocality: 'Lafayette',

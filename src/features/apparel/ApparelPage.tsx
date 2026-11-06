@@ -145,14 +145,13 @@ export function ApparelPage() {
                             />
                           )}
                         </span>
-                        <span className="flex items-start justify-between gap-3 mt-3">
-                          <span className="min-w-0">
-                            <span className="title block">{c.name}</span>
-                            <span className="small block">{plural(c.variants.length, 'design', 'designs')}</span>
-                          </span>
-                          <ArrowIcon className="go mt-1.5" />
-                        </span>
+                        <span className="title block mt-3">{c.name}</span>
+                        <span className="small block">{plural(c.variants.length, 'design', 'designs')}</span>
                         <span className="desc">{c.desc}</span>
+                        <span className="shop-more">
+                          Shop More
+                          <ArrowIcon className="go" />
+                        </span>
                       </button>
                     </li>
                   ))}
