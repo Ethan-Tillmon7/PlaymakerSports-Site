@@ -4,8 +4,8 @@
 
 @layer base {
   html, body {
-    background: #FAFAF7;
-    color: #1A1A1A;
+    background: theme('colors.pm-paper');
+    color: theme('colors.pm-ink');
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
@@ -65,7 +65,7 @@
   }
 
   .bg-shimmer {
-    background: linear-gradient(90deg, #E2E0D6 25%, #FAFAF7 50%, #E2E0D6 75%);
+    background: linear-gradient(90deg, theme('colors.pm-rule') 25%, theme('colors.pm-paper') 50%, theme('colors.pm-rule') 75%);
     background-size: 200% 100%;
   }
 }

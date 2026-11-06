@@ -543,7 +543,7 @@ details[open] > .past-toggle svg { transform: rotate(180deg); }
 .spec dt { font-size: 14px; font-weight: 500; line-height: 1.7; color: var(--pm-muted); }
 .spec dd { font-size: 16px; line-height: 1.5; color: var(--pm-ink); }
 
-.locker { --jb: #111111; --ja: #F5C842; --jt: #F5C842; }
+.locker { --jb: var(--pm-black); --ja: var(--pm-yellow); --jt: var(--pm-yellow); }
 .stage-j { position: relative; }
 .stage-j svg { display: block; width: 78%; max-width: 340px; height: auto; margin: 0 auto; }
 @media (min-width: 640px) { .stage-j svg { width: 52%; } }
@@ -745,14 +745,14 @@ details[open] > .past-toggle svg { transform: rotate(180deg); }
 @media (prefers-reduced-transparency: reduce) {
   .nav-pill { background: #fff; backdrop-filter: none; -webkit-backdrop-filter: none; }
   .nav-pill.night { background: #1E1E1E; }
-  .story-photo figcaption { background: #111; backdrop-filter: none; -webkit-backdrop-filter: none; }
+  .story-photo figcaption { background: var(--pm-black); backdrop-filter: none; -webkit-backdrop-filter: none; }
 }
 @media (prefers-contrast: more) {
   :root { --border: #8A887F; --input: #55534B; --pm-muted: #4A4A45; }
   .nav-pill { background: #fff; backdrop-filter: none; -webkit-backdrop-filter: none; border-color: var(--pm-black); }
   #mobile-nav .card { border-color: var(--pm-black); }
   .soon { border-color: var(--input); }
-  .nav-pill.night { background: #111; border-color: #fff; }
+  .nav-pill.night { background: var(--pm-black); border-color: #fff; }
   .lead, .small { color: var(--pm-ink); }
   .page-lede, .story-body, .asks dd { color: #fff; }
   .sk { background: rgba(17,17,17,.2); }
