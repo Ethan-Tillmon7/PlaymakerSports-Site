@@ -12,9 +12,10 @@ It is kept, not deleted, for when jerseys return.
 - **Not bundled.** Nothing outside this folder imports it, and an ESLint rule forbids
   anything outside `src/legacy/` from doing so. Vite never includes it in the site.
 - **Still type-checked and linted**, so a breaking change to a shared component shows up.
-- **Its endpoints are still deployed and accept writes:** `get-catalog`, `submit-order`,
-  `submit-purchase` in `netlify/functions/` (see the "Legacy (parked) endpoints" block in
-  `netlify.toml`).
+- **Its write endpoints are switched off.** `submit-order` and `submit-purchase` in
+  `netlify/functions/` return 410 unless `LEGACY_JERSEY_ORDERS=on`. `get-catalog` is still
+  deployed and read-only. The `/api/*` redirects for all three were removed in PR 14, so
+  they only answer at `/.netlify/functions/<name>`.
 
 ## Contents
 
@@ -33,4 +34,6 @@ It is kept, not deleted, for when jerseys return.
 2. Re-check the `Catalog` tab and the `SalesOrders` / `Archive` / `CustomerContacts` column
    layouts against `docs/reference/sheets-schema.md`, because functions map columns by index.
 3. Move the request/response shapes into `shared/`, as `contact.ts` does.
-4. Delete this folder once nothing is left in it.
+4. Set `LEGACY_JERSEY_ORDERS=on` in Netlify and restore the three `[[redirects]]` blocks in
+   `netlify.toml` (`/api/get-catalog`, `/api/submit-order`, `/api/submit-purchase`).
+5. Delete this folder once nothing is left in it.

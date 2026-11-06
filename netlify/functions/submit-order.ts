@@ -32,6 +32,8 @@ const rosterSchema = z.object({
 const submitSchema = z.discriminatedUnion('type', [inquirySchema, rosterSchema]);
 
 export const handler: Handler = async (event) => {
+  // Parked with the jersey storefront (src/legacy/jersey-orders). Set LEGACY_JERSEY_ORDERS=on to re-enable.
+  if (process.env.LEGACY_JERSEY_ORDERS !== 'on') return { statusCode: 410, body: 'Gone' };
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, body: 'Method Not Allowed' };
   }
