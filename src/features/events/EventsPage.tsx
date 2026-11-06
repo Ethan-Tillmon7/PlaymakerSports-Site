@@ -5,7 +5,6 @@ import { PageHeader } from '@/components/layout/PageHeader';
 import { PageLayout } from '@/components/layout/PageLayout';
 import { Button, ButtonLink } from '@/components/ui/Button';
 import { Container } from '@/components/ui/Container';
-import { ChevronIcon } from '@/components/ui/icons';
 import { Tabs } from '@/components/ui/Tabs';
 import { PAGE_META } from '@/config/pageMeta';
 import { SITE_URL } from '@/config/site';
@@ -30,9 +29,7 @@ export function EventsPage() {
   const [direction, setDirection] = useState<1 | -1 | null>(null);
 
   const today = localISODate();
-  const allEvents = result.status === 'success' ? result.events : [];
-  const upcoming = upcomingOf(allEvents, today);
-  const pastEvents = allEvents.filter((t) => t.endDate < today).reverse();
+  const upcoming = upcomingOf(result.status === 'success' ? result.events : [], today);
 
   // The dashboard feed carries a sport on every event, so the list can be
   // filtered by it. The Sheet feed has none, and the page shows no tabs.
@@ -162,7 +159,7 @@ export function EventsPage() {
             </div>
           )}
 
-          {/* Nothing upcoming (the feed may still hold past events) */}
+          {/* Nothing upcoming. The Sheet feed may still hold past dates; they aren't shown. */}
           {result.status === 'success' && !next && (
             <div className="card state-in px-6 py-14 sm:py-20 flex flex-col items-center text-center">
               <Diamond className="w-9 h-9 text-pm-yellow-ink" />
@@ -187,21 +184,6 @@ export function EventsPage() {
                 </ButtonLink>
               </div>
             </div>
-          )}
-
-          {/* Past events: kept, but out of the way. */}
-          {pastEvents.length > 0 && (
-            <details className="mt-12 pt-4 border-t border-pm-rule">
-              <summary className="past-toggle">
-                Past events <span className="tab-n !ml-0">{pastEvents.length}</span>
-                <ChevronIcon />
-              </summary>
-              <ul className="ev-grid mt-3 pb-2">
-                {pastEvents.map((t) => (
-                  <EventCard key={t.id} t={t} past />
-                ))}
-              </ul>
-            </details>
           )}
         </Container>
       </section>

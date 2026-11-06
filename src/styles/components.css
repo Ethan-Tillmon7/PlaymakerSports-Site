@@ -522,19 +522,11 @@ textarea.input { height: auto; min-height: 116px; max-height: 320px; field-sizin
 .ev-tile .display { font-size: 24px; }
 .ev-city { font-size: 26px; line-height: .95; color: var(--pm-black); overflow-wrap: anywhere; }
 .ev .badge { margin-left: auto; align-self: flex-start; }
-.ev.past { background: transparent; box-shadow: none; }
-.ev.past .ev-city, .ev.past .ev-tile { color: var(--pm-muted); }
-.ev.past .ev-tile .mono { color: var(--pm-muted); }
 @media (max-width: 359px) { .ev { flex-wrap: wrap; row-gap: 10px; } .ev .badge { margin-left: 84px; order: 3; } }
 /* The next stop leads the page: the same panel as the home board, given the full row */
 .next-panel { display: grid; overflow: hidden; }
 .next-panel .board-next { border: 0; }
 @media (min-width: 1024px) { .next-panel { grid-template-columns: minmax(0, 1fr) auto; align-items: stretch; } .next-panel .board-next { border-right: 1px solid var(--border); } }
-.past-toggle { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; cursor: pointer; font-size: 15px; font-weight: 500; color: var(--pm-ink); list-style: none; }
-.past-toggle::-webkit-details-marker { display: none; }
-.past-toggle svg { width: 16px; height: 16px; color: var(--pm-muted); transition: transform .32s var(--ease-move); }
-details[open] > .past-toggle svg { transform: rotate(180deg); }
-@media (hover: hover) { .past-toggle:hover { text-decoration: underline; text-underline-offset: 4px; } }
 
 /* ---------- Uniforms: one blank, every colorway ---------- */
 .sec-warm { background: linear-gradient(180deg, color-mix(in srgb, var(--pm-yellow-soft) 34%, var(--pm-paper)) 0%, color-mix(in srgb, var(--pm-yellow-soft) 12%, var(--pm-paper)) 100%); }
@@ -739,7 +731,7 @@ details[open] > .past-toggle svg { transform: rotate(180deg); }
   @keyframes pop { from { opacity: 0; } }
   .wipe { animation: none; background-position: 0 0; }
   .js .story:not(.in) .story-photo img, .js .signoff:not(.in) mark { clip-path: none; transform: none; }
-  .story-photo img, .signoff mark, .tabs.ready .tabs-thumb, .gear img, .btn svg, .acc-a, .acc-q svg, .past-toggle svg { transition: none; }
+  .story-photo img, .signoff mark, .tabs.ready .tabs-thumb, .gear img, .btn svg, .acc-a, .acc-q svg { transition: none; }
   .acc-a p { filter: none; }
   #mobile-nav[hidden] { transform: none; filter: none; }
   .sheet, .sheet-backdrop.open .sheet { transform: none; transition: opacity .2s ease-out; }
