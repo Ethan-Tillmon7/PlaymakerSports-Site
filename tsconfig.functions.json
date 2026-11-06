@@ -1,0 +1,16 @@
+{
+  // Typecheck only, for the code `tsc -b` doesn't reach: the Netlify functions,
+  // their helpers, and the prerender build script. Run with
+  // `npm run typecheck:functions`. Not part of the `tsc -b` project references.
+  "compilerOptions": {
+    "target": "es2022",
+    "lib": ["ES2023"],
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "types": ["node"],
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true
+  },
+  "include": ["netlify", "scripts"]
+}
