@@ -36,7 +36,7 @@ Outside contributors: start with [CONTRIBUTING.md](CONTRIBUTING.md). It covers e
 
 ## Documentation
 
-Project docs live in `docs/`. The folder is git-ignored and shared with the team through Google Drive, so these links only resolve in a local checkout that has it. Start at [docs/README.md](docs/README.md), the index.
+Project docs live in `docs/`. The folder is git-ignored here and is its own private git repo (`playmaker-docs`), no longer shared through Google Drive, so these links only resolve in a local checkout that has that repo cloned into `docs/`. Start at [docs/README.md](docs/README.md), the index.
 
 - [CLAUDE.md](CLAUDE.md): architecture, routing, design system, backend and working guidance (local; git-ignored)
 - [DESIGN.md](DESIGN.md): canonical design spec (local; git-ignored)
