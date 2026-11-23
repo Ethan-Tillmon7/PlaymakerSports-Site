@@ -1,33 +1,11 @@
 import type { Config } from '@netlify/functions';
 import { Resend } from 'resend';
 import { contactSchema } from '../../shared/contact';
+import { renderNotice, renderThanks } from '../lib/contactEmails';
 import { jsonResponse, readJsonRequest } from '../lib/http';
 import { appendRows, safecell } from '../lib/sheets';
 
-const esc = (s: string) =>
-  s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-
 const MAX_BODY_BYTES = 20_000;
-
-// Mirrors SITE_URL in src/config/site.ts; functions can't import from src/.
-const APPAREL_URL = 'https://playmakersports.co/apparel';
-
-// The auto-reply goes to whatever address the submitter typed, so it is fully static:
-// nothing from the submission (name, message) is reflected back to that address.
-const AUTOREPLY_SUBJECT = 'Thanks for reaching out to Playmaker Sports';
-const AUTOREPLY_TEXT = `Thanks for reaching out to Playmaker Sports!
-
-We got your message, and someone from our team will get back to you soon. Need to add something? Just reply to this email.
-
-In the meantime, browse our gear: ${APPAREL_URL}
-
-Playmaker Sports`;
-const AUTOREPLY_HTML = `
-  <p>Thanks for reaching out to Playmaker Sports!</p>
-  <p>We got your message, and someone from our team will get back to you soon. Need to add something? Just reply to this email.</p>
-  <p>In the meantime, <a href="${APPAREL_URL}">browse our gear</a>.</p>
-  <p>Playmaker Sports</p>
-`;
 
 // v2 function: `path` replaces the netlify.toml redirect, and `rateLimit` runs on
 // the function itself (5 submissions per 60 s per IP + domain → 429), so it holds
@@ -81,17 +59,7 @@ export default async (req: Request) => {
       from,
       to: process.env.CONTACT_EMAIL,
       replyTo: data.email,
-      subject: `New Contact: ${data.role} — ${data.name.replace(/\s+/g, ' ')}`,
-      html: `
-        <p><strong>Role:</strong> ${esc(data.role)}</p>
-        <p><strong>Name:</strong> ${esc(data.name)}</p>
-        <p><strong>Email:</strong> ${esc(data.email)}</p>
-        <p><strong>Phone:</strong> ${esc(data.phone || '—')}</p>
-        <p><strong>Message:</strong><br/>${esc(data.message).replace(/\r?\n/g, '<br/>')}</p>
-        <p><strong>Event:</strong> ${esc(data.event_name || '—')}</p>
-        <hr/>
-        <p style="color:#888;font-size:12px">Submitted ${timestamp}</p>
-      `,
+      ...renderNotice(data, timestamp),
     });
     if (error) throw new Error(`${error.name}: ${error.message}`);
   } catch (err) {
@@ -107,9 +75,7 @@ export default async (req: Request) => {
       from,
       to: data.email,
       replyTo: process.env.CONTACT_EMAIL,
-      subject: AUTOREPLY_SUBJECT,
-      html: AUTOREPLY_HTML,
-      text: AUTOREPLY_TEXT,
+      ...renderThanks(),
     });
     if (error) throw new Error(`${error.name}: ${error.message}`);
   } catch (err) {
