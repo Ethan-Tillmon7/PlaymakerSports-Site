@@ -15,6 +15,9 @@ const APPAREL_URL = `${SITE_URL}/apparel`;
 // Served as-is from public/email/. Logo is 400x156 and the photo 1200x784 (2x).
 const LOGO_URL = `${SITE_URL}/email/logo.png`;
 const PHOTO_URL = `${SITE_URL}/email/tent-team.jpg`;
+// The auto-reply's yellow button, drawn as a picture (561x150, 3x). See pictureButton().
+const GEAR_BUTTON_URL = `${SITE_URL}/email/browse-our-gear-button.png`;
+const GEAR_BUTTON = { width: 187, height: 50 };
 const LOGO_RATIO = 156 / 400;
 const PHOTO_RATIO = 784 / 1200;
 const PHOTO_ALT = 'A youth team holding up jerseys in front of the Playmaker Sports tents';
@@ -143,6 +146,7 @@ a[x-apple-data-detectors] { color: inherit !important; text-decoration: none !im
   .pm-btn-td { background: ${C.yellow} !important; }
   .pm-btn { color: #141414 !important; }
   .pm-logo { color: #f2f2f7 !important; }
+  .pm-btn-alt { color: #f2f2f7 !important; }
 }
 [data-ogsc] .pm-ink, [data-ogsc] .pm-link, [data-ogsc] .pm-logo { color: #f2f2f7 !important; }
 [data-ogsc] .pm-sub { color: #aeaeb2 !important; }
@@ -150,6 +154,7 @@ a[x-apple-data-detectors] { color: inherit !important; text-decoration: none !im
 [data-ogsb] .pm-card { background: #1c1c1e !important; }
 [data-ogsb] .pm-quote, [data-ogsb] .pm-chip { background: #2c2c2e !important; }
 [data-ogsc] .pm-btn { color: #141414 !important; }
+[data-ogsc] .pm-btn-alt { color: #f2f2f7 !important; }
 </style>`;
 
 // Only the auto-reply carries the photo.
@@ -203,11 +208,31 @@ function logo(width: number, align: 'center' | 'left'): string {
 </table>`;
 }
 
-/** The one yellow button: a table cell with bgcolor, so Outlook for Windows draws it too. */
+/**
+ * A painted yellow button: a table cell with bgcolor, so Outlook for Windows draws it too.
+ * Only the notice uses it, because "Reply to <name>" changes per person and so can't be a
+ * picture. In the Gmail phone apps' dark mode it turns a darker yellow but stays readable;
+ * that is accepted, since only the team gets the notice.
+ */
 function button(label: string, href: string, { full = false } = {}): string {
   return `<table role="presentation" border="0" cellpadding="0" cellspacing="0" align="center" ${full ? 'width="100%" ' : ''}style="border-collapse:separate;margin:0 auto${full ? ';width:100%' : ''}">
 <tr><td class="pm-btn-td" align="center" bgcolor="${C.yellow}" height="50" style="height:50px;border-radius:14px;background:${C.yellow};mso-padding-alt:0 28px">
 <a class="pm-btn" href="${esc(href)}" target="_blank" style="display:block;padding:0 28px;font-family:${FONT};font-size:17px;line-height:50px;mso-line-height-rule:exactly;font-weight:700;color:#141414;text-decoration:none;text-align:center;border-radius:14px;white-space:nowrap">${esc(label)}</a>
+</td></tr>
+</table>`;
+}
+
+/**
+ * A yellow button drawn as a picture, for words that never change. The Gmail phone
+ * apps and the Outlook family ignore the dark rules above and recolour every painted
+ * colour, so a painted yellow turns brown there; they never recolour a picture.
+ * Nothing is painted behind it, so with pictures off it is just the bold alt words,
+ * still the link (a yellow cell there would go brown again in Outlook's dark mode).
+ */
+function pictureButton(label: string, href: string, src: string, { width, height }: { width: number; height: number }): string {
+  return `<table role="presentation" border="0" cellpadding="0" cellspacing="0" align="center" style="border-collapse:collapse;margin:0 auto">
+<tr><td align="center" style="padding:0;font-size:0;line-height:0;mso-line-height-rule:exactly">
+<a class="pm-btn" href="${esc(href)}" target="_blank" style="display:inline-block;vertical-align:top;font-family:${FONT};font-size:17px;line-height:22px;font-weight:700;color:${C.ink};text-decoration:none"><img class="pm-btn-alt" src="${esc(src)}" width="${width}" height="${height}" alt="${esc(label)}" style="display:block;width:${width}px;height:${height}px;border:0;outline:none;text-decoration:none;font-family:${FONT};font-size:17px;line-height:22px;font-weight:700;color:${C.ink};text-align:center"></a>
 </td></tr>
 </table>`;
 }
@@ -241,7 +266,7 @@ export function renderThanks(): ContactEmail {
 <p class="pm-ink" style="font-family:${FONT};font-size:16px;line-height:24px;color:${C.ink};margin:0;text-align:center">${esc(body)}</p>
 <table role="presentation" width="100%" border="0" cellpadding="0" cellspacing="0" style="border-collapse:separate;margin:24px 0 0"><tr>${photo(496, '16px')}</tr></table>
 <table role="presentation" width="100%" border="0" cellpadding="0" cellspacing="0" style="border-collapse:collapse"><tr><td style="padding:24px 0 4px" align="center">
-${button('Browse our gear', APPAREL_URL)}
+${pictureButton('Browse our gear', APPAREL_URL, GEAR_BUTTON_URL, GEAR_BUTTON)}
 </td></tr></table>`;
 
   const footer = `<span class="pm-ink" style="color:${C.ink};font-weight:600">Playmaker Sports</span><br>
